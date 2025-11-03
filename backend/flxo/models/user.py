@@ -1,13 +1,10 @@
-from typing import Self
 
-from pydantic import field_validator, model_validator
+from pydantic import field_validator
 from sqlmodel import Field, SQLModel
-
-from flxo.core.security import get_password_hash
-
 
 class UserBase(SQLModel):
     username: str = Field(index=True)
+
 
 class UserDTO(UserBase):
     password: str
@@ -22,8 +19,9 @@ class UserDTO(UserBase):
 
 
 class UserPublic(UserBase):
-    id: int | None = Field(default=None, primary_key=True)
+    id: int = Field(default=None, primary_key=True)
     disabled: bool | None = None
+
 
 class User(UserPublic, table=True):
     hashed_password: str | None = None

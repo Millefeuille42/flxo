@@ -1,14 +1,13 @@
 [project]
-name = "backend"
+name = "flxo"
 version = "0.1.0"
-description = "Add your description here"
+description = "Flex Office presence management tool"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.17.0",
     "authlib>=1.6.5",
     "fastapi[all,standard]>=0.119.1",
-    "psycopg2>=2.9.11",
     "psycopg2-binary>=2.9.11",
     "pwdlib[argon2]>=0.2.1",
     "pyjwt>=2.10.1",
@@ -21,7 +20,122 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "isort>=7.0.0",
+    "flake8>=7.3.0",
+    "flake8-pyproject>=1.2.3",
     "mypy>=1.18.2",
-    "ruff>=0.14.1",
+    "pydocstyle>=6.3.0",
+    "pyright>=1.1.407",
+    "ruff>=0.14.3",
+    "types-authlib>=1.6.5.20251005",
+    "typing-extensions>=4.15.0",
 ]
+
+[tool.pyright]
+typeCheckingMode = "standard"
+ignore = [".git", ".venv", "alembic"]
+reportIncompatibleMethodOverride = false
+
+[tool.ruff]
+preview = true
+target-version = "py312"
+line-length = 90
+exclude = [".git", "alembic"]
+
+[tool.ruff.format]
+quote-style = "preserve"
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    "W",
+    # Pyflakes
+    "F",
+    # isort
+    "I",
+    # pydocstyle
+#    "D",
+    # pyupgrade
+    "UP",
+    # Perflint
+    "PERF",
+    # flake8-bugbear
+    "B",
+    # flake8-bandit
+    "S",
+    # flake8-comprehensions
+    "C4",
+    # flake8-errmsg
+    "EM",
+    # flake8-future-annotations
+    "FA",
+    # flake8-todos
+    "TD",
+    # flake8-logging
+    "LOG",
+    # flake8-fixme
+    "FIX",
+    # flake8-return
+    "RET",
+    # flake8-simplify
+    "SIM",
+    # flake8-self
+    "SLF"
+]
+
+# don't use some of the default D and SIM rules
+ignore = [
+  "D100",  # undocumented-public-module
+  "D101",  # undocumented-public-class
+  "D102",  # undocumented-public-method
+  "D103",  # undocumented-public-function
+  "D104",  # undocumented-public-package
+  "D105",  # undocumented-magic-method
+  "D106",  # undocumented-public-nested-class
+  "D107",  # undocumented-public-init
+  "D200",  # unnecessary-multiline-docstring
+  "D203",  # incorrect-blank-line-before-class
+  "D204",  # incorrect-blank-line-after-class
+  "D205",  # missing-blank-line-after-summary
+  "D210",  # surrounding-whitespace
+  "D212",  # incorrect-blank-line-before-class
+  "D400",  # missing-trailing-period
+  "D401",  # non-imperative-mood
+  "D403",  # first-word-uncapitalized
+  "SIM105",  # suppressible-exception
+  "SIM108",  # if-else-block-instead-of-if-exp
+]
+
+# restrict to the PEP 257 rules
+pydocstyle.convention = "pep257"
+
+[tool.ruff.lint.isort.sections]
+typing = ["typing"]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 1
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+    "typing",
+]
+
+[tool.flake8]
+max-line-length = 120
+ignore = [
+  "E261",  # At least two spaces before inline comment
+  "E302",  # Expected 2 blank lines, found 0
+  "E305",  # Expected 2 blank lines after end of function or class
+  "W503",  # Line break occurred before a binary operator
+  "F",  # already done by ruff
+]
+exclude=[".git", ".venv", "alembic"]
+
+[mypy]
+python_version = 3.12
+strict = true
+ignore_missing_imports = true

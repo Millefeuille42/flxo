@@ -1,12 +1,17 @@
 import os
-from typing import Tuple, Type
 
 from pydantic import BaseModel, Field
-from pydantic_settings import BaseSettings, TomlConfigSettingsSource, PydanticBaseSettingsSource, EnvSettingsSource, \
-    YamlConfigSettingsSource
+from pydantic_settings import (
+    BaseSettings,
+    EnvSettingsSource,
+    PydanticBaseSettingsSource,
+    TomlConfigSettingsSource,
+    YamlConfigSettingsSource,
+)
 
 TOML_FILE_PATH = os.environ.get("TOML_FILE_PATH", "config.toml")
 YAML_FILE_PATH = os.environ.get("YAML_FILE_PATH", "config.yaml")
+
 
 class DBSettings(BaseModel):
     host: str = Field(default="localhost")
@@ -15,31 +20,35 @@ class DBSettings(BaseModel):
     password: str = Field(default="flxo")
     port: int = Field(default=5432)
 
+
 class OAuthSettings(BaseModel):
-    client_id: str = Field()
-    client_secret: str = Field()
+    client_id: str = Field(default="")
+    client_secret: str = Field(default="")
     scope: str = Field(default="openid email profile")
-    authorize_url: str = Field()
-    access_token_url: str = Field()
-    metadata_url: str = Field()
+    authorize_url: str = Field(default="")
+    access_token_url: str = Field(default="")
+    metadata_url: str = Field(default="")
     username_field: str = Field(default="preferred_username")
 
+
 class AppSettings(BaseModel):
-    secret_key: str = Field()
+    secret_key: str = Field(default="unsecure-key")
     algorithm: str = Field(default="HS256")
     access_token_expire_minutes: int = Field(default=30)
-    access_url: str = Field(default="http://localhost:8002")
+    bind: str = Field(default="127.0.0.1")
+    port: int = Field(default=8080)
+    access_url: str = Field(default="http://127.0.0.1:8080")
 
 
 class Settings(BaseSettings):
     db: DBSettings = Field(default=DBSettings())
-    oauth: OAuthSettings = Field()
-    app: AppSettings = Field()
+    oauth: OAuthSettings = Field(default=OAuthSettings())
+    app: AppSettings = Field(default=AppSettings())
 
     @classmethod
-    def settings_customise_sources(
-        cls, settings_cls: Type[BaseSettings], **kwargs
-    ) -> Tuple[PydanticBaseSettingsSource, ...]:
+    def settings_customise_sources(  # type: ignore[override]
+        cls, settings_cls: type[BaseSettings], **kwargs
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
         global TOML_FILE_PATH
 
         return (

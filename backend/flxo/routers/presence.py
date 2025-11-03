@@ -1,14 +1,17 @@
-from typing import Annotated, Any, Sequence
+from collections.abc import Sequence
 
-from fastapi import APIRouter, Query, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import select
 
+from flxo.models.presence import Presence, PresenceDTO
 from flxo.models.user import UserPublic
 from flxo.services.auth import get_current_user
 from flxo.services.database import SessionDep
-from flxo.models.presence import PresenceDTO, Presence
+
+from typing import Annotated
 
 router = APIRouter(prefix="/presence")
+
 
 @router.get("/")
 def list_self_presences(
@@ -24,6 +27,7 @@ def list_self_presences(
         .limit(limit)
     ).all()
 
+
 @router.get("/")
 def list_presences(
     _current_user: Annotated[UserPublic, Depends(get_current_user)],
@@ -36,6 +40,7 @@ def list_presences(
         .offset(offset)
         .limit(limit)
     ).all()
+
 
 @router.get("/{presence_id}", response_model=Presence)
 def get_presence(
@@ -51,6 +56,7 @@ def get_presence(
         raise HTTPException(status_code=404, detail="presence not found")
     return presence
 
+
 @router.post("/", response_model=Presence)
 def create_presence(
     current_user: Annotated[UserPublic, Depends(get_current_user)],
@@ -65,7 +71,9 @@ def create_presence(
         )
     ).first()
     if overlaps:
-        raise HTTPException(status_code=400, detail="Presence overlaps with an existing one")
+        raise HTTPException(
+            status_code=400, detail="Presence overlaps with an existing one"
+        )
 
     db_presence = Presence(
         user_id=current_user.id,
@@ -76,6 +84,7 @@ def create_presence(
     session.commit()
     session.refresh(db_presence)
     return db_presence
+
 
 @router.delete("/{presence_id}")
 def delete_presence(
