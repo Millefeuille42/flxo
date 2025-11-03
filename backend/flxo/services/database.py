@@ -1,11 +1,10 @@
-import os
-from typing import Annotated
-
 from fastapi import Depends
 from sqlmodel import Session, SQLModel, create_engine
 
 from flxo.core.settings import DBSettings
 from flxo.services.settings import get_settings
+
+from typing import Annotated
 
 db: DBSettings = get_settings().db
 

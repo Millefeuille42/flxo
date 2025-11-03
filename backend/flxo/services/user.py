@@ -4,15 +4,14 @@ from flxo.core.security import get_password_hash
 from flxo.models.user import User, UserDTO
 from flxo.services.database import SessionDep
 
-
-def get_user_by_username(session: SessionDep, username: str) -> User:
+def get_user_by_username(session: SessionDep, username: str) -> User | None:
     return session.exec(
         select(User)
         .where(User.username == username)
     ).first()
 
 
-def get_user_by_id(session: SessionDep, user_id: int) -> User:
+def get_user_by_id(session: SessionDep, user_id: int) -> User | None:
     return session.get(User, user_id)
 
 
@@ -38,4 +37,3 @@ def get_or_create_user(session: SessionDep, username: str) -> User:
     if not user:
         user = create_user_with_username(session, username)
     return user
-
