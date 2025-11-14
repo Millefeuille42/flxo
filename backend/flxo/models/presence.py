@@ -1,27 +1,37 @@
-import datetime
+from datetime import datetime, timezone
+
+from pydantic import model_validator, field_serializer, field_validator
+from sqlmodel import Field, SQLModel, DateTime, Column, Relationship
 
 from pydantic import field_validator, model_validator
 from sqlmodel import Field, SQLModel
 
 class PresenceBase(SQLModel):
-    from_date: datetime.datetime = Field(default=None)
-    to_date: datetime.datetime = Field(default=None)
+    start: datetime = Field(sa_column=Column(DateTime(timezone=True)))
+    end: datetime = Field(sa_column=Column(DateTime(timezone=True)))
 
-    @field_validator("from_date")
-    @classmethod
-    def validate_start_date(cls, from_date):
-        if from_date < datetime.datetime.now(from_date.tzinfo):
-            msg = "from_date must be after current date"
-            raise ValueError(msg)
-        return from_date
+    @field_validator("start", "end", mode="before")
+    def force_utc(cls, value):
+        if isinstance(value, str):
+            value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
 
     @model_validator(mode="after")
     def validate_date_range(self):
-        if self.to_date <= self.from_date:
-            msg = "to_date must be after to from_date"
+        if self.end <= self.start:
+            msg = "end must be after start"
             raise ValueError(msg)
         return self
 
+    @field_serializer("start", "end")
+    def serialize_dt(self, value: datetime, _info):
+        if value is None:
+            return None
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.astimezone(timezone.utc)
 
 class PresenceDTO(PresenceBase):
     pass
