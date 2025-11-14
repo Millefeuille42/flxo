@@ -15,10 +15,14 @@ app.add_middleware(SessionMiddleware, secret_key=get_settings().app.secret_key)
 def on_startup():
     database.create_db_and_tables()
 
+origins = [
+   origin.strip() for origin in get_settings().app.allowed_origins.split(',')
+]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_credentials=True,
+    allow_origins=origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
