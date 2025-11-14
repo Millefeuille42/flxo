@@ -39,6 +39,7 @@ class AppSettings(BaseModel):
     bind: str = Field(default="127.0.0.1")
     port: int = Field(default=8080)
     access_url: str = Field(default="http://127.0.0.1:8080")
+    allowed_origins: str = Field(default="http://localhost:5173")
 
 
 class Settings(BaseSettings):
