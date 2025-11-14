@@ -1,6 +1,10 @@
-
 from pydantic import field_validator
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, Relationship, SQLModel
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .presence import Presence
 
 
 class UserBase(SQLModel):
