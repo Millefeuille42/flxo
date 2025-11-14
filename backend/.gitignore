@@ -1,3 +1,5 @@
+*.sqlite
+
 # Secrets and env
 *config.toml
 *config.yaml

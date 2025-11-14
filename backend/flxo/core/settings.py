@@ -15,6 +15,7 @@ YAML_FILE_PATH = os.environ.get("YAML_FILE_PATH", "config.yaml")
 
 class DBSettings(BaseModel):
     host: str = Field(default="localhost")
+    driver: str = Field(default="postgresql")
     database: str = Field(default="flxo")
     user: str = Field(default="flxo")
     password: str = Field(default="flxo")
