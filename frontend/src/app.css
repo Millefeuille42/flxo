@@ -40,7 +40,7 @@ h1 {
 }
 
 #app {
-  max-width: 1280px;
+  width: 75%;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -58,11 +58,18 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #646cff !important;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+button:disabled {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.ec-button {
+  background-color: #1a1a1a !important;
 }
 
 @media (prefers-color-scheme: light) {
@@ -76,4 +83,11 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+  button:disabled {
+    color: #213547;
+  }
+  .ec-button {
+    background-color: #f9f9f9 !important;
+  }
+
 }

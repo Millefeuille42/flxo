@@ -1,30 +1,65 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
   import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  import { onMount } from 'svelte'
+
+  import { jwt } from './lib/stores/auth';
+  import { get } from 'svelte/store';
+  import Username from "./lib/Username.svelte";
+  import Calendar from "./lib/Calendar.svelte";
+  import type User from "./types/user";
+
+  let token: string | null = $state(get(jwt))
+  let user: User | undefined = undefined
+
+  onMount(async () => {
+    console.log("App: mounted")
+    if (get(jwt)) return
+    console.log("App: no JWT found. Querying...")
+
+    const isLocal =
+            location.hostname === "localhost" ||
+            location.hostname === "127.0.0.1"
+    if (import.meta.env.DEV && import.meta.env.VITE_DEV_JWT_NON_LOCAL && !isLocal) {
+      console.log("App: using non-local dev JWT")
+      jwt.set(import.meta.env.VITE_DEV_JWT_NON_LOCAL)
+      token = get(jwt)
+      return
+    }
+
+    if (import.meta.env.DEV && import.meta.env.VITE_DEV_JWT) {
+      console.log("App: using dev JWT")
+      jwt.set(import.meta.env.VITE_DEV_JWT)
+      token = get(jwt)
+      return
+    }
+    // TODO write normal auth route
+  })
+
 </script>
 
 <main>
-  <div>
-    <a href="https://vite.dev" target="_blank" rel="noreferrer">
+  {#if !token}
+    <div>
       <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>Vite + Svelte</h1>
+    </div>
+    <h1>Welcome to {import.meta.env.VITE_APPLICATION_NAME}</h1>
+  {/if}
 
   <div class="card">
-    <Counter />
+    {#if !token}
+      <form method="get" action="{import.meta.env.VITE_BACKEND_URL}/auth/oauth2">
+        <input type="submit" value="Login with {import.meta.env.VITE_COMPANY_NAME} SSO" />
+      </form>
+    {:else}
+      <Username/>
+      <Calendar/>
+    {/if}
   </div>
 
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
 
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
+  <p class="footer">
+    Made with {#if import.meta.env.DEV}🚧{:else}❤️{/if} by
+    <a rel="noreferrer" target="_blank" href="https://github.com/millefeuille42">Millefeuille</a>
   </p>
 </main>
 
@@ -38,10 +73,8 @@
   .logo:hover {
     filter: drop-shadow(0 0 2em #646cffaa);
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
+
+  .footer {
     color: #888;
   }
 </style>
