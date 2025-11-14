@@ -15,8 +15,9 @@ app.add_middleware(SessionMiddleware, secret_key=get_settings().app.secret_key)
 def on_startup():
     database.create_db_and_tables()
 
+
 origins = [
-   origin.strip() for origin in get_settings().app.allowed_origins.split(',')
+    origin.strip() for origin in get_settings().app.allowed_origins.split(',')
 ]
 
 app.add_middleware(
@@ -34,7 +35,7 @@ app.include_router(presence.router)
 
 def main():
     uvicorn.run(
-    "flxo.core.main:app",
+        "flxo.core.main:app",
         host=get_settings().app.bind,
         port=get_settings().app.port,
         reload=True

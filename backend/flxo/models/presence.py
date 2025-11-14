@@ -1,10 +1,9 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from pydantic import model_validator, field_serializer, field_validator
-from sqlmodel import Field, SQLModel, DateTime, Column, Relationship
+from pydantic import field_serializer, field_validator, model_validator
+from sqlmodel import Column, DateTime, Field, Relationship, SQLModel
 
-from flxo.models.user import UserPublic, User
-
+from flxo.models.user import User, UserPublic
 
 class PresenceBase(SQLModel):
     start: datetime = Field(sa_column=Column(DateTime(timezone=True)))
@@ -15,8 +14,8 @@ class PresenceBase(SQLModel):
         if isinstance(value, str):
             value = datetime.fromisoformat(value.replace("Z", "+00:00"))
         if value.tzinfo is None:
-            return value.replace(tzinfo=timezone.utc)
-        return value.astimezone(timezone.utc)
+            return value.replace(tzinfo=UTC)
+        return value.astimezone(UTC)
 
     @model_validator(mode="after")
     def validate_date_range(self):
@@ -30,11 +29,13 @@ class PresenceBase(SQLModel):
         if value is None:
             return None
         if value.tzinfo is None:
-            value = value.replace(tzinfo=timezone.utc)
-        return value.astimezone(timezone.utc)
+            value = value.replace(tzinfo=UTC)
+        return value.astimezone(UTC)
+
 
 class PresenceDTO(PresenceBase):
     pass
+
 
 class Presence(PresenceBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
