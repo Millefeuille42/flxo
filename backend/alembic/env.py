@@ -33,6 +33,8 @@ target_metadata = SQLModel.metadata
 # ... etc.
 
 DATABASE_URL = f"postgresql://{db.user}:{db.password}@{db.host}:{db.port}/{db.database}"
+if db.driver == "sqlite":
+    DATABASE_URL = f"sqlite:///{db.host}"
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 

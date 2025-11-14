@@ -9,6 +9,8 @@ from typing import Annotated
 db: DBSettings = get_settings().db
 
 DATABASE_URL = f"postgresql://{db.user}:{db.password}@{db.host}:{db.port}/{db.database}"
+if db.driver == "sqlite":
+    DATABASE_URL = f"sqlite:///{db.host}"
 engine = create_engine(DATABASE_URL)
 
 
