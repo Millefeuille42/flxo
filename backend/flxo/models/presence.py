@@ -3,8 +3,8 @@ from datetime import datetime, timezone
 from pydantic import model_validator, field_serializer, field_validator
 from sqlmodel import Field, SQLModel, DateTime, Column, Relationship
 
-from pydantic import field_validator, model_validator
-from sqlmodel import Field, SQLModel
+from flxo.models.user import UserPublic, User
+
 
 class PresenceBase(SQLModel):
     start: datetime = Field(sa_column=Column(DateTime(timezone=True)))
@@ -36,7 +36,13 @@ class PresenceBase(SQLModel):
 class PresenceDTO(PresenceBase):
     pass
 
-
 class Presence(PresenceBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
+
+    user: User = Relationship(back_populates="presences")
+
+
+class PresenceWithUser(PresenceDTO):
+    id: int
+    user: UserPublic

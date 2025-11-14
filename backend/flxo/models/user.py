@@ -1,6 +1,7 @@
 
 from pydantic import field_validator
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
+
 
 class UserBase(SQLModel):
     username: str = Field(index=True)
@@ -25,3 +26,8 @@ class UserPublic(UserBase):
 
 class User(UserPublic, table=True):
     hashed_password: str | None = None
+    presences: list["Presence"] = Relationship(back_populates="user")
+
+
+class UserPublicWithPresences(UserPublic):
+    presences: list["Presence"] = []

@@ -4,7 +4,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import select
 
-from flxo.models.presence import Presence, PresenceDTO
+from flxo.models.presence import Presence, PresenceDTO, PresenceWithUser
 from flxo.models.user import UserPublic
 from flxo.services.auth import get_current_user
 from flxo.services.database import SessionDep
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/presence")
 
 # TODO Rewrite into service
 
-@router.get("/me")
+@router.get("/me", response_model=Sequence[PresenceWithUser])
 def list_self_presences(
     current_user: Annotated[UserPublic, Depends(get_current_user)],
     session: SessionDep,
@@ -23,13 +23,7 @@ def list_self_presences(
     end: Optional[datetime] = None,
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
-) -> Sequence[Presence]:
-    return session.exec(
-        select(Presence)
-        .where(Presence.user_id == current_user.id)
-        .offset(offset)
-        .limit(limit)
-    ).all()
+) -> Sequence[PresenceWithUser]:
     query = select(Presence).where(Presence.user_id == current_user.id)
 
     if start:
@@ -40,25 +34,16 @@ def list_self_presences(
     query = query.offset(offset).limit(limit)
     return session.exec(query).all()
 
-@router.get("/")
 
+@router.get("/", response_model=Sequence[PresenceWithUser])
 def list_presences(
-    _current_user: Annotated[UserPublic, Depends(get_current_user)],
-    session: SessionDep,
-    offset: int = 0,
-    limit: Annotated[int, Query(le=100)] = 100,
-) -> Sequence[Presence]:
-    return session.exec(
-        select(Presence)
-        .offset(offset)
-        .limit(limit)
-    ).all()
         _current_user: Annotated[UserPublic, Depends(get_current_user)],
         session: SessionDep,
         start: Optional[datetime] = None,
         end: Optional[datetime] = None,
         offset: int = 0,
         limit: Annotated[int, Query(le=100)] = 100,
+) -> Sequence[PresenceWithUser]:
     query = select(Presence)
 
     if start:
