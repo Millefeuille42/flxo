@@ -25,7 +25,7 @@ router = APIRouter(prefix="/auth")
 async def auth_oauth(request: Request, oauth: OAuthDep, settings: SettingsDep):
     return await oauth.keycloack.authorize_redirect(
         request,
-        redirect_uri=f"{settings.app.access_url}/auth/oauth2/callback"
+        redirect_uri=f"{settings.oauth.redirect_url}"
     )
 
 
