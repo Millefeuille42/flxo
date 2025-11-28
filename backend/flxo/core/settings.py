@@ -30,6 +30,7 @@ class OAuthSettings(BaseModel):
     access_token_url: str = Field(default="")
     metadata_url: str = Field(default="")
     username_field: str = Field(default="preferred_username")
+    redirect_url: str = Field(default="http://localhost:5173")
 
 
 class AppSettings(BaseModel):
