@@ -4,11 +4,9 @@ from flxo.core.security import get_password_hash
 from flxo.models.user import User, UserDTO
 from flxo.services.database import SessionDep
 
+
 def get_user_by_username(session: SessionDep, username: str) -> User | None:
-    return session.exec(
-        select(User)
-        .where(User.username == username)
-    ).first()
+    return session.exec(select(User).where(User.username == username)).first()
 
 
 def get_user_by_id(session: SessionDep, user_id: int) -> User | None:

@@ -4,21 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
 from flxo.routers import auth, presence, user
-from flxo.services import database
 from flxo.services.settings import get_settings
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=get_settings().app.secret_key)
 
 
-@app.on_event("startup")
-def on_startup():
-    database.create_db_and_tables()
-
-
-origins = [
-    origin.strip() for origin in get_settings().app.allowed_origins.split(',')
-]
+origins = [origin.strip() for origin in get_settings().app.allowed_origins.split(',')]
 
 app.add_middleware(
     CORSMiddleware,
@@ -38,5 +30,5 @@ def main():
         "flxo.core.main:app",
         host=get_settings().app.bind,
         port=get_settings().app.port,
-        reload=True
+        reload=True,
     )

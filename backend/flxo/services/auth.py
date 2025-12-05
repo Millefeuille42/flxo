@@ -27,7 +27,7 @@ oauth.register(
     authorize_params={"scope": settings.oauth.scope},
     access_token_url=settings.oauth.access_token_url,
     client_kwargs={"scope": settings.oauth.scope},
-    server_metadata_url=settings.oauth.metadata_url
+    server_metadata_url=settings.oauth.metadata_url,
 )
 
 SECRET_KEY = settings.app.secret_key

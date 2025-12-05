@@ -5,6 +5,7 @@ from sqlmodel import Column, DateTime, Field, Relationship, SQLModel
 
 from flxo.models.user import User, UserPublic
 
+
 class PresenceBase(SQLModel):
     start: datetime = Field(sa_column=Column(DateTime(timezone=True)))
     end: datetime = Field(sa_column=Column(DateTime(timezone=True)))
