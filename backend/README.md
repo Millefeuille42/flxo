@@ -98,4 +98,4 @@ Ensure type checks and formatting pass before committing.
 Follow routing/service layering conventions.
 
 ## License
-Backend is licensed under the MIT License as the rest of the project. See [LICENSE] for details.
+Backend is licensed under the MIT License as the rest of the project. See [LICENSE](../LICENSE) for details.
