@@ -1,11 +1,13 @@
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Any
 
+from ics import Calendar, Event
 from sqlmodel import select
 
 from flxo.models.presence import Presence, PresenceDTO
 from flxo.services.database import SessionDep
+
+from typing import Any
 
 def get_all_presences(
     session: SessionDep,
@@ -105,3 +107,44 @@ def delete_presence(
 ):
     session.delete(presence)
     session.commit()
+
+
+def presences_to_ics(presences: Sequence[Presence], all_day: bool = False) -> Calendar:
+    c = Calendar()
+    for presence in presences:
+        e = Event()
+        e.begin = presence.start
+        e.end = presence.end
+        if all_day:
+            e.make_all_day()
+        e.name = f"{presence.user.username} - Office"
+        c.events.add(e)
+    return c
+
+
+def get_all_presences_as_ics(
+        session: SessionDep,
+        start: datetime | None = None,
+        end: datetime | None = None,
+        offset: int = 100,
+        limit: int = 100,
+        all_day: bool = False,
+) -> Calendar:
+    return presences_to_ics(get_all_presences(
+        session, start, end, offset, limit
+    ), all_day)
+
+
+def get_all_presences_of_user_as_ics(
+        session: SessionDep,
+        user_id: int,
+        start: datetime | None = None,
+        end: datetime | None = None,
+        offset: int = 100,
+        limit: int = 100,
+        all_day: bool = False
+) -> Calendar:
+    return presences_to_ics(get_all_presences(
+        session, start, end, offset, limit,
+        select(Presence).where(Presence.user_id == user_id)
+    ), all_day)

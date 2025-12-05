@@ -4,6 +4,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 import flxo.services.presence as svc
+from flxo.models.ics_response import ICSResponse
 from flxo.models.presence import Presence, PresenceDTO, PresenceWithUser
 from flxo.models.user import UserPublic
 from flxo.services.auth import get_current_user
@@ -28,6 +29,21 @@ def list_self_presences(
     )
 
 
+@router.get("/me/ics", response_class=ICSResponse)
+def list_self_presences_as_ics(
+        current_user: Annotated[UserPublic, Depends(get_current_user)],
+        session: SessionDep,
+        start: datetime | None = None,
+        end: datetime | None = None,
+        offset: int = 0,
+        limit: Annotated[int, Query(le=100)] = 100,
+        all_day: bool = False
+) -> str:
+    return svc.get_all_presences_of_user_as_ics(
+        session, current_user.id, start, end, offset, limit, all_day
+    ).serialize()
+
+
 @router.get("/", response_model=Sequence[PresenceWithUser])
 def list_presences(
         _current_user: Annotated[UserPublic, Depends(get_current_user)],
@@ -38,6 +54,21 @@ def list_presences(
         limit: Annotated[int, Query(le=100)] = 100,
 ) -> Sequence[PresenceWithUser]:
     return svc.get_all_presences(session, start, end, offset, limit)  # type: ignore
+
+
+@router.get("/ics", response_class=ICSResponse)
+def list_presences_as_ics(
+        _current_user: Annotated[UserPublic, Depends(get_current_user)],
+        session: SessionDep,
+        start: datetime | None = None,
+        end: datetime | None = None,
+        offset: int = 0,
+        limit: Annotated[int, Query(le=100)] = 100,
+        all_day: bool = False
+) -> str:
+    return svc.get_all_presences_as_ics(
+        session, start, end, offset, limit, all_day
+    ).serialize()
 
 
 @router.get("/{presence_id}", response_model=Presence)
