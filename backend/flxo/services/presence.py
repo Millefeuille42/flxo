@@ -9,6 +9,7 @@ from flxo.services.database import SessionDep
 
 from typing import Any
 
+
 def get_all_presences(
     session: SessionDep,
     start: datetime | None = None,
@@ -37,8 +38,12 @@ def get_all_presences_of_user(
     limit: int = 100,
 ) -> Sequence[Presence]:
     return get_all_presences(
-        session, start, end, offset, limit,
-        select(Presence).where(Presence.user_id == user_id)
+        session,
+        start,
+        end,
+        offset,
+        limit,
+        select(Presence).where(Presence.user_id == user_id),
     )
 
 
@@ -64,18 +69,11 @@ def does_presence_overlap(
     query = select(Presence).where(Presence.user_id == user_id)
     if presence_id:
         query = query.where(Presence.id != presence_id)
-    query = query.where(
-        (Presence.start < end)
-        & (Presence.end > start)
-    )
+    query = query.where((Presence.start < end) & (Presence.end > start))
     return session.exec(query).first() is not None
 
 
-def create_presence(
-    session: SessionDep,
-    presence: PresenceDTO,
-    user_id: int
-) -> Presence:
+def create_presence(session: SessionDep, presence: PresenceDTO, user_id: int) -> Presence:
     db_presence = Presence(
         user_id=user_id,
         start=presence.start,
@@ -88,9 +86,7 @@ def create_presence(
 
 
 def update_presence(
-    session: SessionDep,
-    presence_dto: PresenceDTO,
-    presence: Presence
+    session: SessionDep, presence_dto: PresenceDTO, presence: Presence
 ) -> Presence:
     presence.start = presence_dto.start
     presence.end = presence_dto.end
@@ -101,10 +97,7 @@ def update_presence(
     return presence
 
 
-def delete_presence(
-    session: SessionDep,
-    presence: Presence
-):
+def delete_presence(session: SessionDep, presence: Presence):
     session.delete(presence)
     session.commit()
 
@@ -123,28 +116,35 @@ def presences_to_ics(presences: Sequence[Presence], all_day: bool = False) -> Ca
 
 
 def get_all_presences_as_ics(
-        session: SessionDep,
-        start: datetime | None = None,
-        end: datetime | None = None,
-        offset: int = 100,
-        limit: int = 100,
-        all_day: bool = False,
+    session: SessionDep,
+    start: datetime | None = None,
+    end: datetime | None = None,
+    offset: int = 100,
+    limit: int = 100,
+    all_day: bool = False,
 ) -> Calendar:
-    return presences_to_ics(get_all_presences(
-        session, start, end, offset, limit
-    ), all_day)
+    return presences_to_ics(
+        get_all_presences(session, start, end, offset, limit), all_day
+    )
 
 
 def get_all_presences_of_user_as_ics(
-        session: SessionDep,
-        user_id: int,
-        start: datetime | None = None,
-        end: datetime | None = None,
-        offset: int = 100,
-        limit: int = 100,
-        all_day: bool = False
+    session: SessionDep,
+    user_id: int,
+    start: datetime | None = None,
+    end: datetime | None = None,
+    offset: int = 100,
+    limit: int = 100,
+    all_day: bool = False,
 ) -> Calendar:
-    return presences_to_ics(get_all_presences(
-        session, start, end, offset, limit,
-        select(Presence).where(Presence.user_id == user_id)
-    ), all_day)
+    return presences_to_ics(
+        get_all_presences(
+            session,
+            start,
+            end,
+            offset,
+            limit,
+            select(Presence).where(Presence.user_id == user_id),
+        ),
+        all_day,
+    )

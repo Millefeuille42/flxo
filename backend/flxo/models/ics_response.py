@@ -1,6 +1,7 @@
 from fastapi import Response
 from ics import Calendar
 
+
 class ICSResponse(Response):
     media_type = "text/calendar"
 

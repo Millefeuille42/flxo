@@ -24,8 +24,7 @@ router = APIRouter(prefix="/auth")
 @router.get("/oauth2")
 async def auth_oauth(request: Request, oauth: OAuthDep, settings: SettingsDep):
     return await oauth.keycloack.authorize_redirect(
-        request,
-        redirect_uri=f"{settings.oauth.redirect_url}"
+        request, redirect_uri=f"{settings.oauth.redirect_url}"
     )
 
 
@@ -37,25 +36,22 @@ async def oauth_callback(
         token = await oauth.keycloack.authorize_access_token(request)
     except OAuthError as e:
         return HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"{e.error}: {e.description}"
+            status_code=status.HTTP_400_BAD_REQUEST, detail=f"{e.error}: {e.description}"
         )
     user = get_or_create_user(
-        session,
-        token.get("userinfo").get(settings.oauth.username_field)
+        session, token.get("userinfo").get(settings.oauth.username_field)
     )
     access_token = create_access_token(
         data={"sub": user.username},
         expires_delta=timedelta(minutes=settings.app.access_token_expire_minutes),
-        auth_method="oauth2"
+        auth_method="oauth2",
     )
     return Token(access_token=access_token, token_type="bearer")
 
 
 @router.post("/token")
 async def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    session: SessionDep
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()], session: SessionDep
 ) -> Token:
     user = authenticate_user(session, form_data.username, form_data.password)
     if not user:
@@ -71,5 +67,5 @@ async def login_for_access_token(
     return Token(
         access_token=access_token,
         # ruff: noqa: S106
-        token_type="bearer"
+        token_type="bearer",
     )
