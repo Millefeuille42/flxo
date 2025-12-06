@@ -7,13 +7,13 @@ from flxo.routers import auth, presence, user
 from flxo.services.settings import get_settings
 
 app = FastAPI()
-app.add_middleware(SessionMiddleware, secret_key=get_settings().app.secret_key)
+app.add_middleware(SessionMiddleware, secret_key=get_settings().app.secret_key)  # type: ignore
 
 
 origins = [origin.strip() for origin in get_settings().app.allowed_origins.split(',')]
 
 app.add_middleware(
-    CORSMiddleware,
+    CORSMiddleware,  # type: ignore
     allow_credentials=True,
     allow_origins=origins,
     allow_methods=["*"],

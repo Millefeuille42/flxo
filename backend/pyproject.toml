@@ -21,20 +21,12 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "flake8>=7.3.0",
-    "flake8-pyproject>=1.2.3",
-    "mypy>=1.18.2",
-    "pydocstyle>=6.3.0",
-    "pyright>=1.1.407",
     "ruff>=0.14.3",
-    "types-authlib>=1.6.5.20251005",
-    "typing-extensions>=4.15.0",
+    "ty>=0.0.1a32",
 ]
 
-[tool.pyright]
-typeCheckingMode = "standard"
-ignore = [".git", ".venv", "alembic"]
-reportIncompatibleMethodOverride = false
+[tool.ty.src]
+exclude = ["alembic"]
 
 [tool.ruff]
 preview = true
@@ -115,7 +107,6 @@ pydocstyle.convention = "pep257"
 typing = ["typing"]
 
 [tool.ruff.lint.isort]
-lines-after-imports = 1
 section-order = [
     "future",
     "standard-library",
@@ -124,19 +115,3 @@ section-order = [
     "local-folder",
     "typing",
 ]
-
-[tool.flake8]
-max-line-length = 120
-ignore = [
-  "E261",  # At least two spaces before inline comment
-  "E302",  # Expected 2 blank lines, found 0
-  "E305",  # Expected 2 blank lines after end of function or class
-  "W503",  # Line break occurred before a binary operator
-  "F",  # already done by ruff
-]
-exclude=[".git", ".venv", "alembic"]
-
-[mypy]
-python_version = 3.12
-strict = true
-ignore_missing_imports = true

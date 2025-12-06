@@ -82,8 +82,8 @@ uv run uvicorn flxo:app --host 0.0.0.0 --port 80
 ## Formatting and static analysis
 ```bash
 uv run ruff check flxo
+uv run ty check flxo
 uv run ruff format flxo
-uv run mypy flxo
 ```
 
 ## API Documentation
