@@ -1,3 +1,3 @@
-from .main import main
+from authlib.integrations.starlette_client import OAuth
 
-__all__ = ["main"]
+__all__ = ["OAuth"]

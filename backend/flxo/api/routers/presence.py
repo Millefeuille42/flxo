@@ -1,14 +1,13 @@
 from collections.abc import Sequence
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query
 
 import flxo.services.presence as svc
+from flxo.api.dependencies.database import SessionDep
+from flxo.api.dependencies.user import UserDep
 from flxo.models.ics_response import ICSResponse
 from flxo.models.presence import Presence, PresenceDTO, PresenceWithUser
-from flxo.models.user import UserPublic
-from flxo.services.auth import get_current_user
-from flxo.services.database import SessionDep
 
 from typing import Annotated
 
@@ -17,7 +16,7 @@ router = APIRouter(prefix="/presence")
 
 @router.get("/me", response_model=Sequence[PresenceWithUser])
 def list_self_presences(
-    current_user: Annotated[UserPublic, Depends(get_current_user)],
+    current_user: UserDep,
     session: SessionDep,
     start: datetime | None = None,
     end: datetime | None = None,
@@ -31,7 +30,7 @@ def list_self_presences(
 
 @router.get("/me/ics", response_class=ICSResponse)
 def list_self_presences_as_ics(
-    current_user: Annotated[UserPublic, Depends(get_current_user)],
+    current_user: UserDep,
     session: SessionDep,
     start: datetime | None = None,
     end: datetime | None = None,
@@ -46,7 +45,7 @@ def list_self_presences_as_ics(
 
 @router.get("/", response_model=Sequence[PresenceWithUser])
 def list_presences(
-    _current_user: Annotated[UserPublic, Depends(get_current_user)],
+    _current_user: UserDep,
     session: SessionDep,
     start: datetime | None = None,
     end: datetime | None = None,
@@ -58,7 +57,7 @@ def list_presences(
 
 @router.get("/ics", response_class=ICSResponse)
 def list_presences_as_ics(
-    _current_user: Annotated[UserPublic, Depends(get_current_user)],
+    _current_user: UserDep,
     session: SessionDep,
     start: datetime | None = None,
     end: datetime | None = None,
@@ -73,7 +72,7 @@ def list_presences_as_ics(
 
 @router.get("/{presence_id}", response_model=Presence)
 def get_presence_by_id(
-    current_user: Annotated[UserPublic, Depends(get_current_user)],
+    current_user: UserDep,
     presence_id: int,
     session: SessionDep,
 ) -> Presence:
@@ -85,7 +84,7 @@ def get_presence_by_id(
 
 @router.post("/", response_model=Presence)
 def create_presence(
-    current_user: Annotated[UserPublic, Depends(get_current_user)],
+    current_user: UserDep,
     presence: PresenceDTO,
     session: SessionDep,
 ) -> Presence:
@@ -102,7 +101,7 @@ def create_presence(
 
 @router.put("/{presence_id}", response_model=Presence)
 def update_presence(
-    current_user: Annotated[UserPublic, Depends(get_current_user)],
+    current_user: UserDep,
     presence_id: int,
     presence_dto: PresenceDTO,
     session: SessionDep,
@@ -123,7 +122,7 @@ def update_presence(
 
 @router.delete("/{presence_id}")
 def delete_presence(
-    current_user: Annotated[UserPublic, Depends(get_current_user)],
+    current_user: UserDep,
     presence_id: int,
     session: SessionDep,
 ):

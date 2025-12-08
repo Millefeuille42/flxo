@@ -5,15 +5,15 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.requests import Request
 
+from flxo.api.dependencies.auth import OAuthDep
+from flxo.api.dependencies.database import SessionDep
+from flxo.api.dependencies.settings import SettingsDep
 from flxo.models.token import Token
 from flxo.services.auth import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
-    OAuthDep,
     authenticate_user,
     create_access_token,
 )
-from flxo.services.database import SessionDep
-from flxo.services.settings import SettingsDep
 from flxo.services.user import get_or_create_user
 
 from typing import Annotated
