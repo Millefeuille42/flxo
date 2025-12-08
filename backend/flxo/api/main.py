@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
-from flxo.routers import auth, presence, user
+from flxo.api.routers import auth, presence, user
 from flxo.services.settings import get_settings
 
 app = FastAPI()

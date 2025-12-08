@@ -1,19 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 
+from flxo.api.dependencies.database import SessionDep
+from flxo.api.dependencies.user import UserDep
 from flxo.models.user import UserDTO, UserPublic
-from flxo.services.auth import get_current_user
-from flxo.services.database import SessionDep
 from flxo.services.user import create_user_from_dto
-
-from typing import Annotated
 
 router = APIRouter(prefix="/user")
 
 
 @router.get("/me", response_model=UserPublic)
-async def get_self(
-    current_user: Annotated[UserPublic, Depends(get_current_user)],
-):
+async def get_self(current_user: UserDep):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user

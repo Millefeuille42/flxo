@@ -2,16 +2,15 @@ from collections.abc import Sequence
 from datetime import datetime
 
 from ics import Calendar, Event
-from sqlmodel import select
+from sqlmodel import Session, select
 
 from flxo.models.presence import Presence, PresenceDTO
-from flxo.services.database import SessionDep
 
 from typing import Any
 
 
 def get_all_presences(
-    session: SessionDep,
+    session: Session,
     start: datetime | None = None,
     end: datetime | None = None,
     offset: int = 100,
@@ -30,7 +29,7 @@ def get_all_presences(
 
 
 def get_all_presences_of_user(
-    session: SessionDep,
+    session: Session,
     user_id: int,
     start: datetime | None = None,
     end: datetime | None = None,
@@ -48,7 +47,7 @@ def get_all_presences_of_user(
 
 
 def get_presence(
-    session: SessionDep,
+    session: Session,
     presence_id: int,
     user_id: int,
 ) -> Presence | None:
@@ -60,7 +59,7 @@ def get_presence(
 
 
 def does_presence_overlap(
-    session: SessionDep,
+    session: Session,
     user_id: int,
     start: datetime,
     end: datetime,
@@ -73,7 +72,7 @@ def does_presence_overlap(
     return session.exec(query).first() is not None
 
 
-def create_presence(session: SessionDep, presence: PresenceDTO, user_id: int) -> Presence:
+def create_presence(session: Session, presence: PresenceDTO, user_id: int) -> Presence:
     db_presence = Presence(
         user_id=user_id,
         start=presence.start,
@@ -86,7 +85,7 @@ def create_presence(session: SessionDep, presence: PresenceDTO, user_id: int) ->
 
 
 def update_presence(
-    session: SessionDep, presence_dto: PresenceDTO, presence: Presence
+    session: Session, presence_dto: PresenceDTO, presence: Presence
 ) -> Presence:
     presence.start = presence_dto.start
     presence.end = presence_dto.end
@@ -97,7 +96,7 @@ def update_presence(
     return presence
 
 
-def delete_presence(session: SessionDep, presence: Presence):
+def delete_presence(session: Session, presence: Presence):
     session.delete(presence)
     session.commit()
 
@@ -116,7 +115,7 @@ def presences_to_ics(presences: Sequence[Presence], all_day: bool = False) -> Ca
 
 
 def get_all_presences_as_ics(
-    session: SessionDep,
+    session: Session,
     start: datetime | None = None,
     end: datetime | None = None,
     offset: int = 100,
@@ -129,7 +128,7 @@ def get_all_presences_as_ics(
 
 
 def get_all_presences_of_user_as_ics(
-    session: SessionDep,
+    session: Session,
     user_id: int,
     start: datetime | None = None,
     end: datetime | None = None,
