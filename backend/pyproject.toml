@@ -98,6 +98,7 @@ ignore = [
   "D403",  # first-word-uncapitalized
   "SIM105",  # suppressible-exception
   "SIM108",  # if-else-block-instead-of-if-exp
+  "TD003", # missing-todo-link
 ]
 
 # restrict to the PEP 257 rules
