@@ -3,11 +3,11 @@ from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, Query
 
-import flxo.services.presence as svc
 from flxo.api.dependencies.database import SessionDep
 from flxo.api.dependencies.user import UserDep
 from flxo.models.ics_response import ICSResponse
 from flxo.models.presence import Presence, PresenceDTO, PresenceWithUser
+from flxo.services.presence import svc
 
 from typing import Annotated
 
@@ -129,5 +129,5 @@ def delete_presence(
     presence = svc.get_presence(session, presence_id, current_user.id)
     if not presence:
         raise HTTPException(status_code=404, detail="presence not found")
-    svc.delete_presence(session, presence)
+    svc.delete(session, presence)
     return {"ok": True}

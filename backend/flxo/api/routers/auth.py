@@ -14,7 +14,7 @@ from flxo.services.auth import (
     authenticate_user,
     create_access_token,
 )
-from flxo.services.user import get_or_create_user
+from flxo.services.user import svc
 
 from typing import Annotated
 
@@ -38,7 +38,7 @@ async def oauth_callback(
         return HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=f"{e.error}: {e.description}"
         )
-    user = get_or_create_user(
+    user = svc.get_or_create_user(
         session, token.get("userinfo").get(settings.oauth.username_field)
     )
     access_token = create_access_token(
