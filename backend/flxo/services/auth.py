@@ -8,7 +8,7 @@ from flxo.core.security import verify_password
 from flxo.core.settings import Settings
 from flxo.models.user import User
 from flxo.services.settings import get_settings
-from flxo.services.user import get_user_by_username
+from flxo.services.user import svc
 
 settings: Settings = get_settings()
 
@@ -48,7 +48,7 @@ def create_access_token(
 
 
 def authenticate_user(session: Session, username: str, password: str) -> User | None:
-    user = get_user_by_username(session, username)
+    user = svc.get_user_by_username(session, username)
     if not user:
         return None
     if not verify_password(password, user.hashed_password):

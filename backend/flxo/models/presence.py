@@ -48,3 +48,7 @@ class Presence(PresenceBase, table=True):
 class PresenceWithUser(PresenceDTO):
     id: int
     user: UserPublic
+
+
+class PresencePublic(PresenceBase):
+    pass

@@ -8,7 +8,7 @@ from flxo.core.exceptions import InvalidCredentialsException
 from flxo.models.token import TokenData
 from flxo.models.user import User, UserPublic
 from flxo.services.auth import ALGORITHM, SECRET_KEY
-from flxo.services.user import get_user_by_username
+from flxo.services.user import svc
 
 from typing import Annotated
 
@@ -22,7 +22,7 @@ def get_current_user(session: SessionDep, token: TokenDep) -> User:
         token_data = TokenData(username=username)
     except InvalidTokenError as e:
         raise InvalidCredentialsException from e
-    user = get_user_by_username(session, username=token_data.username)
+    user = svc.get_user_by_username(session, username=token_data.username)
     if user is None:
         raise InvalidCredentialsException
     return user
