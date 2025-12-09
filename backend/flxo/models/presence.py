@@ -3,7 +3,9 @@ from datetime import UTC, datetime
 from pydantic import field_serializer, field_validator, model_validator
 from sqlmodel import Column, DateTime, Field, Relationship, SQLModel
 
-from flxo.models.user import User, UserPublic
+from .office import Office, OfficePublic
+from .seat import Seat, SeatPublic
+from .user import User, UserPublic
 
 
 class PresenceBase(SQLModel):
@@ -41,8 +43,22 @@ class PresenceDTO(PresenceBase):
 class Presence(PresenceBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
+    office_id: int = Field(foreign_key="office.id")
+    seat_id: int = Field(foreign_key="seat.id")
 
-    user: User = Relationship(back_populates="presences")
+    user: "User" = Relationship(back_populates="presences")
+    office: "Office" = Relationship(back_populates="presences")
+    seat: "Seat" = Relationship(back_populates="presences")
+
+
+class PresenceWithOffice(PresenceDTO):
+    id: int
+    office: OfficePublic
+
+
+class PresenceWithSeat(PresenceDTO):
+    id: int
+    seat: SeatPublic
 
 
 class PresenceWithUser(PresenceDTO):
