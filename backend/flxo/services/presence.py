@@ -4,7 +4,7 @@ from datetime import datetime
 from ics import Calendar, Event
 from sqlmodel import Session, select
 
-from flxo.models.presence import Presence, PresenceDTO
+from flxo.models import Presence, PresenceDTO
 from flxo.services.base import BaseService
 
 from typing import Any
@@ -79,6 +79,7 @@ class PresenceService(BaseService[Presence]):
             .where(Presence.user_id == user_id)
         ).first()
 
+    # TODO check for seat for overlap
     @staticmethod
     def does_presence_overlap(
         session: Session,

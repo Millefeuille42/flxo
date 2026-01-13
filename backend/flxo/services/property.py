@@ -3,9 +3,8 @@ from collections.abc import Sequence
 from sqlmodel import select
 
 from flxo.api.dependencies.database import SessionDep
-from flxo.models.property import Property, PropertyDTO
+from flxo.models import Property, PropertyDTO
 
-# from flxo.models.workplace import Property, PropertyDTO
 from flxo.services.base import BaseService
 
 

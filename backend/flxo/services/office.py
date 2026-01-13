@@ -1,7 +1,6 @@
 from flxo.api.dependencies.database import SessionDep
-from flxo.models.office import Office, OfficeDTO
+from flxo.models import Office, OfficeDTO
 
-# from flxo.models.workplace import Office, OfficeDTO
 from flxo.services.base import BaseService
 
 

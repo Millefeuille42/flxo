@@ -35,7 +35,7 @@ async def oauth_callback(
     try:
         token = await oauth.keycloack.authorize_access_token(request)
     except OAuthError as e:
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=f"{e.error}: {e.description}"
         )
     user = svc.get_or_create_user(

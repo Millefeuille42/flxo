@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from fastapi import APIRouter, HTTPException
 
 from flxo.api.dependencies.database import SessionDep
-from flxo.models.property import PropertyDTO, PropertyPublic
+from flxo.models import PropertyDTO, PropertyPublic
 from flxo.services.property import svc
 
 router = APIRouter(prefix="/property")
