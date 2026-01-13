@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 
 from flxo.api.dependencies.database import SessionDep
 from flxo.api.dependencies.user import UserDep
-from flxo.models.user import UserDTO, UserPublic
+from flxo.models import UserDTO, UserPublic
 from flxo.services.user import svc
 
 router = APIRouter(prefix="/user")

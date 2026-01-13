@@ -6,7 +6,7 @@ from sqlmodel import Session
 from flxo.core import OAuth
 from flxo.core.security import verify_password
 from flxo.core.settings import Settings
-from flxo.models.user import User
+from flxo.models import User
 from flxo.services.settings import get_settings
 from flxo.services.user import svc
 

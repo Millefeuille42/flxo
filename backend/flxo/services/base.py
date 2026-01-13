@@ -29,7 +29,7 @@ class BaseService[ModelType: SQLModel]:
 
     @classmethod
     def create(cls, session: SessionDep, instance: ModelType) -> ModelType:
-        return cls.create(session, instance)
+        return cls.update(session, instance)
 
     @classmethod
     def delete(cls, session: SessionDep, instance: ModelType) -> None:

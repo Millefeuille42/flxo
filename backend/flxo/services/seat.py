@@ -1,7 +1,6 @@
 from flxo.api.dependencies.database import SessionDep
-from flxo.models.seat import Seat, SeatDTO
+from flxo.models import Seat, SeatDTO
 
-# from flxo.models.workplace import Seat, SeatDTO
 from flxo.services.base import BaseService
 
 

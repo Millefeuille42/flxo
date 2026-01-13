@@ -3,8 +3,7 @@ from collections.abc import Sequence
 from fastapi import APIRouter, HTTPException, Query
 
 from flxo.api.dependencies.database import SessionDep
-from flxo.models.office import OfficeDTO, OfficePublic
-from flxo.models.seat import SeatPublic
+from flxo.models import OfficeDTO, OfficePublic, SeatPublic
 from flxo.services.office import svc
 
 from typing import Annotated
