@@ -43,8 +43,8 @@ class PresenceDTO(PresenceBase):
 class Presence(PresenceBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
-    office_id: int = Field(foreign_key="office.id")
-    seat_id: int = Field(foreign_key="seat.id")
+    office_id: int | None = Field(default=None, foreign_key="office.id")
+    seat_id: int | None = Field(default=None, foreign_key="seat.id")
 
     user: "User" = Relationship(back_populates="presences")
     office: "Office" = Relationship(back_populates="presences")
