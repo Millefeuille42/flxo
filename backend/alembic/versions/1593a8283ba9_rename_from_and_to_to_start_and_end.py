@@ -24,8 +24,7 @@ def upgrade() -> None:
         batch.add_column(sa.Column('start', sa.DateTime(), nullable=True))
         batch.add_column(sa.Column('end', sa.DateTime(), nullable=True))
 
-    op.execute("UPDATE presence SET start = from_date, end = to_date")
-
+    op.execute('UPDATE presence SET "start" = from_date, "end" = to_date')
     with op.batch_alter_table("presence") as batch:
         batch.alter_column('start', nullable=False)
         batch.alter_column('end', nullable=False)
