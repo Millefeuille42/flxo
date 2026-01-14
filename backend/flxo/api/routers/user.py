@@ -13,8 +13,3 @@ async def get_self(current_user: UserDep):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
-
-
-@router.post("/", response_model=UserPublic)
-async def create_user_route(user: UserDTO, session: SessionDep) -> UserPublic:
-    return svc.create_user_from_dto(session, user)
