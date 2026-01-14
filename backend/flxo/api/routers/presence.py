@@ -5,8 +5,8 @@ from fastapi import APIRouter, HTTPException, Query
 
 from flxo.api.dependencies.database import SessionDep
 from flxo.api.dependencies.user import UserDep
-from flxo.models.ics_response import ICSResponse
 from flxo.models import Presence, PresenceDTO, PresenceWithUser
+from flxo.models.ics_response import ICSResponse
 from flxo.services.presence import svc
 
 from typing import Annotated

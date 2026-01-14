@@ -5,8 +5,8 @@ from fastapi import Depends
 from flxo.api.dependencies.auth import TokenDep
 from flxo.api.dependencies.database import SessionDep
 from flxo.core.exceptions import InvalidCredentialsException
-from flxo.models.token import TokenData
 from flxo.models import User, UserPublic
+from flxo.models.token import TokenData
 from flxo.services.auth import ALGORITHM, SECRET_KEY
 from flxo.services.user import svc
 
