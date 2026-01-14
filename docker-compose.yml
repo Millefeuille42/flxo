@@ -28,6 +28,7 @@ services:
       - FLXO__OAUTH__CLIENT_ID=${FLXO__OAUTH__CLIENT_ID}
       - FLXO__OAUTH__CLIENT_SECRET=${FLXO__OAUTH__CLIENT_SECRET}
       - FLXO__OAUTH__SCOPE=${FLXO__OAUTH__SCOPE:-openid email profile}
+      - FLXO__OAUTH__REDIRECT_URI=${FLXO__OAUTH__REDIRECT_URI:-http://localhost:8080}
       - FLXO__OAUTH__AUTHORIZE_URL=${FLXO__OAUTH__AUTHORIZE_URL:-https://auth.example.com/application/o/authorize/}
       - FLXO__OAUTH__ACCESS_TOKEN_URL=${FLXO__OAUTH__ACCESS_TOKEN_URL:-https://auth.example.com/application/o/token/}
       - FLXO__OAUTH__METADATA_URL=${FLXO__OAUTH__METADATA_URL:-https://auth.example.com/application/o/dev/.well-known/openid-configuration}
