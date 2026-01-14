@@ -7,6 +7,7 @@ services:
     depends_on:
       - db
     environment:
+      - FLXO__REVERSE_PROXY=true
       # [app] section
       - FLXO__APP__SECRET_KEY=${FLXO__APP__SECRET_KEY}
       - FLXO__APP__BIND=${FLXO__APP__BIND:-0.0.0.0}
