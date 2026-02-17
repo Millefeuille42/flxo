@@ -14,13 +14,17 @@
 
   onMount(async () => {
     console.log("App: mounted")
+    try {
+      await makeRequest('/user/me')
+    } catch (e) {
+      localStorage.removeItem('jwt')
+      token = null
+      jwt.set(null)
+      console.error(e)
+    }
     if (get(jwt)) {
-      makeRequest('/user/me').catch(e => {
-        localStorage.removeItem('jwt')
-        token = null
-        jwt.set(null)
-        throw e
-      })
+      console.log("App: JWT found in store. Skipping query.")
+      return
     }
     console.log("App: no JWT found. Querying...")
 
