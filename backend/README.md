@@ -15,12 +15,7 @@ uv sync
 source .venv/bin/activate  # Optional
 ```
 
-### Set up and migrate the database
-```bash
-uv run alembic upgrade head
-```
-
-## Configuration
+### Configuration
 
 Configuration is read in order from env, TOML file and YAML file.
 TOML and YAML file paths are specified via the environment:
@@ -33,7 +28,7 @@ YAML_FILE_PATH=/path/to/yaml/file  # Defaults to "./config.yaml"
 Besides those two, env variables are prefixed by `FLXO__` 
 and nested fields are separated by `__` (see example below for reference)
 
-### Configuration example
+#### Configuration example
 The values provided in the example are the default ones
 ```toml
 [app]
@@ -52,6 +47,10 @@ database = "flxo"
 user = "flxo"
 password = "flxo"
 port = 5432
+### With SQLite
+# [db]
+# driver = "sqlite"
+# database = "./flxo.db"
 
 [oauth]
 client_id = ""
@@ -65,12 +64,17 @@ metadata_url = "https://auth.example.com/application/o/dev/.well-known/openid-co
 
 ```
 
+## Set up and migrate the database
+```bash
+uv run alembic upgrade head
+```
+
 ## Running
 To run from the backend folder.
 
 ### Dev
 ```bash
-uv run fastpi dev flxo
+uv run fastapi dev flxo
 ```
 
 ### Production
