@@ -9,8 +9,7 @@ from flxo.services.settings import get_settings
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=get_settings().app.secret_key)  # type: ignore
 
-
-origins = [origin.strip() for origin in get_settings().app.allowed_origins.split(',')]
+origins = get_settings().app.allowed_origins
 
 app.add_middleware(
     CORSMiddleware,  # type: ignore
