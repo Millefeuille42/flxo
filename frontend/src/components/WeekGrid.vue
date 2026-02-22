@@ -1,9 +1,22 @@
 <script setup>
 import { computed } from 'vue'
 import PersonRow from './PersonRow.vue'
-import { sortedPersons, currentWeekOffset, getWeekKey, getWeekDates, getTodayDayIndex } from '../state.js'
+import { sortedPersons, bookings, currentWeekOffset, getWeekKey, getWeekDates, getTodayDayIndex } from '../state.js'
+import { DESKS } from '../desks.js'
 
 const DAY_NAMES = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven']
+const DAYS = [0, 1, 2, 3, 4]
+const SLOTS = ['morning', 'afternoon']
+
+const visiblePersons = computed(() => {
+  const currentKey = getWeekKey(0)
+  return sortedPersons.value.filter(person =>
+    person.isLoggedUser ||
+    bookings.some(b => b.personId === person.id && b.weekKey >= currentKey)
+  )
+})
+
+const emptyRowCount = computed(() => Math.max(0, DESKS.length - visiblePersons.value.length))
 
 const weeks = computed(() => {
   return [0, 1].map(i => {
@@ -42,7 +55,7 @@ const weeks = computed(() => {
         Peut-être
       </span>
     </div>
-    <table class="week-grid" v-if="sortedPersons.length">
+    <table class="week-grid" v-if="visiblePersons.length || DESKS.length">
       <thead>
         <tr>
           <th class="corner" rowspan="2"></th>
@@ -77,11 +90,23 @@ const weeks = computed(() => {
       </thead>
       <tbody>
         <PersonRow
-          v-for="person in sortedPersons"
+          v-for="person in visiblePersons"
           :key="person.id"
           :person="person"
           :weeks="weeks"
         />
+        <tr v-for="i in emptyRowCount" :key="'empty-' + i" class="empty-row">
+          <td class="corner empty-info"></td>
+          <template v-for="(week, wi) in weeks" :key="week.weekKey">
+            <template v-for="(day, di) in DAYS" :key="di">
+              <td
+                v-for="slot in SLOTS"
+                :key="slot"
+                :class="['empty-slot', { 'day-start': slot === 'morning', 'week2-start': wi > 0 && di === 0 && slot === 'morning' }]"
+              ></td>
+            </template>
+          </template>
+        </tr>
       </tbody>
     </table>
     <div v-else class="empty-msg">
@@ -186,5 +211,25 @@ const weeks = computed(() => {
   outline: 2px solid #888;
   outline-offset: -2px;
   color: #888;
+}
+.empty-row {
+  border-bottom: 1px solid #eee;
+}
+.empty-info {
+  min-width: 180px;
+}
+.empty-slot {
+  width: 44px;
+  height: 28px;
+  background: #f5f5f5;
+  opacity: 0.6;
+  border: 1px solid #e0e0e0;
+  cursor: default;
+}
+.empty-slot.day-start {
+  border-left: 2px solid #999;
+}
+.empty-slot.week2-start {
+  border-left: 4px solid #333;
 }
 </style>
