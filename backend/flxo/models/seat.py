@@ -1,9 +1,8 @@
-from sqlmodel import Column, Field, JSON, Relationship, SQLModel
+from sqlmodel import JSON, Column, Field, Relationship, SQLModel
 
 from flxo.models.office import Office
 
-from typing import Any, TYPE_CHECKING
-
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from flxo.models.presence import Presence

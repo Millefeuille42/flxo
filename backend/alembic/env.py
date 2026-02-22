@@ -6,6 +6,7 @@ from sqlmodel import SQLModel
 from alembic import context
 from flxo.models import *  # noqa: F403
 from flxo.services.settings import get_settings
+from flxo.services.database import get_database_url, get_engine_args
 
 
 db = get_settings().db
@@ -31,9 +32,8 @@ target_metadata = SQLModel.metadata
 # my_important_option = config.get_main_option("my_important_option")  # noqa: ERA001
 # ... etc.
 
-DATABASE_URL = f"postgresql://{db.user}:{db.password}@{db.host}:{db.port}/{db.database}"
-if db.driver == "sqlite":
-    DATABASE_URL = f"sqlite:///{db.host}"
+# Use the same database URL construction as the main application
+DATABASE_URL = get_database_url(db)
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 
@@ -68,10 +68,17 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
+    # Get database-specific engine arguments
+    engine_args = get_engine_args(db.driver)
+
+    # Build configuration for engine creation
+    configuration = config.get_section(config.config_ini_section, {})
+
+    # Apply database-specific engine arguments
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        configuration,
         prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
+        **engine_args,
     )
 
     with connectable.connect() as connection:

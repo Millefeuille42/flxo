@@ -3,7 +3,8 @@ from collections.abc import Sequence
 from fastapi import APIRouter, HTTPException, Query
 
 from flxo.api.dependencies.database import SessionDep
-from flxo.models import OfficeDTO, OfficePublic, SeatPublic
+from flxo.models.office import OfficeDTO, OfficePublic, Office
+from flxo.models.seat import SeatPublic
 from flxo.services.office import svc
 
 from typing import Annotated
@@ -39,7 +40,7 @@ def get_office_seats(office_id: int, session: SessionDep) -> Sequence[SeatPublic
 
 @router.post("/", response_model=OfficePublic)
 def create_office(office: OfficeDTO, session: SessionDep) -> OfficePublic:
-    return svc.create(session, office)  # type: ignore
+    return svc.create(session, Office.model_validate(office))  # type: ignore
 
 
 @router.put("/{office_id}", response_model=OfficePublic)

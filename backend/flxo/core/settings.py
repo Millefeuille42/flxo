@@ -63,8 +63,8 @@ UrlList = Annotated[list[UrlStr], BeforeValidator(split_list(","))]
 
 
 class DBSettings(BaseModel):
-    host: StrippedStr = Field(default="localhost")
-    driver: StrippedStr = Field(default="postgresql")
+    host: StrippedStr = Field(default="flxo.db")
+    driver: StrippedStr = Field(default="sqlite")
     database: StrippedStr = Field(default="flxo")
     user: StrippedStr = Field(default="flxo")
     password: StrippedStr = Field(default="flxo")
@@ -92,10 +92,19 @@ class AppSettings(BaseModel):
     allowed_origins: UrlList = Field(default="http://localhost:5173")  # type: ignore
 
 
+class OfficeConfig(BaseModel):
+    name: str
+    address: str = ""
+    logo_url: str = ""
+    floor_plan_url: str = ""
+    desk_count: int = 0
+
+
 class Settings(BaseSettings):
     db: DBSettings = Field(default=DBSettings())
     oauth: OAuthSettings = Field(default=OAuthSettings())
     app: AppSettings = Field(default=AppSettings())
+    offices: list[OfficeConfig] = Field(default=[])
 
     @classmethod
     def settings_customise_sources(  # type: ignore[override]

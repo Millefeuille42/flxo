@@ -1,0 +1,43 @@
+# flxo SQLite Configuration Example
+# Copy this file to config.toml and adjust values as needed
+
+[app]
+secret_key = "change-this-to-a-secure-random-key"
+bind = "0.0.0.0"
+port = 8080
+access_url = "http://localhost:8080"
+allowed_origins = "http://localhost:5173"
+algorithm = "HS256"
+access_token_expire_minutes = 30
+
+[db]
+# SQLite Configuration
+driver = "sqlite"
+# Relative path (creates file in working directory)
+host = "flxo.db"
+# Or use absolute path:
+# host = "/var/lib/flxo/flxo.db"
+# Or use in-memory database (data lost on restart):
+# host = ":memory:"
+
+# Note: Other database fields (database, user, password, port) are not used with SQLite
+
+[oauth]
+# OAuth2 Configuration (optional)
+client_id = ""
+client_secret = ""
+scope = "openid email profile"
+# Example values (replace with your OAuth provider):
+# authorize_url = "https://auth.example.com/application/o/authorize/"
+# access_token_url = "https://auth.example.com/application/o/token/"
+# metadata_url = "https://auth.example.com/application/o/.well-known/openid-configuration"
+# username_field = "preferred_username"
+# redirect_url = "http://localhost:5173"
+
+# Office configuration (one [[offices]] block per location)
+# [[offices]]
+# name = "My Coworking Space"
+# address = "123 Main Street"
+# logo_url = "/cowork-logo.png"
+# floor_plan_url = "/cowork-plan.svg"
+# desk_count = 6

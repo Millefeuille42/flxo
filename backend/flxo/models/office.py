@@ -32,5 +32,5 @@ class OfficeWithPresences(OfficeDTO):
     presences: list["Presence"] = []
 
 
-class OfficePublic(OfficeWithSeats, OfficeWithPresences):
-    pass
+class OfficePublic(OfficeBase):
+    id: int
