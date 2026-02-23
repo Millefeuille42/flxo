@@ -10,6 +10,7 @@ const props = defineProps({
   slot: String,
   pastDay: { type: Boolean, default: false },
   week2Start: { type: Boolean, default: false },
+  hasDeskIndicator: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['toggle', 'dragenter'])
@@ -68,13 +69,15 @@ function emitDragEnter() {
     <span v-if="bookingState === 'confirmed' && isOverbooked" class="overbooked">&#9888;</span>
     <span v-else-if="bookingState === 'confirmed'" class="check">&#10003;</span>
     <span v-else-if="bookingState === 'maybe'" class="maybe" :style="{ color: personColor }">?</span>
+    <span v-if="hasDeskIndicator" class="desk-dot" :style="{ borderBottomColor: `color-mix(in srgb, ${personColor} 60%, black)` }"></span>
   </td>
 </template>
 
 <style scoped>
 .slot-cell {
+  position: relative;
   width: 44px;
-  height: 28px;
+  height: 33px;
   border: 1px solid #e0e0e0;
   cursor: pointer;
   text-align: center;
@@ -107,5 +110,15 @@ function emitDragEnter() {
 .maybe {
   font-size: 15px;
   font-weight: 700;
+}
+.desk-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 11px 11px;
+  border-color: transparent transparent currentColor transparent;
 }
 </style>

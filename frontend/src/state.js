@@ -1,10 +1,11 @@
 import { reactive, ref, computed } from 'vue'
-import { nextColor } from './colors.js'
+import { colorForUser } from './colors.js'
 import { DESKS } from './desks.js'
 import {
   getToken, setToken,
-  apiGetAuthConfig, apiGetMe, apiListUsers, apiUpdateMe,
+  apiGetAuthConfig, apiGetMe, apiListUsers,
   apiListOffices, apiCreateOffice,
+  apiListSeats, apiCreateSeat,
   apiListPresences,
   apiCreatePresence, apiUpdatePresence, apiDeletePresence,
 } from './api.js'
@@ -23,6 +24,11 @@ export const selectedPersonId = ref(null)
 export const currentWeekOffset = ref(0)
 
 export const isPastWeek = computed(() => currentWeekOffset.value < 0)
+
+// Maps deskId (SVG string, e.g. "desk1") ↔ backend seat integer id
+const deskToSeatId = reactive({}) // { 'desk1': 3, ... }
+const seatToDeskId = reactive({}) // { 3: 'desk1', ... }
+
 
 // Set of "weekKey-day-slot" keys where confirmed count exceeds seat capacity
 export const overbookedSlots = computed(() => {
@@ -132,8 +138,7 @@ export function addPerson(userData, { select = true, isLoggedUser = false } = {}
     id: `p${personIdCounter}`,
     backendId: userData.id,
     name: userData.username,
-    color: nextColor(),
-    comment: userData.comment || '',
+    color: colorForUser(userData.id),
     deskPreference: userData.desk_preference_id ?? null,
     isLoggedUser,
   }
@@ -162,15 +167,16 @@ export function setDeskPreference(personId, deskId) {
 
 // ─── Booking local helpers ────────────────────────────────────────────────────
 
-function _applyBookingLocal(personId, weekKey, day, slot, state, backendId) {
+function _applyBookingLocal(personId, weekKey, day, slot, state, backendId, seatId = null) {
   const idx = bookings.findIndex(
     b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot
   )
   if (idx !== -1) {
     bookings[idx].state = state
     bookings[idx].backendId = backendId
+    bookings[idx].seatId = seatId
   } else {
-    bookings.push({ personId, weekKey, day, slot, state, backendId })
+    bookings.push({ personId, weekKey, day, slot, state, backendId, seatId })
   }
 }
 
@@ -211,7 +217,8 @@ export async function toggleBooking(personId, weekKey, day, slot) {
       if (person?.isLoggedUser && booking.backendId) {
         try {
           const iso = weekKeyDayToISO(weekKey, day)
-          await apiUpdatePresence(booking.backendId, iso, slot, 'maybe', officeId.value)
+          const backendSeatId = booking.seatId ? (deskToSeatId[booking.seatId] ?? null) : null
+          await apiUpdatePresence(booking.backendId, iso, slot, 'maybe', officeId.value, backendSeatId)
         } catch (e) {
           console.error('Failed to update presence (confirmed→maybe):', e)
           bookings[idx].state = 'confirmed' // rollback
@@ -292,6 +299,34 @@ export async function removeBooking(personId, weekKey, day, slot) {
   }
 }
 
+export function getSlotDesk(personId, weekKey, day, slot) {
+  const b = bookings.find(
+    b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot
+  )
+  return b ? b.seatId : null
+}
+
+export async function setSlotDesk(personId, weekKey, day, slot, seatId) {
+  const idx = bookings.findIndex(
+    b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot
+  )
+  if (idx === -1) return
+  const booking = bookings[idx]
+  const prevSeatId = booking.seatId
+  booking.seatId = seatId
+  const person = persons.find(p => p.id === personId)
+  if (person?.isLoggedUser && booking.backendId) {
+    try {
+      const iso = weekKeyDayToISO(weekKey, day)
+      const backendSeatId = seatId ? (deskToSeatId[seatId] ?? null) : null
+      await apiUpdatePresence(booking.backendId, iso, slot, booking.state, officeId.value, backendSeatId)
+    } catch (e) {
+      console.error('Failed to update seat:', e)
+      booking.seatId = prevSeatId
+    }
+  }
+}
+
 // ─── Load presences from API ──────────────────────────────────────────────────
 
 const loadedWeekKeys = new Set()
@@ -308,7 +343,8 @@ export async function loadPresenceRange(fromOffset, toOffset) {
     const person = persons.find(pe => pe.backendId === p.user.id)
     if (!person) continue
     const { weekKey, day } = isoToWeekKeyDay(p.date)
-    _applyBookingLocal(person.id, weekKey, day, p.slot, p.state, p.id)
+    const deskId = p.seat_id ? (seatToDeskId[p.seat_id] ?? null) : null
+    _applyBookingLocal(person.id, weekKey, day, p.slot, p.state, p.id, deskId)
   }
 }
 
@@ -350,7 +386,21 @@ export async function initApp() {
     }
     officeId.value = office.id
 
-    // 3. Load all users
+    // 3. Load or create seats (desk1-desk6 ↔ backend seat IDs)
+    try {
+      const seats = await apiListSeats()
+      const officeSeats = seats.filter(s => s.office_id === officeId.value)
+      for (const desk of DESKS) {
+        let seat = officeSeats.find(s => s.name === desk.id)
+        if (!seat) seat = await apiCreateSeat(desk.id, officeId.value)
+        deskToSeatId[desk.id] = seat.id
+        seatToDeskId[seat.id] = desk.id
+      }
+    } catch (e) {
+      console.error('Failed to load/create seats:', e)
+    }
+
+    // 4. Load all users
     persons.splice(0)
     bookings.splice(0)
     loadedWeekKeys.clear()
@@ -362,7 +412,7 @@ export async function initApp() {
       addPerson(u, { select: isMe, isLoggedUser: isMe })
     }
 
-    // 4. Load presences for a broad range
+    // 5. Load presences for a broad range
     await loadPresenceRange(-4, 9)
   } finally {
     isLoading.value = false

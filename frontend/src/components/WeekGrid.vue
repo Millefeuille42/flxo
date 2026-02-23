@@ -1,7 +1,8 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import PersonRow from './PersonRow.vue'
-import { sortedPersons, bookings, currentWeekOffset, getWeekKey, getWeekDates, getTodayDayIndex } from '../state.js'
+import DeskPickerModal from './DeskPickerModal.vue'
+import { sortedPersons, bookings, currentWeekOffset, getWeekKey, getWeekDates, getTodayDayIndex, setSlotDesk, weekKeyDayToISO } from '../state.js'
 import { DESKS } from '../desks.js'
 
 const DAY_NAMES = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven']
@@ -17,6 +18,71 @@ const visiblePersons = computed(() => {
 })
 
 const emptyRowCount = computed(() => Math.max(0, DESKS.length - visiblePersons.value.length))
+
+const loggedPerson = computed(() => sortedPersons.value.find(p => p.isLoggedUser) || null)
+
+// Desk picker for the slot row
+const openPickerSlot = ref(null) // { weekKey, day, slot, subtitle }
+
+function getLoggedBooking(weekKey, day, slot) {
+  if (!loggedPerson.value) return null
+  return bookings.find(
+    b => b.personId === loggedPerson.value.id && b.weekKey === weekKey && b.day === day && b.slot === slot
+  ) || null
+}
+
+function canPickDesk(week, dayIndex, slot) {
+  if (week.isPast || week.days[dayIndex].past) return false
+  const booking = getLoggedBooking(week.weekKey, dayIndex, slot)
+  return booking?.state === 'confirmed'
+}
+
+function deskCellStyle(week, dayIndex, slot) {
+  const booking = getLoggedBooking(week.weekKey, dayIndex, slot)
+  const color = loggedPerson.value?.color ?? '#aaa'
+  if (!booking) return { background: '#f0f0f0' }
+  if (booking.seatId) return { background: color, '--icon-color': 'white' }
+  if (booking.state === 'confirmed') return { background: '#e8e8e8', '--icon-color': color }
+  return { background: '#e8e8e8', '--icon-color': '#aaa' }
+}
+
+function openDeskPicker(week, dayIndex, slot) {
+  const booking = getLoggedBooking(week.weekKey, dayIndex, slot)
+  const slotLabel = slot === 'morning' ? 'AM' : 'PM'
+  const takenDesks = bookings
+    .filter(b => b.weekKey === week.weekKey && b.day === dayIndex && b.slot === slot && b.seatId && b.personId !== loggedPerson.value?.id)
+    .map(b => {
+      const person = sortedPersons.value.find(p => p.id === b.personId)
+      return { deskId: b.seatId, name: person?.name ?? '?', color: person?.color ?? '#888' }
+    })
+  openPickerSlot.value = {
+    weekKey: week.weekKey,
+    day: dayIndex,
+    slot,
+    initialDesk: booking?.seatId ?? null,
+    subtitle: `${week.days[dayIndex].name} ${week.days[dayIndex].date} — ${slotLabel}`,
+    takenDesks,
+  }
+}
+
+async function onSlotDeskConfirm(deskId, applyToAll) {
+  if (!openPickerSlot.value || !loggedPerson.value) return
+  const { weekKey, day, slot } = openPickerSlot.value
+  await setSlotDesk(loggedPerson.value.id, weekKey, day, slot, deskId)
+  if (applyToAll) {
+    const todayISO = new Date().toISOString().slice(0, 10)
+    const currentSlotISO = weekKeyDayToISO(weekKey, day)
+    const futurBookings = bookings.filter(b =>
+      b.personId === loggedPerson.value.id &&
+      b.state === 'confirmed' &&
+      !(b.weekKey === weekKey && b.day === day && b.slot === slot) &&
+      weekKeyDayToISO(b.weekKey, b.day) >= (currentSlotISO > todayISO ? currentSlotISO : todayISO)
+    )
+    for (const b of futurBookings) {
+      await setSlotDesk(loggedPerson.value.id, b.weekKey, b.day, b.slot, deskId)
+    }
+  }
+}
 
 const weeks = computed(() => {
   return [0, 1].map(i => {
@@ -89,6 +155,32 @@ const weeks = computed(() => {
         </tr>
       </thead>
       <tbody>
+        <tr v-if="loggedPerson" class="desk-row">
+          <td class="corner desk-row-label">Mon poste</td>
+          <template v-for="(week, wi) in weeks" :key="'dr-' + week.weekKey">
+            <template v-for="(day, di) in DAYS" :key="di">
+              <td
+                v-for="slot in SLOTS"
+                :key="slot"
+                :class="['desk-slot', {
+                  'day-start': slot === 'morning',
+                  'week2-start': wi > 0 && di === 0 && slot === 'morning',
+                  'pickable': canPickDesk(week, di, slot),
+                  'has-desk': !!getLoggedBooking(week.weekKey, di, slot)?.seatId,
+                }]"
+                :style="deskCellStyle(week, di, slot)"
+                @click="canPickDesk(week, di, slot) && openDeskPicker(week, di, slot)"
+              >
+                <div v-if="getLoggedBooking(week.weekKey, di, slot)" class="desk-slot-inner">
+                  <svg viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="desk-slot-icon">
+                    <rect x="0.5" y="0.5" width="15" height="10" rx="1.5" stroke="currentColor" fill="currentColor" fill-opacity="0.25"/>
+                    <path d="M5 13.5h6M8 10.5v3" stroke="currentColor" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </td>
+            </template>
+          </template>
+        </tr>
         <PersonRow
           v-for="person in visiblePersons"
           :key="person.id"
@@ -113,6 +205,18 @@ const weeks = computed(() => {
       Ajoutez des personnes pour commencer
     </div>
   </div>
+
+  <Teleport to="body">
+    <DeskPickerModal
+      v-if="openPickerSlot && loggedPerson"
+      :person="loggedPerson"
+      :initialDesk="openPickerSlot.initialDesk"
+      :subtitle="openPickerSlot.subtitle"
+      :takenDesks="openPickerSlot.takenDesks"
+      @close="openPickerSlot = null"
+      @confirm="(deskId, applyToAll) => onSlotDeskConfirm(deskId, applyToAll)"
+    />
+  </Teleport>
 </template>
 
 <style scoped>
@@ -220,7 +324,7 @@ const weeks = computed(() => {
 }
 .empty-slot {
   width: 44px;
-  height: 28px;
+  height: 33px;
   background: #f5f5f5;
   opacity: 0.6;
   border: 1px solid #e0e0e0;
@@ -231,5 +335,49 @@ const weeks = computed(() => {
 }
 .empty-slot.week2-start {
   border-left: 4px solid #333;
+}
+.desk-row {
+  border-bottom: 2px solid #ddd;
+}
+.desk-row-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0 8px;
+}
+.desk-slot {
+  width: 44px;
+  height: 33px;
+  border: 1px solid #e0e0e0;
+  transition: filter 0.1s;
+  padding: 0;
+}
+.desk-slot.day-start {
+  border-left: 2px solid #999;
+}
+.desk-slot.week2-start {
+  border-left: 4px solid #333;
+}
+.desk-slot.pickable {
+  cursor: pointer;
+}
+.desk-slot.pickable:hover {
+  filter: brightness(0.92);
+}
+.desk-slot-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.desk-slot-icon {
+  width: 12px;
+  height: 12px;
+  display: block;
+  color: var(--icon-color, rgba(0,0,0,0.2));
 }
 </style>

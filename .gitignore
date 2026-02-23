@@ -3,3 +3,4 @@
 
 # Secrets and env
 *.env*
+deploy.sh

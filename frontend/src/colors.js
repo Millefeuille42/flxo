@@ -22,3 +22,29 @@ export function nextColor() {
 export function resetColors() {
   index = 0
 }
+
+const STORAGE_KEY = 'flxo_colors'
+
+function loadColorMap() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
+  } catch {
+    return {}
+  }
+}
+
+function saveColorMap(map) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(map))
+}
+
+// Returns a stable color for a given backend user ID.
+// Assigns and persists a new one if not seen before.
+export function colorForUser(backendId) {
+  const map = loadColorMap()
+  const key = String(backendId)
+  if (map[key]) return map[key]
+  const color = nextColor()
+  map[key] = color
+  saveColorMap(map)
+  return color
+}

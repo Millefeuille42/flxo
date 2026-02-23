@@ -64,20 +64,25 @@ export async function apiListUsers() {
   return res.json()
 }
 
-export async function apiUpdateMe(comment) {
-  const res = await apiFetch('/user/me', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ comment }),
-  })
-  return res.json()
-}
-
 export async function apiCreateUser(username, password) {
   const res = await apiFetch('/user/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password, hashed_password: '' }),
+  })
+  return res.json()
+}
+
+export async function apiListSeats() {
+  const res = await apiFetch('/seat/')
+  return res.json()
+}
+
+export async function apiCreateSeat(name, officeId) {
+  const res = await apiFetch('/seat/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, office_id: officeId }),
   })
   return res.json()
 }
@@ -113,11 +118,11 @@ export async function apiCreatePresence(date, slot, state, officeId) {
   return res.json()
 }
 
-export async function apiUpdatePresence(id, date, slot, state, officeId) {
+export async function apiUpdatePresence(id, date, slot, state, officeId, seatId = null) {
   const res = await apiFetch(`/presence/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ date, slot, state, office_id: officeId, seat_id: null }),
+    body: JSON.stringify({ date, slot, state, office_id: officeId, seat_id: seatId }),
   })
   return res.json()
 }
