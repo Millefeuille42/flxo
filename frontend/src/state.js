@@ -1,5 +1,6 @@
 import { reactive, ref, computed } from 'vue'
 import { nextColor } from './colors.js'
+import { DESKS } from './desks.js'
 import {
   getToken, setToken,
   apiGetAuthConfig, apiGetMe, apiListUsers, apiUpdateMe,
@@ -22,6 +23,21 @@ export const selectedPersonId = ref(null)
 export const currentWeekOffset = ref(0)
 
 export const isPastWeek = computed(() => currentWeekOffset.value < 0)
+
+// Set of "weekKey-day-slot" keys where confirmed count exceeds seat capacity
+export const overbookedSlots = computed(() => {
+  const counts = {}
+  for (const b of bookings) {
+    if (b.state !== 'confirmed') continue
+    const key = `${b.weekKey}-${b.day}-${b.slot}`
+    counts[key] = (counts[key] || 0) + 1
+  }
+  const result = new Set()
+  for (const [key, count] of Object.entries(counts)) {
+    if (count > DESKS.length) result.add(key)
+  }
+  return result
+})
 
 export function getTodayDayIndex(offset) {
   if (offset < 0) return 5

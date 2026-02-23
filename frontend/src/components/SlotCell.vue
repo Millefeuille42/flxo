@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { getBookingState } from '../state.js'
+import { getBookingState, overbookedSlots } from '../state.js'
 
 const props = defineProps({
   personId: String,
@@ -16,6 +16,11 @@ const emit = defineEmits(['toggle', 'dragenter'])
 
 const bookingState = computed(() => getBookingState(props.personId, props.weekKey, props.day, props.slot))
 
+const isOverbooked = computed(() =>
+  bookingState.value === 'confirmed' &&
+  overbookedSlots.value.has(`${props.weekKey}-${props.day}-${props.slot}`)
+)
+
 const cellStyle = computed(() => {
   if (props.pastDay) {
     const bg = bookingState.value === 'confirmed'
@@ -26,6 +31,13 @@ const cellStyle = computed(() => {
     return { background: bg, opacity: 0.5 }
   }
   if (bookingState.value === 'confirmed') {
+    if (isOverbooked.value) {
+      return {
+        background: props.personColor,
+        outline: '2px solid #e53e3e',
+        outlineOffset: '-2px',
+      }
+    }
     return { background: props.personColor }
   }
   if (bookingState.value === 'maybe') {
@@ -53,7 +65,8 @@ function emitDragEnter() {
     @mousedown.prevent="emitToggle"
     @mouseenter="emitDragEnter"
   >
-    <span v-if="bookingState === 'confirmed'" class="check">&#10003;</span>
+    <span v-if="bookingState === 'confirmed' && isOverbooked" class="overbooked">&#9888;</span>
+    <span v-else-if="bookingState === 'confirmed'" class="check">&#10003;</span>
     <span v-else-if="bookingState === 'maybe'" class="maybe" :style="{ color: personColor }">?</span>
   </td>
 </template>
@@ -86,6 +99,10 @@ function emitDragEnter() {
   color: white;
   font-size: 14px;
   font-weight: bold;
+}
+.overbooked {
+  color: #e53e3e;
+  font-size: 13px;
 }
 .maybe {
   font-size: 15px;
