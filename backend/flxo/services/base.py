@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 
-from sqlmodel import SQLModel, select
+from sqlmodel import select, SQLModel
 
 from flxo.api.dependencies.database import SessionDep
 

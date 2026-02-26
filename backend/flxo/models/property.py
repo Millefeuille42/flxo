@@ -1,6 +1,6 @@
 from sqlmodel import Field, Relationship, SQLModel
 
-from .seat import Seat
+from flxo.models.seat import Seat
 
 
 class PropertyBase(SQLModel):

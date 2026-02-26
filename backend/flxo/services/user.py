@@ -1,4 +1,4 @@
-from sqlmodel import Session, select
+from sqlmodel import select, Session
 
 from flxo.core.security import get_password_hash
 from flxo.models import User, UserDTO

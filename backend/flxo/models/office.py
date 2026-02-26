@@ -2,9 +2,10 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from typing import TYPE_CHECKING
 
+
 if TYPE_CHECKING:
-    from .presence import Presence
-    from .seat import Seat, SeatWithProperties
+    from flxo.models.presence import Presence
+    from flxo.models.seat import Seat, SeatWithProperties
 
 
 class OfficeBase(SQLModel):

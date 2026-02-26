@@ -4,6 +4,7 @@ from authlib.integrations.base_client import OAuthError
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.requests import Request
+from starlette.responses import RedirectResponse
 
 from flxo.api.dependencies.auth import OAuthDep
 from flxo.api.dependencies.database import SessionDep
@@ -18,11 +19,14 @@ from flxo.services.user import svc
 
 from typing import Annotated
 
+
 router = APIRouter(prefix="/auth")
 
 
 @router.get("/oauth2")
-async def auth_oauth(request: Request, oauth: OAuthDep, settings: SettingsDep):
+async def auth_oauth(
+    request: Request, oauth: OAuthDep, settings: SettingsDep
+) -> RedirectResponse:
     return await oauth.keycloack.authorize_redirect(
         request, redirect_uri=f"{settings.oauth.redirect_url}"
     )
@@ -31,13 +35,13 @@ async def auth_oauth(request: Request, oauth: OAuthDep, settings: SettingsDep):
 @router.get("/oauth2/callback")
 async def oauth_callback(
     request: Request, oauth: OAuthDep, settings: SettingsDep, session: SessionDep
-):
+) -> Token:
     try:
         token = await oauth.keycloack.authorize_access_token(request)
     except OAuthError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=f"{e.error}: {e.description}"
-        )
+        ) from e
     user = svc.get_or_create_user(
         session, token.get("userinfo").get(settings.oauth.username_field)
     )

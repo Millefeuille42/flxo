@@ -11,6 +11,7 @@ from flxo.services.presence import svc
 
 from typing import Annotated
 
+
 router = APIRouter(prefix="/presence")
 
 
@@ -18,6 +19,7 @@ router = APIRouter(prefix="/presence")
 def list_self_presences(
     current_user: UserDep,
     session: SessionDep,
+    *,
     start: datetime | None = None,
     end: datetime | None = None,
     offset: int = 0,
@@ -32,14 +34,15 @@ def list_self_presences(
 def list_self_presences_as_ics(
     current_user: UserDep,
     session: SessionDep,
+    *,
     start: datetime | None = None,
     end: datetime | None = None,
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
-    all_day: bool = False,
+    is_all_day: bool = False,
 ) -> str:
     return svc.get_all_presences_of_user_as_ics(
-        session, current_user.id, start, end, offset, limit, all_day
+        session, current_user.id, start, end, offset, limit, is_all_day=is_all_day
     ).serialize()
 
 
@@ -47,6 +50,7 @@ def list_self_presences_as_ics(
 def list_presences(
     _current_user: UserDep,
     session: SessionDep,
+    *,
     start: datetime | None = None,
     end: datetime | None = None,
     offset: int = 0,
@@ -59,14 +63,15 @@ def list_presences(
 def list_presences_as_ics(
     _current_user: UserDep,
     session: SessionDep,
+    *,
     start: datetime | None = None,
     end: datetime | None = None,
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
-    all_day: bool = False,
+    is_all_day: bool = False,
 ) -> str:
     return svc.get_all_presences_as_ics(
-        session, start, end, offset, limit, all_day
+        session, start, end, offset, limit, is_all_day=is_all_day
     ).serialize()
 
 
@@ -125,7 +130,7 @@ def delete_presence(
     current_user: UserDep,
     presence_id: int,
     session: SessionDep,
-):
+) -> dict[str, bool]:
     presence = svc.get_presence(session, presence_id, current_user.id)
     if not presence:
         raise HTTPException(status_code=404, detail="presence not found")

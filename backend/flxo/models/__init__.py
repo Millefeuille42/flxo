@@ -1,8 +1,9 @@
-from .office import Office, OfficeDTO, OfficePublic
-from .presence import Presence, PresenceDTO, PresencePublic, PresenceWithUser
-from .property import Property, PropertyDTO, PropertyPublic
-from .seat import Seat, SeatDTO, SeatPublic
-from .user import User, UserDTO, UserPublic
+from flxo.models.office import Office, OfficeDTO, OfficePublic
+from flxo.models.presence import Presence, PresenceDTO, PresencePublic, PresenceWithUser
+from flxo.models.property import Property, PropertyDTO, PropertyPublic
+from flxo.models.seat import Seat, SeatDTO, SeatPublic
+from flxo.models.user import User, UserDTO, UserPublic
+
 
 __all__ = [
     "Seat",

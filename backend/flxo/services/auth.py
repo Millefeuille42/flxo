@@ -1,4 +1,5 @@
-from datetime import UTC, datetime, timedelta
+from collections.abc import Generator
+from datetime import datetime, timedelta, UTC
 
 import jwt
 from sqlmodel import Session
@@ -9,6 +10,7 @@ from flxo.core.settings import Settings
 from flxo.models import User
 from flxo.services.settings import get_settings
 from flxo.services.user import svc
+
 
 settings: Settings = get_settings()
 
@@ -30,7 +32,7 @@ ALGORITHM = settings.app.algorithm
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.app.access_token_expire_minutes
 
 
-def get_oauth():
+def get_oauth() -> Generator[OAuth]:
     yield oauth
 
 
@@ -49,7 +51,7 @@ def create_access_token(
 
 def authenticate_user(session: Session, username: str, password: str) -> User | None:
     user = svc.get_user_by_username(session, username)
-    if not user:
+    if not user or not user.hashed_password:
         return None
     if not verify_password(password, user.hashed_password):
         return None

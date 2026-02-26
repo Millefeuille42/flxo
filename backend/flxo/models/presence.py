@@ -1,11 +1,13 @@
-from datetime import UTC, datetime
+from datetime import datetime, UTC
 
 from pydantic import field_serializer, field_validator, model_validator
 from sqlmodel import Column, DateTime, Field, Relationship, SQLModel
 
-from .office import Office, OfficePublic
-from .seat import Seat, SeatPublic
-from .user import User, UserPublic
+from flxo.models.office import Office, OfficePublic
+from flxo.models.seat import Seat, SeatPublic
+from flxo.models.user import User, UserPublic
+
+from typing import Optional
 
 
 class PresenceBase(SQLModel):
@@ -13,7 +15,7 @@ class PresenceBase(SQLModel):
     end: datetime = Field(sa_column=Column(DateTime(timezone=True)))
 
     @field_validator("start", "end", mode="before")
-    def force_utc(cls, value):
+    def force_utc(self, value: str | datetime) -> datetime:
         if isinstance(value, str):
             value = datetime.fromisoformat(value.replace("Z", "+00:00"))
         if value.tzinfo is None:
@@ -21,14 +23,14 @@ class PresenceBase(SQLModel):
         return value.astimezone(UTC)
 
     @model_validator(mode="after")
-    def validate_date_range(self):
+    def validate_date_range(self) -> "PresenceBase":
         if self.end <= self.start:
             msg = "end must be after start"
             raise ValueError(msg)
         return self
 
     @field_serializer("start", "end")
-    def serialize_dt(self, value: datetime, _info):
+    def serialize_dt(self, value: datetime) -> Optional[datetime]:
         if value is None:
             return None
         if value.tzinfo is None:
