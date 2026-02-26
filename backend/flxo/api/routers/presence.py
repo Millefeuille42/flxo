@@ -93,7 +93,9 @@ def create_presence(
     presence: PresenceDTO,
     session: SessionDep,
 ) -> Presence:
-    if svc.does_presence_overlap(session, current_user.id, presence.start, presence.end):
+    if svc.does_presence_overlap(
+        session, current_user.id, presence.seat_id, presence.start, presence.end
+    ):
         raise HTTPException(
             status_code=400, detail="Presence overlaps with an existing one"
         )
@@ -116,7 +118,12 @@ def update_presence(
         raise HTTPException(status_code=404, detail="Presence not found")
 
     if svc.does_presence_overlap(
-        session, current_user.id, presence_dto.start, presence_dto.end, presence.id
+        session,
+        current_user.id,
+        presence_dto.seat_id,
+        presence_dto.start,
+        presence_dto.end,
+        presence.id,
     ):
         raise HTTPException(
             status_code=400, detail="Updated presence overlaps with an existing one"

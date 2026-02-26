@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from datetime import datetime
 
 from ics import Calendar, Event
-from sqlmodel import select, Session
+from sqlmodel import or_, select, Session
 
 from flxo.models import Presence, PresenceDTO
 from flxo.services.base import BaseService
@@ -79,16 +79,18 @@ class PresenceService(BaseService[Presence]):
             .where(Presence.user_id == user_id)
         ).first()
 
-    # TODO @millefeuille42: check for seat for overlap
     @staticmethod
     def does_presence_overlap(
         session: Session,
         user_id: int,
+        seat_id: int,
         start: datetime,
         end: datetime,
         presence_id: int | None = None,
     ) -> bool:
-        query = select(Presence).where(Presence.user_id == user_id)
+        query = select(Presence).where(
+            or_(Presence.user_id == user_id, Presence.seat_id == seat_id)
+        )
         if presence_id:
             query = query.where(Presence.id != presence_id)
         query = query.where((Presence.start < end) & (Presence.end > start))
