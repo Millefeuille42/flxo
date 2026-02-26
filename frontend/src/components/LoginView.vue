@@ -29,8 +29,8 @@ async function submit() {
 <template>
   <div class="login-bg">
     <div class="login-card">
-      <img src="/wojo-logo.png" alt="Wojo" class="login-logo" />
       <h1 class="login-title">FlxO</h1>
+      <p class="login-subtitle">Flex Office Planner</p>
       <form @submit.prevent="submit" class="login-form">
         <input
           v-model="username"
@@ -76,15 +76,16 @@ async function submit() {
   gap: 20px;
   box-shadow: 0 2px 16px rgba(0,0,0,0.07);
 }
-.login-logo {
-  height: 40px;
-  width: auto;
-}
 .login-title {
-  font-size: 22px;
+  font-size: 32px;
   font-weight: 700;
   color: #222;
   margin: 0;
+}
+.login-subtitle {
+  font-size: 14px;
+  color: #888;
+  margin: -12px 0 0;
 }
 .login-form {
   display: flex;
