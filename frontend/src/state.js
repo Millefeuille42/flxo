@@ -25,6 +25,7 @@ export const persons = reactive([])
 export const bookings = reactive([])
 export const selectedPersonId = ref(null)
 export const currentWeekOffset = ref(0)
+export const hoveredSlot = ref(null) // { weekKey, day, slot } or null
 
 export const isPastWeek = computed(() => currentWeekOffset.value < 0)
 
@@ -435,6 +436,19 @@ export async function initApp() {
   } finally {
     isLoading.value = false
   }
+}
+
+// ─── Slot desk assignments (for FloorPlan hover preview) ─────────────────────
+
+export function getSlotDeskAssignments(weekKey, day, slot) {
+  const result = []
+  for (const b of bookings) {
+    if (b.weekKey !== weekKey || b.day !== day || b.slot !== slot || !b.seatId) continue
+    const person = persons.find(p => p.id === b.personId)
+    if (!person) continue
+    result.push({ deskId: b.seatId, personName: person.name, personColor: person.color })
+  }
+  return result
 }
 
 // ─── Internal helpers ─────────────────────────────────────────────────────────

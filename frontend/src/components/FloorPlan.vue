@@ -17,8 +17,10 @@ const hoveredSlotLabel = computed(() => {
   if (!hoveredSlot.value) return ''
   const { weekKey, day, slot } = hoveredSlot.value
   const iso = weekKeyDayToISO(weekKey, day)
-  const slotLabel = slot === 'morning' ? 'matin' : 'après-midi'
-  return `${iso} ${slotLabel}`
+  const [y, m, d] = iso.split('-')
+  const dayNames = ['Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.']
+  const slotLabel = slot === 'morning' ? 'Matin' : 'Après-midi'
+  return `${dayNames[day]} ${d}/${m} — ${slotLabel}`
 })
 
 onMounted(async () => {
@@ -111,7 +113,8 @@ watch(
   () => updateDeskColors()
 )
 
-watch(slotDesks, () => updateDeskColors())
+watch(hoveredSlot, () => updateDeskColors())
+
 watch(svgContent, () => nextTickUpdate())
 </script>
 
@@ -131,7 +134,10 @@ watch(svgContent, () => nextTickUpdate())
     >
       <div v-for="line in tooltip.text.split('\n')" :key="line">{{ line }}</div>
     </div>
-    <div v-if="!selectedPersonId" class="hint">
+    <div v-if="hoveredSlot" class="hint hint-active">
+      {{ hoveredSlotLabel }}
+    </div>
+    <div v-else-if="!selectedPersonId" class="hint">
       Sélectionnez une personne pour attribuer un bureau
     </div>
     <div v-else class="hint">
@@ -192,5 +198,9 @@ watch(svgContent, () => nextTickUpdate())
   font-size: 12px;
   color: #999;
   text-align: center;
+}
+.hint-active {
+  color: #555;
+  font-weight: 500;
 }
 </style>

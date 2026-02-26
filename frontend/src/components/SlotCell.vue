@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { getBookingState, overbookedSlots } from '../state.js'
+import { getBookingState, overbookedSlots, hoveredSlot } from '../state.js'
 
 const props = defineProps({
   personId: String,
@@ -54,6 +54,15 @@ const cellStyle = computed(() => {
 function emitToggle() {
   emit('toggle', { weekKey: props.weekKey, day: props.day, slot: props.slot, pastDay: props.pastDay })
 }
+function onMouseEnter() {
+  if (bookingState.value) {
+    hoveredSlot.value = { weekKey: props.weekKey, day: props.day, slot: props.slot }
+  }
+  emitDragEnter()
+}
+function onMouseLeave() {
+  hoveredSlot.value = null
+}
 function emitDragEnter() {
   emit('dragenter', { weekKey: props.weekKey, day: props.day, slot: props.slot, pastDay: props.pastDay })
 }
@@ -64,7 +73,8 @@ function emitDragEnter() {
     :class="['slot-cell', { 'past-day': pastDay, 'day-start': slot === 'morning', 'week2-start': week2Start }]"
     :style="cellStyle"
     @mousedown.prevent="emitToggle"
-    @mouseenter="emitDragEnter"
+    @mouseenter="onMouseEnter"
+    @mouseleave="onMouseLeave"
   >
     <span v-if="bookingState === 'confirmed' && isOverbooked" class="overbooked">&#9888;</span>
     <span v-else-if="bookingState === 'confirmed'" class="check">&#10003;</span>
