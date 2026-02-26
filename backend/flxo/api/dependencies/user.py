@@ -1,6 +1,6 @@
-import jwt
 from authlib.integrations.base_client import InvalidTokenError
 from fastapi import Depends
+import jwt
 
 from flxo.api.dependencies.auth import TokenDep
 from flxo.api.dependencies.database import SessionDep

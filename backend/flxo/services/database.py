@@ -1,7 +1,10 @@
-from sqlmodel import Session, SQLModel, create_engine
+from collections.abc import Generator
+
+from sqlmodel import create_engine, Session, SQLModel
 
 from flxo.core.settings import DBSettings
 from flxo.services.settings import get_settings
+
 
 db: DBSettings = get_settings().db
 
@@ -11,10 +14,10 @@ if db.driver == "sqlite":
 engine = create_engine(DATABASE_URL)
 
 
-def create_db_and_tables():
+def create_db_and_tables() -> None:
     SQLModel.metadata.create_all(engine)
 
 
-def get_session():
+def get_session() -> Generator[Session]:
     with Session(engine) as session:
         yield session

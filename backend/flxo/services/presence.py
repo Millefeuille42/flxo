@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from datetime import datetime
 
 from ics import Calendar, Event
-from sqlmodel import Session, select
+from sqlmodel import select, Session
 
 from flxo.models import Presence, PresenceDTO
 from flxo.services.base import BaseService
@@ -37,7 +37,7 @@ class PresenceService(BaseService[Presence]):
         end: datetime | None = None,
         offset: int = 100,
         limit: int = 100,
-        query: Any = None,
+        query: Any = None,  # noqa: ANN401
     ) -> Sequence[Presence]:
         if not query:
             query = select(Presence)
@@ -79,7 +79,7 @@ class PresenceService(BaseService[Presence]):
             .where(Presence.user_id == user_id)
         ).first()
 
-    # TODO check for seat for overlap
+    # TODO @millefeuille42: check for seat for overlap
     @staticmethod
     def does_presence_overlap(
         session: Session,
@@ -96,14 +96,14 @@ class PresenceService(BaseService[Presence]):
 
     @staticmethod
     def presences_to_ics(
-        presences: Sequence[Presence], all_day: bool = False
+        presences: Sequence[Presence], *, is_all_day: bool = False
     ) -> Calendar:
         c = Calendar()
         for presence in presences:
             e = Event()
             e.begin = presence.start
             e.end = presence.end
-            if all_day:
+            if is_all_day:
                 e.make_all_day()
             e.name = f"{presence.user.username} - Office"
             c.events.add(e)
@@ -116,10 +116,12 @@ class PresenceService(BaseService[Presence]):
         end: datetime | None = None,
         offset: int = 100,
         limit: int = 100,
-        all_day: bool = False,
+        *,
+        is_all_day: bool = False,
     ) -> Calendar:
         return self.presences_to_ics(
-            self.get_all_presences(session, start, end, offset, limit), all_day
+            self.get_all_presences(session, start, end, offset, limit),
+            is_all_day=is_all_day,
         )
 
     def get_all_presences_of_user_as_ics(
@@ -130,7 +132,8 @@ class PresenceService(BaseService[Presence]):
         end: datetime | None = None,
         offset: int = 100,
         limit: int = 100,
-        all_day: bool = False,
+        *,
+        is_all_day: bool = False,
     ) -> Calendar:
         return self.presences_to_ics(
             self.get_all_presences(
@@ -141,7 +144,7 @@ class PresenceService(BaseService[Presence]):
                 limit,
                 select(Presence).where(Presence.user_id == user_id),
             ),
-            all_day,
+            is_all_day=is_all_day,
         )
 
 

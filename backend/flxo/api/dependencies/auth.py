@@ -6,5 +6,6 @@ from flxo.services.auth import get_oauth
 
 from typing import Annotated
 
+
 TokenDep = Annotated[str, Depends(oauth2_scheme)]
 OAuthDep = Annotated[OAuth, Depends(get_oauth)]

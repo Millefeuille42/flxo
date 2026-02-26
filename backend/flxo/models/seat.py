@@ -1,12 +1,13 @@
 from sqlmodel import Field, Relationship, SQLModel
 
-from .office import Office
+from flxo.models.office import Office
 
 from typing import TYPE_CHECKING
 
+
 if TYPE_CHECKING:
-    from .presence import Presence
-    from .property import Property
+    from flxo.models.presence import Presence
+    from flxo.models.property import Property
 
 
 class SeatBase(SQLModel):

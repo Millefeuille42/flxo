@@ -6,31 +6,36 @@ from flxo.api.dependencies.database import SessionDep
 from flxo.models import PropertyDTO, PropertyPublic
 from flxo.services.property import svc
 
+
 router = APIRouter(prefix="/property")
 
 
 @router.get("/{seat_id}", response_model=Sequence[PropertyPublic])
-def get_properties_of_seat(seat_id: int, session: SessionDep):
-    return svc.get_properties_of_seat(session, seat_id)
+def get_properties_of_seat(seat_id: int, session: SessionDep) -> PropertyPublic:
+    return svc.get_properties_of_seat(session, seat_id)  # type: ignore
 
 
 @router.get("/{seat_id}/{property_name}", response_model=PropertyPublic)
-def get_property_of_seat(seat_id: int, property_name: str, session: SessionDep):
+def get_property_of_seat(
+    seat_id: int, property_name: str, session: SessionDep
+) -> PropertyPublic:
     prop = svc.get_property_of_seat(session, seat_id, property_name)
     if not prop:
         raise HTTPException(status_code=404, detail="Property not found")
-    return prop
+    return prop  # type: ignore
 
 
 @router.post("/{seat_id}", response_model=PropertyPublic)
-def create_property_of_seat(seat_id: int, property_dto: PropertyDTO, session: SessionDep):
-    return svc.create_property_of_seat(session, property_dto, seat_id)
+def create_property_of_seat(
+    seat_id: int, property_dto: PropertyDTO, session: SessionDep
+) -> PropertyPublic:
+    return svc.create_property_of_seat(session, property_dto, seat_id)  # type: ignore
 
 
 @router.put("/{seat_id}/{property_name}", response_model=PropertyPublic)
 def update_property_of_seat(
     seat_id: int, property_name: str, property_dto: PropertyDTO, session: SessionDep
-):
+) -> PropertyPublic:
     prop = svc.get_property_of_seat(session, seat_id, property_name)
     if not prop:
         raise HTTPException(status_code=404, detail="Property not found")
@@ -38,7 +43,9 @@ def update_property_of_seat(
 
 
 @router.delete("/{seat_id}/{property_name}")
-def delete_property_of_seat(seat_id: int, property_name: str, session: SessionDep):
+def delete_property_of_seat(
+    seat_id: int, property_name: str, session: SessionDep
+) -> dict[str, bool]:
     prop = svc.get_property_of_seat(session, seat_id, property_name)
     if not prop:
         raise HTTPException(status_code=404, detail="Property not found")

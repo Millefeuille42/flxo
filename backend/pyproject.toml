@@ -25,6 +25,10 @@ dev = [
     "ty>=0.0.1a32",
 ]
 
+
+[tool.setuptools.packages.find]
+include = ["flxo"]
+
 [tool.ty.src]
 exclude = ["alembic"]
 
@@ -40,65 +44,47 @@ docstring-code-format = true
 
 [tool.ruff.lint]
 select = [
-    # pycodestyle
-    "E",
-    "W",
-    # Pyflakes
-    "F",
-    # isort
-    "I",
-    # pydocstyle
-#    "D",
-    # pyupgrade
-    "UP",
-    # Perflint
-    "PERF",
-    # flake8-bugbear
-    "B",
-    # flake8-bandit
-    "S",
-    # flake8-comprehensions
-    "C4",
-    # flake8-errmsg
-    "EM",
-    # flake8-future-annotations
-    "FA",
-    # flake8-todos
-    "TD",
-    # flake8-logging
-    "LOG",
-    # flake8-fixme
-    "FIX",
-    # flake8-return
-    "RET",
-    # flake8-simplify
-    "SIM",
-    # flake8-self
-    "SLF"
+    "ANN", # flake8-annotations
+    "ARG", # flake8-unused-arguments
+    "B", # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "C90", # mccabe
+    "DTZ", # flake8-datetimez
+    "E", # pycodestyle: errors
+    "EM", # flake8-errmsg
+    "EXE", # flake8-executable
+    "F", # Pyflakes
+    "FBT", # flake8-boolean-trap
+    "G", # flake8-logging-format
+    "I", # isort
+    "ICN", # flake8-import-conventions
+    "LOG", # flake8-logging
+    "N", # pep8-naming
+    "PERF", # perflint
+    "PIE", # flake8-pie
+    "PTH", # flake8-use-pathlib
+    "Q", # flake8-quotes
+    "RET", # flake8-return
+    "RUF013", # ruff: implicit-optional
+    "RUF059", # ruff: unused-unpacked-variable
+    "S", # flake8-bandit
+    "SIM", # flake8-simplify
+    "SLF", # flake8-self
+    "TD", # flake8-todos
+    "T20", # flake8-print
+    "TID", # flake8-tidy-imports
+    "UP", # pyupgrade
+    "W", # pycodestyle: warnings
 ]
 
-# don't use some of the default D and SIM rules
 ignore = [
-  "D100",  # undocumented-public-module
-  "D101",  # undocumented-public-class
-  "D102",  # undocumented-public-method
-  "D103",  # undocumented-public-function
-  "D104",  # undocumented-public-package
-  "D105",  # undocumented-magic-method
-  "D106",  # undocumented-public-nested-class
-  "D107",  # undocumented-public-init
-  "D200",  # unnecessary-multiline-docstring
-  "D203",  # incorrect-blank-line-before-class
-  "D204",  # incorrect-blank-line-after-class
-  "D205",  # missing-blank-line-after-summary
-  "D210",  # surrounding-whitespace
-  "D212",  # incorrect-blank-line-before-class
-  "D400",  # missing-trailing-period
-  "D401",  # non-imperative-mood
-  "D403",  # first-word-uncapitalized
-  "SIM105",  # suppressible-exception
-  "SIM108",  # if-else-block-instead-of-if-exp
-  "TD003", # missing-todo-link
+    "S101", # flake8-bandit: assert_used
+    "TD003", # flake8-todos: missing-todo-link
+    "EM101", # flake8-errmsg: raw-string-in-exception
+    "B019", # flake8-bugbear: cached-instance-method
+    "UP006", # pyupgrade: non-pep585-annotation
+    "UP007", # pyupgrade: non-pep604-annotation-union
+    "UP045", # pyupgrade: non-pep604-annotation-optional
 ]
 
 # restrict to the PEP 257 rules
@@ -108,6 +94,11 @@ pydocstyle.convention = "pep257"
 typing = ["typing"]
 
 [tool.ruff.lint.isort]
+case-sensitive = false
+combine-as-imports = true
+force-sort-within-sections = true
+lines-after-imports = 2
+order-by-type = false
 section-order = [
     "future",
     "standard-library",
@@ -116,3 +107,7 @@ section-order = [
     "local-folder",
     "typing",
 ]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+

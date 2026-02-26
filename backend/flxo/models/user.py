@@ -3,8 +3,9 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from typing import TYPE_CHECKING
 
+
 if TYPE_CHECKING:
-    from .presence import Presence
+    from flxo.models.presence import Presence
 
 
 class UserBase(SQLModel):
@@ -17,7 +18,7 @@ class UserDTO(UserBase):
 
     @field_validator("password")
     @classmethod
-    def validate_password(cls, password: str):
+    def validate_password(cls, password: str) -> str | ValueError:
         if len(password) < 8:
             return ValueError("password is too short")
         return password

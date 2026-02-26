@@ -3,7 +3,7 @@ from starlette.status import HTTP_401_UNAUTHORIZED
 
 
 class InvalidCredentialsException(HTTPException):
-    def __init__(self, message: str = "Invalid credentials"):
+    def __init__(self, message: str = "Invalid credentials") -> None:
         super().__init__(
             status_code=HTTP_401_UNAUTHORIZED,
             detail=message,

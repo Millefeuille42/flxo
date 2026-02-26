@@ -8,6 +8,7 @@ from flxo.services.office import svc
 
 from typing import Annotated
 
+
 router = APIRouter(prefix="/office")
 
 
@@ -16,41 +17,43 @@ def list_offices(
     session: SessionDep,
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
-):
-    return svc.get_all(session, offset, limit)
+) -> Sequence[OfficePublic]:
+    return svc.get_all(session, offset, limit)  # type: ignore
 
 
 @router.get("/{office_id}", response_model=OfficePublic)
-def get_office(office_id: int, session: SessionDep):
+def get_office(office_id: int, session: SessionDep) -> OfficePublic:
     office = svc.get(session, office_id)
     if not office:
         raise HTTPException(status_code=404, detail="Office not found")
-    return office
+    return office  # type: ignore
 
 
 @router.get("/{office_id}/seats", response_model=Sequence[SeatPublic])
-def get_office_seats(office_id: int, session: SessionDep):
+def get_office_seats(office_id: int, session: SessionDep) -> Sequence[SeatPublic]:
     office = svc.get(session, office_id)
     if not office:
         raise HTTPException(status_code=404, detail="Office not found")
-    return office.seats
+    return office.seats  # type: ignore
 
 
 @router.post("/", response_model=OfficePublic)
-def create_office(office: OfficeDTO, session: SessionDep):
+def create_office(office: OfficeDTO, session: SessionDep) -> OfficePublic:
     return svc.create(session, office)  # type: ignore
 
 
 @router.put("/{office_id}", response_model=OfficePublic)
-def update_office(office_id: int, office_dto: OfficeDTO, session: SessionDep):
+def update_office(
+    office_id: int, office_dto: OfficeDTO, session: SessionDep
+) -> OfficePublic:
     office = svc.get(session, office_id)
     if not office:
         raise HTTPException(status_code=404, detail="Office not found")
-    return svc.update_office(session, office_dto, office)
+    return svc.update_office(session, office_dto, office)  # type: ignore
 
 
 @router.delete("/{office_id}")
-def delete_office(office_id: int, session: SessionDep):
+def delete_office(office_id: int, session: SessionDep) -> dict[str, bool]:
     office = svc.get(session, office_id)
     if not office:
         raise HTTPException(status_code=404, detail="Office not found")
