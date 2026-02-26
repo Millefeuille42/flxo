@@ -5,7 +5,7 @@ import PersonForm from './components/PersonForm.vue'
 import FloorPlan from './components/FloorPlan.vue'
 import WeekGrid from './components/WeekGrid.vue'
 import LoginView from './components/LoginView.vue'
-import { sortedPersons, selectedPersonId, removePerson, authToken, loggedUser, isLoading, ssoEnabled, initApp } from './state.js'
+import { sortedPersons, selectedPersonId, removePerson, authToken, loggedUser, isLoading, ssoEnabled, logoUrl, initApp } from './state.js'
 import { setToken, apiDeleteUser } from './api.js'
 
 onMounted(async () => {
@@ -64,7 +64,7 @@ function logout() {
     </div>
     <div class="app">
     <header class="app-header">
-      <img src="/wojo-logo.png" alt="Wojo" class="app-logo" />
+      <img v-if="logoUrl" :src="logoUrl" alt="Logo" class="app-logo" />
       <WeekNav />
     </header>
     <main class="app-main">

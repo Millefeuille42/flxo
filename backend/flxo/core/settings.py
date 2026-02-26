@@ -99,11 +99,20 @@ class TimeSettings(BaseModel):
     afternoon_end: str = Field(default="17:00")
 
 
+class OfficeConfig(BaseModel):
+    name: str
+    address: str = ""
+    logo_url: str = ""
+    floor_plan_url: str = ""
+    desk_count: int = 0
+
+
 class Settings(BaseSettings):
     db: DBSettings = Field(default=DBSettings())
     oauth: OAuthSettings = Field(default=OAuthSettings())
     app: AppSettings = Field(default=AppSettings())
     time: TimeSettings = Field(default=TimeSettings())
+    offices: list[OfficeConfig] = Field(default=[])
 
     @classmethod
     def settings_customise_sources(  # type: ignore[override]

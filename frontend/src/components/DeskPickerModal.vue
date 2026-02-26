@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import { DESKS } from '../desks.js'
+import { floorPlanUrl, DESK_IDS } from '../state.js'
 
 const props = defineProps({
   person: Object,
@@ -23,7 +23,8 @@ function onKeyDown(e) {
 
 onMounted(async () => {
   window.addEventListener('keydown', onKeyDown)
-  const resp = await fetch(import.meta.env.BASE_URL + 'wojo-paris.svg')
+  if (!floorPlanUrl.value) return
+  const resp = await fetch(floorPlanUrl.value)
   svgContent.value = await resp.text()
 })
 
@@ -41,25 +42,30 @@ function isTaken(deskId) {
   return props.takenDesks.some(t => t.deskId === deskId)
 }
 
+function deskLabel(deskId) {
+  const num = deskId.replace('desk', '')
+  return `Bureau ${num}`
+}
+
 function bindDesks() {
   if (!svgContainer.value) return
-  for (const desk of DESKS) {
-    const el = svgContainer.value.querySelector(`#${desk.id}`)
+  for (const deskId of DESK_IDS.value) {
+    const el = svgContainer.value.querySelector(`#${deskId}`)
     if (!el) continue
     el.style.transition = 'filter 0.15s'
-    el.addEventListener('mouseenter', (e) => onHover(desk, el, e))
+    el.addEventListener('mouseenter', (e) => onHover(deskId, el, e))
     el.addEventListener('mouseleave', () => onLeave(el))
-    el.addEventListener('click', () => onPick(desk.id))
+    el.addEventListener('click', () => onPick(deskId))
   }
 }
 
 function updateColors() {
   if (!svgContainer.value) return
-  for (const desk of DESKS) {
-    const el = svgContainer.value.querySelector(`#${desk.id}`)
+  for (const deskId of DESK_IDS.value) {
+    const el = svgContainer.value.querySelector(`#${deskId}`)
     if (!el) continue
-    const isPending = pendingDesk.value === desk.id
-    const taken = props.takenDesks.find(t => t.deskId === desk.id)
+    const isPending = pendingDesk.value === deskId
+    const taken = props.takenDesks.find(t => t.deskId === deskId)
     if (isPending) {
       el.style.fill = props.person.color
       el.style.fillOpacity = '0.9'
@@ -76,12 +82,12 @@ function updateColors() {
   }
 }
 
-function onHover(desk, el, event) {
-  if (!isTaken(desk.id)) {
+function onHover(deskId, el, event) {
+  if (!isTaken(deskId)) {
     el.style.filter = 'brightness(1.25) drop-shadow(0 0 6px rgba(0,0,0,0.28))'
   }
-  const taken = props.takenDesks.find(t => t.deskId === desk.id)
-  let text = desk.label
+  const taken = props.takenDesks.find(t => t.deskId === deskId)
+  let text = deskLabel(deskId)
   if (taken) text += '\n' + taken.name
   const rect = svgContainer.value.getBoundingClientRect()
   tooltip.value = {
@@ -126,7 +132,7 @@ function confirm() {
       </div>
       <div class="desk-modal-footer">
         <span class="desk-hint">
-          {{ pendingDesk ? `${DESKS.find(d => d.id === pendingDesk)?.label ?? pendingDesk} sélectionné` : 'Aucun bureau sélectionné' }}
+          {{ pendingDesk ? `${deskLabel(pendingDesk)} sélectionné` : 'Aucun bureau sélectionné' }}
         </span>
         <label class="apply-all-label">
           <input type="checkbox" v-model="applyToAll" />

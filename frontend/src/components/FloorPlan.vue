@@ -1,15 +1,29 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import { persons, selectedPersonId, selectedPerson, setDeskPreference } from '../state.js'
-import { DESKS } from '../desks.js'
+import { ref, computed, onMounted, watch } from 'vue'
+import { persons, selectedPersonId, selectedPerson, setDeskPreference, hoveredSlot, getSlotDeskAssignments, weekKeyDayToISO, floorPlanUrl, DESK_IDS } from '../state.js'
 
 const svgContainer = ref(null)
 const svgContent = ref('')
 const tooltip = ref({ show: false, text: '', x: 0, y: 0 })
 const showScreens = ref(false)
 
+const slotDesks = computed(() => {
+  if (!hoveredSlot.value) return null
+  const { weekKey, day, slot } = hoveredSlot.value
+  return getSlotDeskAssignments(weekKey, day, slot)
+})
+
+const hoveredSlotLabel = computed(() => {
+  if (!hoveredSlot.value) return ''
+  const { weekKey, day, slot } = hoveredSlot.value
+  const iso = weekKeyDayToISO(weekKey, day)
+  const slotLabel = slot === 'morning' ? 'matin' : 'après-midi'
+  return `${iso} ${slotLabel}`
+})
+
 onMounted(async () => {
-  const resp = await fetch(import.meta.env.BASE_URL + 'wojo-paris.svg')
+  if (!floorPlanUrl.value) return
+  const resp = await fetch(floorPlanUrl.value)
   svgContent.value = await resp.text()
   await nextTickUpdate()
 })
@@ -22,12 +36,12 @@ async function nextTickUpdate() {
 
 function bindDeskEvents() {
   if (!svgContainer.value) return
-  for (const desk of DESKS) {
-    const el = svgContainer.value.querySelector(`#${desk.id}`)
+  for (const deskId of DESK_IDS.value) {
+    const el = svgContainer.value.querySelector(`#${deskId}`)
     if (!el) continue
     el.style.cursor = 'pointer'
-    el.addEventListener('click', () => onDeskClick(desk.id))
-    el.addEventListener('mouseenter', (e) => onDeskHover(desk, e))
+    el.addEventListener('click', () => onDeskClick(deskId))
+    el.addEventListener('mouseenter', (e) => onDeskHover(deskId, e))
     el.addEventListener('mouseleave', () => { tooltip.value.show = false })
   }
 }
@@ -37,13 +51,22 @@ function onDeskClick(deskId) {
   setDeskPreference(selectedPersonId.value, deskId)
 }
 
-function onDeskHover(desk, event) {
-  const tags = desk.tags.length ? desk.tags.join(', ') : 'aucun tag'
-  const occupants = persons
-    .filter(p => p.deskPreference === desk.id)
-    .map(p => p.name)
-  let text = `${desk.label} — ${tags}`
-  if (occupants.length) text += `\n${occupants.join(', ')}`
+function deskLabel(deskId) {
+  const num = deskId.replace('desk', '')
+  return `Bureau ${num}`
+}
+
+function onDeskHover(deskId, event) {
+  let text = deskLabel(deskId)
+  if (slotDesks.value) {
+    const occupant = slotDesks.value.find(d => d.deskId === deskId)
+    if (occupant) text += `\n${occupant.personName}`
+  } else {
+    const occupants = persons
+      .filter(p => p.deskPreference === deskId)
+      .map(p => p.name)
+    if (occupants.length) text += `\n${occupants.join(', ')}`
+  }
   const rect = svgContainer.value.getBoundingClientRect()
   tooltip.value = {
     show: true,
@@ -55,19 +78,30 @@ function onDeskHover(desk, event) {
 
 function updateDeskColors() {
   if (!svgContainer.value) return
-  for (const desk of DESKS) {
-    const el = svgContainer.value.querySelector(`#${desk.id}`)
+  for (const deskId of DESK_IDS.value) {
+    const el = svgContainer.value.querySelector(`#${deskId}`)
     if (!el) continue
-    const occupants = persons.filter(p => p.deskPreference === desk.id)
-    if (occupants.length === 1) {
-      el.style.fill = occupants[0].color
-      el.style.fillOpacity = '0.7'
-    } else if (occupants.length > 1) {
-      el.style.fill = occupants[0].color
-      el.style.fillOpacity = '0.5'
+    if (slotDesks.value) {
+      const occupant = slotDesks.value.find(d => d.deskId === deskId)
+      if (occupant) {
+        el.style.fill = occupant.personColor
+        el.style.fillOpacity = '0.7'
+      } else {
+        el.style.fill = '#d8d8d8'
+        el.style.fillOpacity = '1'
+      }
     } else {
-      el.style.fill = '#95bdd1'
-      el.style.fillOpacity = '1'
+      const occupants = persons.filter(p => p.deskPreference === deskId)
+      if (occupants.length === 1) {
+        el.style.fill = occupants[0].color
+        el.style.fillOpacity = '0.7'
+      } else if (occupants.length > 1) {
+        el.style.fill = occupants[0].color
+        el.style.fillOpacity = '0.5'
+      } else {
+        el.style.fill = '#d8d8d8'
+        el.style.fillOpacity = '1'
+      }
     }
   }
 }
@@ -77,11 +111,12 @@ watch(
   () => updateDeskColors()
 )
 
+watch(slotDesks, () => updateDeskColors())
 watch(svgContent, () => nextTickUpdate())
 </script>
 
 <template>
-  <div class="floor-plan" ref="svgContainer">
+  <div v-if="floorPlanUrl" class="floor-plan" ref="svgContainer">
     <div v-html="svgContent" :class="['svg-wrapper', { 'hide-screens': !showScreens }]"></div>
     <button class="toggle-screens" :class="{ active: showScreens }" @click="showScreens = !showScreens" title="Afficher/masquer les écrans">
       <svg viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14">

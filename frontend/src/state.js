@@ -1,6 +1,5 @@
 import { reactive, ref, computed } from 'vue'
 import { colorForUser } from './colors.js'
-import { DESKS } from './desks.js'
 import {
   getToken, setToken,
   apiGetAuthConfig, apiGetMe, apiListUsers, apiUpdateMe,
@@ -16,6 +15,10 @@ export const loggedUser = ref(null)   // UserPublic from backend
 export const officeId = ref(null)     // int
 export const isLoading = ref(false)
 export const ssoEnabled = ref(false)
+export const logoUrl = ref('')
+export const floorPlanUrl = ref('')
+export const deskCount = ref(0)
+export const DESK_IDS = computed(() => Array.from({ length: deskCount.value }, (_, i) => 'desk' + (i + 1)))
 
 // ─── Persons & bookings ───────────────────────────────────────────────────────
 export const persons = reactive([])
@@ -40,7 +43,7 @@ export const overbookedSlots = computed(() => {
   }
   const result = new Set()
   for (const [key, count] of Object.entries(counts)) {
-    if (count > DESKS.length) result.add(key)
+    if (count > deskCount.value) result.add(key)
   }
   return result
 })
@@ -384,29 +387,35 @@ export async function initApp() {
     // 1. Auth config + logged user
     const config = await apiGetAuthConfig()
     ssoEnabled.value = config.sso_enabled
+    const officeConfig = (config.offices || [])[0]
+    logoUrl.value = officeConfig?.logo_url || ''
+    floorPlanUrl.value = officeConfig?.floor_plan_url || ''
+    deskCount.value = officeConfig?.desk_count || 0
     const me = await apiGetMe()
     loggedUser.value = me
 
-    // 2. Get or create office
-    const offices = await apiListOffices()
-    let office = offices.find(o => o.name === 'Wojo Paris')
-    if (!office) {
-      office = await apiCreateOffice('Wojo Paris', 'Paris')
-    }
-    officeId.value = office.id
-
-    // 3. Load or create seats (desk1-desk6 ↔ backend seat IDs)
-    try {
-      const seats = await apiListSeats()
-      const officeSeats = seats.filter(s => s.office_id === officeId.value)
-      for (const desk of DESKS) {
-        let seat = officeSeats.find(s => s.name === desk.id)
-        if (!seat) seat = await apiCreateSeat(desk.id, officeId.value)
-        deskToSeatId[desk.id] = seat.id
-        seatToDeskId[seat.id] = desk.id
+    // 2. Get or create office (from config)
+    if (officeConfig) {
+      const offices = await apiListOffices()
+      let office = offices.find(o => o.name === officeConfig.name)
+      if (!office) {
+        office = await apiCreateOffice(officeConfig.name, officeConfig.address || '')
       }
-    } catch (e) {
-      console.error('Failed to load/create seats:', e)
+      officeId.value = office.id
+
+      // 3. Load or create seats (desk1-deskN ↔ backend seat IDs)
+      try {
+        const seats = await apiListSeats()
+        const officeSeats = seats.filter(s => s.office_id === officeId.value)
+        for (const deskId of DESK_IDS.value) {
+          let seat = officeSeats.find(s => s.name === deskId)
+          if (!seat) seat = await apiCreateSeat(deskId, officeId.value)
+          deskToSeatId[deskId] = seat.id
+          seatToDeskId[seat.id] = deskId
+        }
+      } catch (e) {
+        console.error('Failed to load/create seats:', e)
+      }
     }
 
     // 4. Load all users

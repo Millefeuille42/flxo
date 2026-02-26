@@ -27,6 +27,16 @@ router = APIRouter(prefix="/auth")
 async def get_auth_config(settings: SettingsDep):
     return {
         "sso_enabled": bool(settings.oauth.client_id),
+        "offices": [
+            {
+                "name": o.name,
+                "address": o.address,
+                "logo_url": o.logo_url,
+                "floor_plan_url": o.floor_plan_url,
+                "desk_count": o.desk_count,
+            }
+            for o in settings.offices
+        ],
     }
 
 

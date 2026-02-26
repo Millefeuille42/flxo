@@ -2,8 +2,7 @@
 import { computed, ref } from 'vue'
 import PersonRow from './PersonRow.vue'
 import DeskPickerModal from './DeskPickerModal.vue'
-import { sortedPersons, bookings, currentWeekOffset, getWeekKey, getWeekDates, getTodayDayIndex, setSlotDesk, weekKeyDayToISO } from '../state.js'
-import { DESKS } from '../desks.js'
+import { sortedPersons, bookings, currentWeekOffset, getWeekKey, getWeekDates, getTodayDayIndex, setSlotDesk, weekKeyDayToISO, deskCount } from '../state.js'
 
 const DAY_NAMES = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven']
 const DAYS = [0, 1, 2, 3, 4]
@@ -17,7 +16,7 @@ const visiblePersons = computed(() => {
   )
 })
 
-const emptyRowCount = computed(() => Math.max(0, DESKS.length - visiblePersons.value.length))
+const emptyRowCount = computed(() => Math.max(0, deskCount.value - visiblePersons.value.length))
 
 const loggedPerson = computed(() => sortedPersons.value.find(p => p.isLoggedUser) || null)
 
@@ -121,7 +120,7 @@ const weeks = computed(() => {
         Peut-être
       </span>
     </div>
-    <table class="week-grid" v-if="visiblePersons.length || DESKS.length">
+    <table class="week-grid" v-if="visiblePersons.length || deskCount">
       <thead>
         <tr>
           <th class="corner" rowspan="2"></th>
