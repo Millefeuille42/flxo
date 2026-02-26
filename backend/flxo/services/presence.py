@@ -105,7 +105,10 @@ class PresenceService(BaseService[Presence]):
             e.end = presence.end
             if is_all_day:
                 e.make_all_day()
-            e.name = f"{presence.user.username} - Office"
+            e.name = f"{presence.user.username} - {presence.office.name}"
+            e.location = presence.office.address
+            e.description = f"ID: {presence.id}"
+            e.description += f"\nSeat: {presence.seat.name}"
             c.events.add(e)
         return c
 
