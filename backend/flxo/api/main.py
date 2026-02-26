@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 import uvicorn
 
-from flxo.api.routers import auth, presence, user
+from flxo.api.routers import auth, office, presence, property, seat, user
 from flxo.services.settings import get_settings
 
 
@@ -23,9 +23,9 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(user.router)
 app.include_router(presence.router)
-# app.include_router(office.router)
-# app.include_router(property.router)
-# app.include_router(seat.router)
+app.include_router(office.router)
+app.include_router(property.router)
+app.include_router(seat.router)
 
 
 def main() -> None:
