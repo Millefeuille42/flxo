@@ -75,7 +75,7 @@ function updateColors() {
       el.style.fillOpacity = '0.7'
       el.style.cursor = 'not-allowed'
     } else {
-      el.style.fill = '#95bdd1'
+      el.style.fill = '#d8d8d8'
       el.style.fillOpacity = '1'
       el.style.cursor = 'pointer'
     }
