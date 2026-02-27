@@ -1,7 +1,7 @@
 from pydantic import field_validator
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Column, Field, JSON, Relationship, SQLModel
 
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 
 if TYPE_CHECKING:
@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
 class UserBase(SQLModel):
     username: str = Field(index=True)
+    properties: dict[str, Any] = Field(default_factory=dict, sa_column=Column(JSON))
 
 
 class UserDTO(UserBase):
