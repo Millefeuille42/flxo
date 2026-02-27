@@ -17,7 +17,7 @@ class PresenceBase(SQLModel):
     @field_validator("start", "end", mode="before")
     def force_utc(cls, value: datetime | str) -> datetime:  # noqa: N805
         if isinstance(value, str):
-            value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            value = datetime.fromisoformat(value)
         if value.tzinfo is None:
             return value.replace(tzinfo=UTC)
         return value.astimezone(UTC)
