@@ -1,16 +1,17 @@
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Column, Field, JSON, Relationship, SQLModel
 
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 
 if TYPE_CHECKING:
     from flxo.models.presence import Presence
-    from flxo.models.seat import Seat, SeatWithProperties
+    from flxo.models.seat import Seat
 
 
 class OfficeBase(SQLModel):
     name: str
     address: str
+    properties: dict[str, Any] = Field(default_factory=dict, sa_column=Column(JSON))
 
 
 class OfficeDTO(OfficeBase):
@@ -24,7 +25,7 @@ class Office(OfficeBase, table=True):
 
 
 class OfficeWithSeats(OfficeDTO):
-    seats: list["SeatWithProperties"] = []
+    seats: list["Seat"] = []
 
 
 class OfficeWithPresences(OfficeDTO):

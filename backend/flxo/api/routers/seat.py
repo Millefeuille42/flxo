@@ -3,7 +3,6 @@ from collections.abc import Sequence
 from fastapi import APIRouter, HTTPException, Query
 
 from flxo.api.dependencies.database import SessionDep
-from flxo.api.routers.property import router as property_router
 from flxo.models import SeatDTO, SeatPublic
 from flxo.services.seat import svc
 
@@ -11,7 +10,6 @@ from typing import Annotated
 
 
 router = APIRouter(prefix="/seat")
-router.include_router(property_router, tags=["property"])
 
 
 @router.get("/", response_model=Sequence[SeatPublic])
