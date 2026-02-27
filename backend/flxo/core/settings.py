@@ -101,8 +101,6 @@ class Settings(BaseSettings):
     def settings_customise_sources(  # type: ignore[override]
         cls, settings_cls: type[BaseSettings], **_kwargs: object
     ) -> tuple[PydanticBaseSettingsSource, ...]:
-        global TOML_FILE_PATH
-
         return (
             EnvSettingsSource(
                 settings_cls,

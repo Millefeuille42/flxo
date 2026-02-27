@@ -36,7 +36,7 @@ exclude = ["alembic"]
 preview = true
 target-version = "py312"
 line-length = 90
-exclude = [".git", "alembic"]
+exclude = [".git"]
 
 [tool.ruff.format]
 quote-style = "preserve"
@@ -44,6 +44,7 @@ docstring-code-format = true
 
 [tool.ruff.lint]
 select = [
+    "A", # flake8-builtins
     "ANN", # flake8-annotations
     "ARG", # flake8-unused-arguments
     "B", # flake8-bugbear
@@ -52,16 +53,21 @@ select = [
     "DTZ", # flake8-datetimez
     "E", # pycodestyle: errors
     "EM", # flake8-errmsg
+    "ERA", # flake8-eradicate
     "EXE", # flake8-executable
     "F", # Pyflakes
     "FBT", # flake8-boolean-trap
+    "FLY", # flynt
+    "FURB", # refurb
     "G", # flake8-logging-format
     "I", # isort
     "ICN", # flake8-import-conventions
+    "INT", # flake8-gettext
     "LOG", # flake8-logging
     "N", # pep8-naming
     "PERF", # perflint
     "PIE", # flake8-pie
+    "PLW", # pylint: warnings
     "PTH", # flake8-use-pathlib
     "Q", # flake8-quotes
     "RET", # flake8-return
@@ -71,6 +77,7 @@ select = [
     "SIM", # flake8-simplify
     "SLF", # flake8-self
     "TD", # flake8-todos
+    "T100", # flake8-debugger
     "T20", # flake8-print
     "TID", # flake8-tidy-imports
     "UP", # pyupgrade
