@@ -1,7 +1,8 @@
 from pydantic import field_validator
-from sqlmodel import JSON, Column, Field, Relationship, SQLModel
+from sqlmodel import Column, Field, JSON, Relationship, SQLModel
 
-from typing import TYPE_CHECKING, Any
+from typing import Any, TYPE_CHECKING
+
 
 if TYPE_CHECKING:
     from flxo.models.presence import Presence
@@ -18,7 +19,7 @@ class UserDTO(UserBase):
 
     @field_validator("password")
     @classmethod
-    def validate_password(cls, password: str) -> str | ValueError:
+    def validate_password(cls, password: str) -> str:
         if len(password) < 8:
             msg = "password is too short"
             raise ValueError(msg)

@@ -11,6 +11,7 @@ from flxo.services.presence import svc
 
 from typing import Annotated
 
+
 router = APIRouter(prefix="/presence")
 
 

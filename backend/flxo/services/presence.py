@@ -1,13 +1,22 @@
 from collections.abc import Sequence
-from datetime import date, datetime, time
+import datetime
+import time
 
 from ics import Calendar, Event
-from sqlmodel import Session, or_, select
+from sqlmodel import or_, select, Session
 
 from flxo.models.presence import Presence, PresenceDTO
 from flxo.services.base import BaseService
+from flxo.services.settings import get_settings
 
 from typing import Any
+
+
+def _str_to_time(v: str) -> time.struct_time:
+    try:
+        return time.strptime(v, "%H:%M")
+    except ValueError as e:
+        raise ValueError("time slot must be in HH:MM format") from e
 
 
 class PresenceService(BaseService[Presence]):
@@ -39,8 +48,8 @@ class PresenceService(BaseService[Presence]):
     @staticmethod
     def get_all_presences(
         session: Session,
-        date_from: date | None = None,
-        date_to: date | None = None,
+        date_from: datetime.date | None = None,
+        date_to: datetime.date | None = None,
         offset: int = 0,
         limit: int = 100,
         query: Any = None,  # noqa: ANN401
@@ -58,8 +67,8 @@ class PresenceService(BaseService[Presence]):
         self,
         session: Session,
         user_id: int,
-        date_from: date | None = None,
-        date_to: date | None = None,
+        date_from: datetime.date | None = None,
+        date_to: datetime.date | None = None,
         offset: int = 0,
         limit: int = 100,
     ) -> Sequence[Presence]:
@@ -89,7 +98,7 @@ class PresenceService(BaseService[Presence]):
         session: Session,
         user_id: int,
         seat_id: int,
-        presence_date: date,
+        presence_date: datetime.date,
         slot: str,
         presence_id: int | None = None,
     ) -> bool:
@@ -102,10 +111,32 @@ class PresenceService(BaseService[Presence]):
         return session.exec(query).first() is not None
 
     @staticmethod
-    def _slot_to_times(slot: str) -> tuple[time, time]:
-        if slot == "morning":
-            return time(9, 0), time(12, 0)
-        return time(13, 0), time(18, 0)
+    def _slot_to_times(slot: str) -> tuple[datetime.time, datetime.time]:
+        time_settings = get_settings().time
+        morning_start = _str_to_time(time_settings.morning_start)
+        morning_end = _str_to_time(time_settings.morning_end)
+        afternoon_start = _str_to_time(time_settings.afternoon_start)
+        afternoon_end = _str_to_time(time_settings.afternoon_end)
+        return (
+            (
+                datetime.time(
+                    morning_start.tm_hour,
+                    morning_start.tm_min,
+                ),
+                datetime.time(morning_end.tm_hour, morning_end.tm_min),
+            )
+            if slot == "morning"
+            else (
+                datetime.time(
+                    afternoon_start.tm_hour,
+                    afternoon_start.tm_min,
+                ),
+                datetime.time(
+                    afternoon_end.tm_hour,
+                    afternoon_end.tm_min,
+                ),
+            )
+        )
 
     @classmethod
     def presences_to_ics(
@@ -115,8 +146,8 @@ class PresenceService(BaseService[Presence]):
         for presence in presences:
             e = Event()
             start_time, end_time = cls._slot_to_times(presence.slot)
-            e.begin = datetime.combine(presence.date, start_time)
-            e.end = datetime.combine(presence.date, end_time)
+            e.begin = datetime.datetime.combine(presence.date, start_time)
+            e.end = datetime.datetime.combine(presence.date, end_time)
             if is_all_day:
                 e.make_all_day()
             e.name = f"{presence.user.username} - {presence.office.name}"
@@ -129,8 +160,8 @@ class PresenceService(BaseService[Presence]):
     def get_all_presences_as_ics(
         self,
         session: Session,
-        date_from: date | None = None,
-        date_to: date | None = None,
+        date_from: datetime.date | None = None,
+        date_to: datetime.date | None = None,
         offset: int = 0,
         limit: int = 100,
         *,
@@ -145,8 +176,8 @@ class PresenceService(BaseService[Presence]):
         self,
         session: Session,
         user_id: int,
-        date_from: date | None = None,
-        date_to: date | None = None,
+        date_from: datetime.date | None = None,
+        date_to: datetime.date | None = None,
         offset: int = 0,
         limit: int = 100,
         *,

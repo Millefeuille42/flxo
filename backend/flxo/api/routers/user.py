@@ -1,7 +1,6 @@
 from collections.abc import Sequence
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel
 
 from flxo.api.dependencies.database import SessionDep
 from flxo.api.dependencies.settings import SettingsDep
@@ -14,15 +13,12 @@ from typing import Annotated
 
 def require_no_sso(settings: SettingsDep) -> None:
     if settings.oauth.client_id:
-        raise HTTPException(status_code=403, detail="Non disponible en mode SSO")
+        raise HTTPException(
+            status_code=403, detail="This action is not allowed when SSO is enabled"
+        )
 
 
 router = APIRouter(prefix="/user")
-
-
-class UserProfileUpdate(BaseModel):
-    comment: str = ""
-    desk_preference_id: int | None = None
 
 
 @router.get("/", response_model=Sequence[UserPublic])
@@ -45,14 +41,13 @@ async def get_self(current_user: UserDep) -> UserPublic:
 @router.put("/me", response_model=UserPublic)
 async def update_self(
     current_user: UserDep,
-    profile: UserProfileUpdate,
+    new_user: UserPublic,
     session: SessionDep,
 ) -> UserPublic:
-    return svc.update_profile(
+    return svc.update_user_from_public(
         session,
         current_user,  # type: ignore
-        profile.comment,
-        profile.desk_preference_id,
+        new_user,  # type: ignore
     )
 
 
@@ -66,12 +61,12 @@ async def delete_user_route(
     current_user: UserDep,
     user_id: int,
     session: SessionDep,
-):
+) -> dict[str, bool]:
     if user_id == current_user.id:
-        msg = "Vous ne pouvez pas vous supprimer vous-même"
+        msg = "You cannot delete yourself"
         raise HTTPException(status_code=400, detail=msg)
     user = svc.get(session, user_id)
     if not user:
-        raise HTTPException(status_code=404, detail="Utilisateur introuvable")
+        raise HTTPException(status_code=404, detail="User not found")
     svc.delete_user(session, user)
     return {"ok": True}

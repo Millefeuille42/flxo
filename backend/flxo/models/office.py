@@ -25,10 +25,12 @@ class Office(OfficeBase, table=True):
 
 
 class OfficeWithSeats(OfficeDTO):
+    id: int
     seats: list["Seat"] = []
 
 
 class OfficeWithPresences(OfficeDTO):
+    id: int
     presences: list["Presence"] = []
 
 

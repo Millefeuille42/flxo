@@ -1,12 +1,12 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import engine_from_config
 from sqlmodel import SQLModel
 
 from alembic import context
 from flxo.models import *  # noqa: F403
-from flxo.services.settings import get_settings
 from flxo.services.database import get_database_url, get_engine_args
+from flxo.services.settings import get_settings
 
 
 db = get_settings().db

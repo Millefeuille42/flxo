@@ -1,8 +1,9 @@
-from sqlmodel import JSON, Column, Field, Relationship, SQLModel
+from sqlmodel import Column, Field, JSON, Relationship, SQLModel
 
 from flxo.models.office import Office
 
-from typing import TYPE_CHECKING, Any
+from typing import Any, TYPE_CHECKING
+
 
 if TYPE_CHECKING:
     from flxo.models.presence import Presence
@@ -26,10 +27,12 @@ class Seat(SeatBase, table=True):
 
 
 class SeatWithPresences(SeatDTO):
+    id: int
     presences: list["Presence"] = []
 
 
 class SeatWithOffice(SeatDTO):
+    id: int
     office: Office
 
 

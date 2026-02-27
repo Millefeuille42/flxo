@@ -92,19 +92,18 @@ class AppSettings(BaseModel):
     allowed_origins: UrlList = Field(default="http://localhost:5173")  # type: ignore
 
 
-class OfficeConfig(BaseModel):
-    name: str
-    address: str = ""
-    logo_url: str = ""
-    floor_plan_url: str = ""
-    desk_count: int = 0
+class TimeSettings(BaseModel):
+    morning_start: str = Field(default="08:00")
+    morning_end: str = Field(default="12:00")
+    afternoon_start: str = Field(default="13:00")
+    afternoon_end: str = Field(default="17:00")
 
 
 class Settings(BaseSettings):
     db: DBSettings = Field(default=DBSettings())
     oauth: OAuthSettings = Field(default=OAuthSettings())
     app: AppSettings = Field(default=AppSettings())
-    offices: list[OfficeConfig] = Field(default=[])
+    time: TimeSettings = Field(default=TimeSettings())
 
     @classmethod
     def settings_customise_sources(  # type: ignore[override]

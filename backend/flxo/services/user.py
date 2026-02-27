@@ -1,8 +1,8 @@
-from sqlmodel import Session, select
+from sqlmodel import select, Session
 
 from flxo.core.security import get_password_hash
 from flxo.models.presence import Presence
-from flxo.models.user import User, UserDTO
+from flxo.models.user import User, UserDTO, UserPublic
 from flxo.services.base import BaseService
 
 
@@ -13,15 +13,11 @@ class UserService(BaseService[User]):
         user.username = user_dto.username
         return self.update(session, user)
 
-    def update_profile(
-        self,
-        session: Session,
-        user: User,
-        comment: str,
-        desk_preference_id: int | None,
+    def update_user_from_public(
+        self, session: Session, user: User, user_public: UserPublic
     ) -> User:
-        user.comment = comment
-        user.desk_preference_id = desk_preference_id
+        user.username = user_public.username
+        user.favorite_seat_id = user_public.favorite_seat_id
         return self.update(session, user)
 
     def get_user_by_id(self, session: Session, user_id: int) -> User | None:

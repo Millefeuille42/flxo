@@ -1,10 +1,8 @@
 FROM python:3.12-slim AS builder
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.10 /uv /uvx /bin/
 
-# Build argument to control database driver installation
 ARG DATABASE_DRIVER=sqlite
 
-# Install build dependencies conditionally
 RUN apt-get update --yes --quiet && \
     apt-get install --yes --quiet --no-install-recommends build-essential && \
     if [ "$DATABASE_DRIVER" = "postgresql" ]; then \
@@ -14,21 +12,19 @@ RUN apt-get update --yes --quiet && \
 
 WORKDIR /app
 
-# Copy dependency files
-COPY uv.lock pyproject.toml ./
-
-# Install dependencies based on database driver
-RUN if [ "$DATABASE_DRIVER" = "postgresql" ]; then \
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=./uv.lock,target=uv.lock \
+    --mount=type=bind,source=./pyproject.toml,target=pyproject.toml \
+    if [ "$DATABASE_DRIVER" = "postgresql" ]; then \
         uv sync --locked --no-install-project --no-editable --extra postgresql; \
     else \
         uv sync --locked --no-install-project --no-editable; \
     fi
 
-# Copy application code
 COPY . /app
 
-# Install the project
-RUN if [ "$DATABASE_DRIVER" = "postgresql" ]; then \
+RUN --mount=type=cache,target=/root/.cache/uv \
+    if [ "$DATABASE_DRIVER" = "postgresql" ]; then \
         uv sync --locked --no-editable --extra postgresql; \
     else \
         uv sync --locked --no-editable; \
@@ -40,15 +36,11 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
 RUN useradd app
-
-WORKDIR /app
-
-# Create data directory for SQLite with proper permissions
-RUN mkdir -p /app/data && chown -R app:app /app/data
-
 USER app
+WORKDIR /app
 
 COPY --chown=app:app . /app
 COPY --from=builder --chown=app:app /app/.venv /app/.venv
+RUN mkdir -p /app/data && chmod 700 /app/data
 
 ENTRYPOINT ["/app/entrypoint.sh"]

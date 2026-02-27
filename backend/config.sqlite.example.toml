@@ -33,11 +33,3 @@ scope = "openid email profile"
 # metadata_url = "https://auth.example.com/application/o/.well-known/openid-configuration"
 # username_field = "preferred_username"
 # redirect_url = "http://localhost:5173"
-
-# Office configuration (one [[offices]] block per location)
-# [[offices]]
-# name = "My Coworking Space"
-# address = "123 Main Street"
-# logo_url = "/cowork-logo.png"
-# floor_plan_url = "/cowork-plan.svg"
-# desk_count = 6

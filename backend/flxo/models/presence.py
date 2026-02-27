@@ -13,8 +13,8 @@ class PresenceBase(SQLModel):
     date: date
     slot: str
     state: str = "confirmed"
-    office_id: int = Field(default=0, foreign_key="office.id")
-    seat_id: int = Field(default=0, foreign_key="seat.id")
+    office_id: int = Field(foreign_key="office.id")
+    seat_id: int = Field(foreign_key="seat.id")
 
     @field_validator("slot")
     @classmethod
@@ -38,7 +38,10 @@ class PresenceDTO(PresenceBase):
 
 
 class Presence(PresenceBase, table=True):
-    __table_args__ = (UniqueConstraint("user_id", "date", "slot"),)
+    __table_args__ = (
+        UniqueConstraint("user_id", "date", "slot", name="uq_presence_user_id_date_slot"),
+        UniqueConstraint("seat_id", "date", "slot", name="uq_presence_seat_id_date_slot"),
+    )
 
     id: int | None = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
@@ -49,16 +52,19 @@ class Presence(PresenceBase, table=True):
 
 
 class PresenceWithOffice(PresenceDTO):
+    id: int
     office: OfficePublic
 
 
 class PresenceWithSeat(PresenceDTO):
+    id: int
     seat: SeatPublic
 
 
 class PresenceWithUser(PresenceDTO):
+    id: int
     user: UserPublic
 
 
 class PresencePublic(PresenceDTO):
-    pass
+    id: int

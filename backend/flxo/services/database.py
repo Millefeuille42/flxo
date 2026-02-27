@@ -1,10 +1,11 @@
 from collections.abc import Generator
 
 from sqlalchemy.pool import StaticPool
-from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel import create_engine, Session, SQLModel
 
 from flxo.core.settings import DBSettings
 from flxo.services.settings import get_settings
+
 
 db: DBSettings = get_settings().db
 
