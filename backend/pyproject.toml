@@ -9,7 +9,6 @@ dependencies = [
     "authlib>=1.6.5",
     "fastapi[all,standard]>=0.119.1",
     "ics>=0.7.2",
-    "psycopg2-binary>=2.9.11",
     "pwdlib[argon2]>=0.2.1",
     "pyjwt>=2.10.1",
     "python-dotenv>=1.1.1",
@@ -17,6 +16,14 @@ dependencies = [
     "sqlmodel>=0.0.27",
     "toml>=0.10.2",
     "uvicorn>=0.38.0",
+]
+
+[project.optional-dependencies]
+postgresql = [
+    "psycopg2-binary>=2.9.11",
+]
+all = [
+    "psycopg2-binary>=2.9.11",
 ]
 
 [dependency-groups]

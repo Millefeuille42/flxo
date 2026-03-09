@@ -2,10 +2,14 @@ services:
   backend:
     build:
       context: ./backend
+      args:
+        DATABASE_DRIVER: ${DATABASE_DRIVER:-sqlite}
     ports:
-      - "8081:80"
+      - "8080:80"
     depends_on:
       - db
+    volumes:
+      - ./data:/app/data
     environment:
       - FLXO__REVERSE_PROXY=true
       # [app] section
@@ -13,13 +17,13 @@ services:
       - FLXO__APP__BIND=${FLXO__APP__BIND:-0.0.0.0}
       - FLXO__APP__PORT=${FLXO__APP__PORT:-80}
       - FLXO__APP__ACCESS_URL=${FLXO__APP__ACCESS_URL:-http://localhost:8081}
-      - FLXO__APP__ALLOWED_ORIGINS=${FLXO__APP__ALLOWED_ORIGINS:-http://localhost:8080}
+      - FLXO__APP__ALLOWED_ORIGINS=${FLXO__APP__ALLOWED_ORIGINS:-http://localhost:8081}
       - FLXO__APP__ALGORITHM=${FLXO__APP__ALGORITHM:-HS256}
       - FLXO__APP__ACCESS_TOKEN_EXPIRE_MINUTES=${FLXO__APP__ACCESS_TOKEN_EXPIRE_MINUTES:-30}
 
       # [db] section
-      - FLXO__DB__DRIVER=${FLXO__DB__DRIVER:-postgresql}
-      - FLXO__DB__HOST=${FLXO__DB__HOST:-db}
+      - FLXO__DB__DRIVER=${FLXO__DB__DRIVER:-sqlite}
+      - FLXO__DB__HOST=${FLXO__DB__HOST:-/app/data/flxo.db}
       - FLXO__DB__DATABASE=${FLXO__DB__DATABASE:-flxo}
       - FLXO__DB__USER=${FLXO__DB__USER:-flxo}
       - FLXO__DB__PASSWORD=${FLXO__DB__PASSWORD:-flxo}
@@ -29,20 +33,21 @@ services:
       - FLXO__OAUTH__CLIENT_ID=${FLXO__OAUTH__CLIENT_ID}
       - FLXO__OAUTH__CLIENT_SECRET=${FLXO__OAUTH__CLIENT_SECRET}
       - FLXO__OAUTH__SCOPE=${FLXO__OAUTH__SCOPE:-openid email profile}
-      - FLXO__OAUTH__REDIRECT_URI=${FLXO__OAUTH__REDIRECT_URI:-http://localhost:8080}
+      - FLXO__OAUTH__REDIRECT_URI=${FLXO__OAUTH__REDIRECT_URI:-http://localhost:8081}
       - FLXO__OAUTH__AUTHORIZE_URL=${FLXO__OAUTH__AUTHORIZE_URL:-https://auth.example.com/application/o/authorize/}
       - FLXO__OAUTH__ACCESS_TOKEN_URL=${FLXO__OAUTH__ACCESS_TOKEN_URL:-https://auth.example.com/application/o/token/}
       - FLXO__OAUTH__METADATA_URL=${FLXO__OAUTH__METADATA_URL:-https://auth.example.com/application/o/dev/.well-known/openid-configuration}
-      
+
+
   frontend:
     build:
       context: ./frontend
       args:
         VITE_COMPANY_NAME: ${VITE_COMPANY_NAME:-FLXO}
         VITE_APPLICATION_NAME: ${VITE_APPLICATION_NAME:-FLXO}
-        VITE_BACKEND_URL: ${FLXO__APP__ACCESS_URL:-http://localhost:8080}
+        VITE_BACKEND_URL: ${FLXO__APP__ACCESS_URL:-http://localhost:8081}
     ports:
-      - "8080:80"
+      - "8081:80"
     depends_on:
       - backend
 
@@ -54,6 +59,8 @@ services:
       POSTGRES_DB: ${FLXO__DB__DATABASE:-flxo}
     volumes:
       - db_data:/var/lib/postgresql/data
+    profiles:
+      - postgres  # Only start when using PostgreSQL
 
 volumes:
-  db_data:
+  db_data:  # PostgreSQL data volume

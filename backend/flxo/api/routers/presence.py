@@ -1,12 +1,12 @@
 from collections.abc import Sequence
-from datetime import datetime
+from datetime import date
 
 from fastapi import APIRouter, HTTPException, Query
 
 from flxo.api.dependencies.database import SessionDep
 from flxo.api.dependencies.user import UserDep
-from flxo.models import Presence, PresenceDTO, PresenceWithUser
 from flxo.models.ics_response import ICSResponse
+from flxo.models.presence import Presence, PresenceDTO, PresencePublic, PresenceWithUser
 from flxo.services.presence import svc
 
 from typing import Annotated
@@ -20,13 +20,13 @@ def list_self_presences(
     current_user: UserDep,
     session: SessionDep,
     *,
-    start: datetime | None = None,
-    end: datetime | None = None,
+    date_from: date | None = None,
+    date_to: date | None = None,
     offset: int = 0,
-    limit: Annotated[int, Query(le=100)] = 100,
+    limit: Annotated[int, Query(le=1000)] = 500,
 ) -> Sequence[PresenceWithUser]:
     return svc.get_all_presences_of_user(  # type: ignore
-        session, current_user.id, start, end, offset, limit
+        session, current_user.id, date_from, date_to, offset, limit
     )
 
 
@@ -35,14 +35,14 @@ def list_self_presences_as_ics(
     current_user: UserDep,
     session: SessionDep,
     *,
-    start: datetime | None = None,
-    end: datetime | None = None,
+    date_from: date | None = None,
+    date_to: date | None = None,
     offset: int = 0,
-    limit: Annotated[int, Query(le=100)] = 100,
+    limit: Annotated[int, Query(le=1000)] = 500,
     is_all_day: bool = False,
 ) -> str:
     return svc.get_all_presences_of_user_as_ics(
-        session, current_user.id, start, end, offset, limit, is_all_day=is_all_day
+        session, current_user.id, date_from, date_to, offset, limit, is_all_day=is_all_day
     ).serialize()
 
 
@@ -51,12 +51,12 @@ def list_presences(
     _current_user: UserDep,
     session: SessionDep,
     *,
-    start: datetime | None = None,
-    end: datetime | None = None,
+    date_from: date | None = None,
+    date_to: date | None = None,
     offset: int = 0,
-    limit: Annotated[int, Query(le=100)] = 100,
+    limit: Annotated[int, Query(le=1000)] = 500,
 ) -> Sequence[PresenceWithUser]:
-    return svc.get_all_presences(session, start, end, offset, limit)  # type: ignore
+    return svc.get_all_presences(session, date_from, date_to, offset, limit)  # type: ignore
 
 
 @router.get("/ics", response_class=ICSResponse)
@@ -64,18 +64,18 @@ def list_presences_as_ics(
     _current_user: UserDep,
     session: SessionDep,
     *,
-    start: datetime | None = None,
-    end: datetime | None = None,
+    date_from: date | None = None,
+    date_to: date | None = None,
     offset: int = 0,
-    limit: Annotated[int, Query(le=100)] = 100,
+    limit: Annotated[int, Query(le=1000)] = 500,
     is_all_day: bool = False,
 ) -> str:
     return svc.get_all_presences_as_ics(
-        session, start, end, offset, limit, is_all_day=is_all_day
+        session, date_from, date_to, offset, limit, is_all_day=is_all_day
     ).serialize()
 
 
-@router.get("/{presence_id}", response_model=Presence)
+@router.get("/{presence_id}", response_model=PresencePublic)
 def get_presence_by_id(
     current_user: UserDep,
     presence_id: int,
@@ -87,26 +87,22 @@ def get_presence_by_id(
     return presence
 
 
-@router.post("/", response_model=Presence)
+@router.post("/", response_model=PresencePublic)
 def create_presence(
     current_user: UserDep,
     presence: PresenceDTO,
     session: SessionDep,
 ) -> Presence:
     if svc.does_presence_overlap(
-        session, current_user.id, presence.seat_id, presence.start, presence.end
+        session, current_user.id, presence.seat_id, presence.date, presence.slot
     ):
         raise HTTPException(
             status_code=400, detail="Presence overlaps with an existing one"
         )
-
-    if presence.start < datetime.now(presence.start.tzinfo):
-        raise HTTPException(status_code=400, detail="start must be after current date")
-
     return svc.create_presence(session, presence, current_user.id)
 
 
-@router.put("/{presence_id}", response_model=Presence)
+@router.put("/{presence_id}", response_model=PresencePublic)
 def update_presence(
     current_user: UserDep,
     presence_id: int,
@@ -121,8 +117,8 @@ def update_presence(
         session,
         current_user.id,
         presence_dto.seat_id,
-        presence_dto.start,
-        presence_dto.end,
+        presence_dto.date,
+        presence_dto.slot,
         presence.id,
     ):
         raise HTTPException(
