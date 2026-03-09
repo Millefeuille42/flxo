@@ -1,51 +1,50 @@
-from datetime import datetime, UTC
+from datetime import date
 
-from pydantic import field_serializer, field_validator, model_validator
-from sqlmodel import Column, DateTime, Field, Relationship, SQLModel
+from pydantic import field_validator
+from sqlalchemy import UniqueConstraint
+from sqlmodel import Field, Relationship, SQLModel
 
 from flxo.models.office import Office, OfficePublic
 from flxo.models.seat import Seat, SeatPublic
 from flxo.models.user import User, UserPublic
 
-from typing import Optional
-
 
 class PresenceBase(SQLModel):
-    start: datetime = Field(sa_column=Column(DateTime(timezone=True)))
-    end: datetime = Field(sa_column=Column(DateTime(timezone=True)))
+    date: date
+    slot: str
+    state: str = "confirmed"
+    office_id: int = Field(foreign_key="office.id")
+    seat_id: int = Field(foreign_key="seat.id")
 
-    @field_validator("start", "end", mode="before")
-    def force_utc(cls, value: datetime | str) -> datetime:  # noqa: N805
-        if isinstance(value, str):
-            value = datetime.fromisoformat(value)
-        if value.tzinfo is None:
-            return value.replace(tzinfo=UTC)
-        return value.astimezone(UTC)
-
-    @model_validator(mode="after")
-    def validate_date_range(self) -> "PresenceBase":
-        if self.end <= self.start:
-            msg = "end must be after start"
+    @field_validator("slot")
+    @classmethod
+    def validate_slot(cls, v: str) -> str:
+        if v not in ("morning", "afternoon"):
+            msg = "slot must be 'morning' or 'afternoon'"
             raise ValueError(msg)
-        return self
+        return v
 
-    @field_serializer("start", "end")
-    def serialize_dt(self, value: datetime) -> Optional[datetime]:
-        if value is None:
-            return None
-        if value.tzinfo is None:
-            value = value.replace(tzinfo=UTC)
-        return value.astimezone(UTC)
+    @field_validator("state")
+    @classmethod
+    def validate_state(cls, v: str) -> str:
+        if v not in ("confirmed", "maybe"):
+            msg = "state must be 'confirmed' or 'maybe'"
+            raise ValueError(msg)
+        return v
 
 
 class PresenceDTO(PresenceBase):
-    seat_id: int = Field(default=0, foreign_key="seat.id")
+    pass
 
 
-class Presence(PresenceDTO, table=True):
+class Presence(PresenceBase, table=True):
+    __table_args__ = (
+        UniqueConstraint("user_id", "date", "slot", name="uq_presence_user_id_date_slot"),
+        UniqueConstraint("seat_id", "date", "slot", name="uq_presence_seat_id_date_slot"),
+    )
+
     id: int | None = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
-    office_id: int | None = Field(default=None, foreign_key="office.id")
 
     user: "User" = Relationship(back_populates="presences")
     office: "Office" = Relationship(back_populates="presences")
@@ -67,5 +66,5 @@ class PresenceWithUser(PresenceDTO):
     user: UserPublic
 
 
-class PresencePublic(PresenceBase):
-    pass
+class PresencePublic(PresenceDTO):
+    id: int

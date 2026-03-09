@@ -1,7 +1,8 @@
 from sqlmodel import select, Session
 
 from flxo.core.security import get_password_hash
-from flxo.models import User, UserDTO
+from flxo.models.presence import Presence
+from flxo.models.user import User, UserDTO, UserPublic
 from flxo.services.base import BaseService
 
 
@@ -10,6 +11,13 @@ class UserService(BaseService[User]):
 
     def update_user(self, session: Session, user_dto: UserDTO, user: User) -> User:
         user.username = user_dto.username
+        return self.update(session, user)
+
+    def update_user_from_public(
+        self, session: Session, user: User, user_public: UserPublic
+    ) -> User:
+        user.username = user_public.username
+        user.favorite_seat_id = user_public.favorite_seat_id
         return self.update(session, user)
 
     def get_user_by_id(self, session: Session, user_id: int) -> User | None:
@@ -26,6 +34,15 @@ class UserService(BaseService[User]):
 
     def create_user_with_username(self, session: Session, username: str) -> User:
         return self.create(session, User(username=username))
+
+    def delete_user(self, session: Session, user: User) -> None:
+        presences = session.exec(
+            select(Presence).where(Presence.user_id == user.id)
+        ).all()
+        for presence in presences:
+            session.delete(presence)
+        session.flush()
+        self.delete(session, user)
 
     def get_or_create_user(self, session: Session, username: str) -> User:
         user = self.get_user_by_username(session, username)

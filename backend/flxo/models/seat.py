@@ -27,10 +27,12 @@ class Seat(SeatBase, table=True):
 
 
 class SeatWithPresences(SeatDTO):
+    id: int
     presences: list["Presence"] = []
 
 
 class SeatWithOffice(SeatDTO):
+    id: int
     office: Office
 
 
