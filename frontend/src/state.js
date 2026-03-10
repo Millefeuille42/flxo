@@ -3,7 +3,7 @@ import { colorForUser } from './colors.js'
 import { DESKS } from './desks.js'
 import {
   getToken, setToken,
-  apiGetAuthConfig, apiGetMe, apiListUsers,
+  apiGetAuthConfig, apiGetMe, apiListUsers, apiUpdateMe,
   apiListOffices, apiCreateOffice,
   apiListSeats, apiCreateSeat,
   apiListPresences,
@@ -139,7 +139,7 @@ export function addPerson(userData, { select = true, isLoggedUser = false } = {}
     backendId: userData.id,
     name: userData.username,
     color: colorForUser(userData.id),
-    deskPreference: userData.desk_preference_id ?? null,
+    deskPreference: userData.favorite_seat_id ? (seatToDeskId[userData.favorite_seat_id] ?? null) : null,
     isLoggedUser,
   }
   persons.push(person)
@@ -158,10 +158,19 @@ export function removePerson(id) {
   }
 }
 
-export function setDeskPreference(personId, deskId) {
+export async function setDeskPreference(personId, deskId) {
   const person = persons.find(p => p.id === personId)
-  if (person) {
-    person.deskPreference = person.deskPreference === deskId ? null : deskId
+  if (!person) return
+  const prev = person.deskPreference
+  person.deskPreference = person.deskPreference === deskId ? null : deskId
+  if (person.isLoggedUser) {
+    try {
+      const backendSeatId = person.deskPreference ? (deskToSeatId[person.deskPreference] ?? null) : null
+      await apiUpdateMe(backendSeatId)
+    } catch (e) {
+      console.error('Failed to save desk preference:', e)
+      person.deskPreference = prev // rollback
+    }
   }
 }
 

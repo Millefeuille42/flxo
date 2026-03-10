@@ -13,11 +13,10 @@ class UserService(BaseService[User]):
         user.username = user_dto.username
         return self.update(session, user)
 
-    def update_user_from_public(
-        self, session: Session, user: User, user_public: UserPublic
+    def update_profile(
+        self, session: Session, user: User, favorite_seat_id: int | None
     ) -> User:
-        user.username = user_public.username
-        user.favorite_seat_id = user_public.favorite_seat_id
+        user.favorite_seat_id = favorite_seat_id
         return self.update(session, user)
 
     def get_user_by_id(self, session: Session, user_id: int) -> User | None:

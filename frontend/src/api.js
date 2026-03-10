@@ -73,6 +73,15 @@ export async function apiCreateUser(username, password) {
   return res.json()
 }
 
+export async function apiUpdateMe(favoriteSeatId) {
+  const res = await apiFetch('/user/me', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ favorite_seat_id: favoriteSeatId }),
+  })
+  return res.json()
+}
+
 export async function apiListSeats() {
   const res = await apiFetch('/seat/')
   return res.json()

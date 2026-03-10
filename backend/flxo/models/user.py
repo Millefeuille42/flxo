@@ -1,7 +1,7 @@
 from pydantic import field_validator
 from sqlmodel import Column, Field, JSON, Relationship, SQLModel
 
-from typing import Any, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class UserPublic(UserBase):
 class User(UserPublic, table=True):
     hashed_password: str | None = None
     presences: list["Presence"] = Relationship(back_populates="user")
-    favorite_seat: "Seat | None" = Relationship()
+    favorite_seat: Optional["Seat"] = Relationship()
 
 
 class UserPublicWithPresences(UserPublic):

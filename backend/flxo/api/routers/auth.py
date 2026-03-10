@@ -23,6 +23,13 @@ from typing import Annotated
 router = APIRouter(prefix="/auth")
 
 
+@router.get("/config")
+async def get_auth_config(settings: SettingsDep):
+    return {
+        "sso_enabled": bool(settings.oauth.client_id),
+    }
+
+
 @router.get("/oauth2")
 async def auth_oauth(
     request: Request, oauth: OAuthDep, settings: SettingsDep
