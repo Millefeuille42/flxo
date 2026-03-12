@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel
 
 from flxo.api.dependencies.database import SessionDep
 from flxo.api.dependencies.settings import SettingsDep
@@ -16,6 +17,10 @@ def require_no_sso(settings: SettingsDep) -> None:
         raise HTTPException(
             status_code=403, detail="This action is not allowed when SSO is enabled"
         )
+
+
+class UserProfileUpdate(BaseModel):
+    favorite_seat_id: int | None = None
 
 
 router = APIRouter(prefix="/user")
@@ -41,13 +46,13 @@ async def get_self(current_user: UserDep) -> UserPublic:
 @router.put("/me", response_model=UserPublic)
 async def update_self(
     current_user: UserDep,
-    new_user: UserPublic,
+    profile: UserProfileUpdate,
     session: SessionDep,
 ) -> UserPublic:
-    return svc.update_user_from_public(
+    return svc.update_profile(
         session,
-        current_user,  # type: ignore
-        new_user,  # type: ignore
+        current_user,
+        profile.favorite_seat_id,
     )
 
 

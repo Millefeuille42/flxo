@@ -3,7 +3,7 @@ import datetime
 import time
 
 from ics import Calendar, Event
-from sqlmodel import or_, select, Session
+from sqlmodel import select, Session
 
 from flxo.models.presence import Presence, PresenceDTO
 from flxo.services.base import BaseService
@@ -97,17 +97,36 @@ class PresenceService(BaseService[Presence]):
     def does_presence_overlap(
         session: Session,
         user_id: int,
+        presence_date: datetime.date,
+        slot: str,
+        presence_id: int | None = None,
+    ) -> bool:
+        query = (
+            select(Presence)
+            .where(Presence.user_id == user_id)
+            .where(Presence.date == presence_date)
+            .where(Presence.slot == slot)
+        )
+        if presence_id:
+            query = query.where(Presence.id != presence_id)
+        return session.exec(query).first() is not None
+
+    @staticmethod
+    def does_seat_overlap(
+        session: Session,
         seat_id: int,
         presence_date: datetime.date,
         slot: str,
         presence_id: int | None = None,
     ) -> bool:
-        query = select(Presence).where(
-            or_(Presence.user_id == user_id, Presence.seat_id == seat_id)
+        query = (
+            select(Presence)
+            .where(Presence.seat_id == seat_id)
+            .where(Presence.date == presence_date)
+            .where(Presence.slot == slot)
         )
         if presence_id:
             query = query.where(Presence.id != presence_id)
-        query = query.where(Presence.date == presence_date).where(Presence.slot == slot)
         return session.exec(query).first() is not None
 
     @staticmethod
@@ -153,7 +172,8 @@ class PresenceService(BaseService[Presence]):
             e.name = f"{presence.user.username} - {presence.office.name}"
             e.location = presence.office.address
             e.description = f"ID: {presence.id}"
-            e.description += f"\nSeat: {presence.seat.name}"
+            if presence.seat:
+                e.description += f"\nSeat: {presence.seat.name}"
             c.events.add(e)
         return c
 
