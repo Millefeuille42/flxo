@@ -93,12 +93,19 @@ def create_presence(
     presence: PresenceDTO,
     session: SessionDep,
 ) -> Presence:
-    if svc.does_presence_overlap(
-        session, current_user.id, presence.seat_id, presence.date, presence.slot
-    ):
+    if svc.does_presence_overlap(session, current_user.id, presence.date, presence.slot):
         raise HTTPException(
             status_code=400, detail="Presence overlaps with an existing one"
         )
+    if presence.seat_id:
+        if svc.does_user_have_seat(
+            session, current_user.id, presence.date, presence.slot
+        ):
+            msg = "You already have a desk booked for this slot"
+            raise HTTPException(status_code=409, detail=msg)
+        if svc.does_seat_overlap(session, presence.seat_id, presence.date, presence.slot):
+            msg = "This desk is already booked for this slot"
+            raise HTTPException(status_code=409, detail=msg)
     return svc.create_presence(session, presence, current_user.id)
 
 
@@ -114,16 +121,26 @@ def update_presence(
         raise HTTPException(status_code=404, detail="Presence not found")
 
     if svc.does_presence_overlap(
-        session,
-        current_user.id,
-        presence_dto.seat_id,
-        presence_dto.date,
-        presence_dto.slot,
-        presence.id,
+        session, current_user.id, presence_dto.date, presence_dto.slot, presence.id
     ):
         raise HTTPException(
             status_code=400, detail="Updated presence overlaps with an existing one"
         )
+    if presence_dto.seat_id:
+        if svc.does_user_have_seat(
+            session, current_user.id, presence_dto.date, presence_dto.slot, presence.id
+        ):
+            msg = "You already have a desk booked for this slot"
+            raise HTTPException(status_code=409, detail=msg)
+        if svc.does_seat_overlap(
+            session,
+            presence_dto.seat_id,
+            presence_dto.date,
+            presence_dto.slot,
+            presence.id,
+        ):
+            msg = "This desk is already booked for this slot"
+            raise HTTPException(status_code=409, detail=msg)
 
     return svc.update_presence(session, presence_dto, presence)
 

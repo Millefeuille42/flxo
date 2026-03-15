@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from flxo.api.dependencies.database import SessionDep
 from flxo.api.dependencies.settings import SettingsDep
 from flxo.api.dependencies.user import UserDep
-from flxo.models.user import UserDTO, UserPublic
+from flxo.models.user import UserDTO, UserProfileUpdate, UserPublic
 from flxo.services.user import svc
 
 from typing import Annotated
@@ -41,13 +41,13 @@ async def get_self(current_user: UserDep) -> UserPublic:
 @router.put("/me", response_model=UserPublic)
 async def update_self(
     current_user: UserDep,
-    new_user: UserPublic,
+    profile: UserProfileUpdate,
     session: SessionDep,
 ) -> UserPublic:
-    return svc.update_user_from_public(
+    return svc.update_profile(
         session,
-        current_user,  # type: ignore
-        new_user,  # type: ignore
+        current_user,
+        profile,
     )
 
 
