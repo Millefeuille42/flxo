@@ -94,21 +94,26 @@ class PresenceService(BaseService[Presence]):
         ).first()
 
     @staticmethod
-    def does_presence_overlap(
+    def find_conflict(
         session: Session,
         user_id: int,
-        seat_id: int,
         presence_date: datetime.date,
         slot: str,
+        seat_id: int | None = None,
         presence_id: int | None = None,
-    ) -> bool:
-        query = select(Presence).where(
-            or_(Presence.user_id == user_id, Presence.seat_id == seat_id)
+    ) -> Presence | None:
+        conditions = [Presence.user_id == user_id]
+        if seat_id:
+            conditions.append(Presence.seat_id == seat_id)
+        query = (
+            select(Presence)
+            .where(or_(*conditions))
+            .where(Presence.date == presence_date)
+            .where(Presence.slot == slot)
         )
         if presence_id:
             query = query.where(Presence.id != presence_id)
-        query = query.where(Presence.date == presence_date).where(Presence.slot == slot)
-        return session.exec(query).first() is not None
+        return session.exec(query).first()
 
     @staticmethod
     def _slot_to_times(slot: str) -> tuple[datetime.time, datetime.time]:
@@ -153,7 +158,8 @@ class PresenceService(BaseService[Presence]):
             e.name = f"{presence.user.username} - {presence.office.name}"
             e.location = presence.office.address
             e.description = f"ID: {presence.id}"
-            e.description += f"\nSeat: {presence.seat.name}"
+            if presence.seat:
+                e.description += f"\nSeat: {presence.seat.name}"
             c.events.add(e)
         return c
 

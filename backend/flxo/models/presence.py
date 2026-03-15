@@ -8,13 +8,15 @@ from flxo.models.office import Office, OfficePublic
 from flxo.models.seat import Seat, SeatPublic
 from flxo.models.user import User, UserPublic
 
+from typing import Optional
+
 
 class PresenceBase(SQLModel):
     date: date
     slot: str
     state: str = "confirmed"
     office_id: int = Field(foreign_key="office.id")
-    seat_id: int = Field(foreign_key="seat.id")
+    seat_id: int | None = Field(default=None, foreign_key="seat.id")
 
     @field_validator("slot")
     @classmethod
@@ -48,7 +50,7 @@ class Presence(PresenceBase, table=True):
 
     user: "User" = Relationship(back_populates="presences")
     office: "Office" = Relationship(back_populates="presences")
-    seat: "Seat" = Relationship(back_populates="presences")
+    seat: Optional["Seat"] = Relationship(back_populates="presences")
 
 
 class PresenceWithOffice(PresenceDTO):

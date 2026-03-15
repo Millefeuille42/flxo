@@ -20,7 +20,7 @@ def get_current_user(session: SessionDep, token: TokenDep) -> User:
         if username is None:
             raise InvalidCredentialsException
         token_data = TokenData(username=username)
-    except InvalidTokenError as e:
+    except (InvalidTokenError, jwt.exceptions.PyJWTError) as e:
         raise InvalidCredentialsException from e
     user = svc.get_user_by_username(session, username=token_data.username)
     if user is None:

@@ -7,7 +7,11 @@ requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.17.0",
     "authlib>=1.6.5",
-    "fastapi[all,standard]>=0.119.1",
+    "fastapi>=0.119.1",
+    "httpx>=0.28.1",
+    "itsdangerous>=2.2.0",
+    "pydantic-settings>=2.13.1",
+    "python-multipart>=0.0.20",
     "ics>=0.7.2",
     "pwdlib[argon2]>=0.2.1",
     "pyjwt>=2.10.1",
