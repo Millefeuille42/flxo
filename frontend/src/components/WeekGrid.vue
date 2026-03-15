@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import PersonRow from './PersonRow.vue'
 import DeskPickerModal from './DeskPickerModal.vue'
-import { sortedPersons, bookings, currentWeekOffset, getWeekKey, getWeekDates, getTodayDayIndex, setSlotDesk, weekKeyDayToISO, deskCount } from '../state.js'
+import { sortedPersons, bookings, currentWeekOffset, getWeekKey, getWeekDates, getTodayDayIndex, setSlotDesk, weekKeyDayToISO, deskCount, hoveredSlot, DESK_IDS } from '../state.js'
 
 const DAY_NAMES = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven']
 const DAYS = [0, 1, 2, 3, 4]
@@ -34,6 +34,17 @@ function canPickDesk(week, dayIndex, slot) {
   if (week.isPast || week.days[dayIndex].past) return false
   const booking = getLoggedBooking(week.weekKey, dayIndex, slot)
   return booking?.state === 'confirmed'
+}
+
+function deskCellTitle(week, dayIndex, slot) {
+  const booking = getLoggedBooking(week.weekKey, dayIndex, slot)
+  if (!booking) return ''
+  if (booking.seatId) {
+    const num = (booking.seatId || '').replace('desk', '')
+    return `Bureau ${num}`
+  }
+  if (booking.state === 'confirmed') return 'Cliquez pour choisir un bureau'
+  return ''
 }
 
 function deskCellStyle(week, dayIndex, slot) {
@@ -168,7 +179,10 @@ const weeks = computed(() => {
                   'has-desk': !!getLoggedBooking(week.weekKey, di, slot)?.seatId,
                 }]"
                 :style="deskCellStyle(week, di, slot)"
+                :title="deskCellTitle(week, di, slot)"
                 @click="canPickDesk(week, di, slot) && openDeskPicker(week, di, slot)"
+                @mouseenter="getLoggedBooking(week.weekKey, di, slot) && (hoveredSlot = { weekKey: week.weekKey, day: di, slot })"
+                @mouseleave="hoveredSlot = null"
               >
                 <div v-if="getLoggedBooking(week.weekKey, di, slot)" class="desk-slot-inner">
                   <svg viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg" class="desk-slot-icon">
