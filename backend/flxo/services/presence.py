@@ -3,7 +3,7 @@ import datetime
 import time
 
 from ics import Calendar, Event
-from sqlmodel import select, Session
+from sqlmodel import or_, select, Session
 
 from flxo.models.presence import Presence, PresenceDTO
 from flxo.services.base import BaseService
@@ -94,59 +94,26 @@ class PresenceService(BaseService[Presence]):
         ).first()
 
     @staticmethod
-    def does_presence_overlap(
+    def find_conflict(
         session: Session,
         user_id: int,
         presence_date: datetime.date,
         slot: str,
+        seat_id: int | None = None,
         presence_id: int | None = None,
-    ) -> bool:
+    ) -> Presence | None:
+        conditions = [Presence.user_id == user_id]
+        if seat_id:
+            conditions.append(Presence.seat_id == seat_id)
         query = (
             select(Presence)
-            .where(Presence.user_id == user_id)
+            .where(or_(*conditions))
             .where(Presence.date == presence_date)
             .where(Presence.slot == slot)
         )
         if presence_id:
             query = query.where(Presence.id != presence_id)
-        return session.exec(query).first() is not None
-
-    @staticmethod
-    def does_user_have_seat(
-        session: Session,
-        user_id: int,
-        presence_date: datetime.date,
-        slot: str,
-        presence_id: int | None = None,
-    ) -> bool:
-        query = (
-            select(Presence)
-            .where(Presence.user_id == user_id)
-            .where(Presence.date == presence_date)
-            .where(Presence.slot == slot)
-            .where(Presence.seat_id.is_not(None))  # type: ignore[union-attr]
-        )
-        if presence_id:
-            query = query.where(Presence.id != presence_id)
-        return session.exec(query).first() is not None
-
-    @staticmethod
-    def does_seat_overlap(
-        session: Session,
-        seat_id: int,
-        presence_date: datetime.date,
-        slot: str,
-        presence_id: int | None = None,
-    ) -> bool:
-        query = (
-            select(Presence)
-            .where(Presence.seat_id == seat_id)
-            .where(Presence.date == presence_date)
-            .where(Presence.slot == slot)
-        )
-        if presence_id:
-            query = query.where(Presence.id != presence_id)
-        return session.exec(query).first() is not None
+        return session.exec(query).first()
 
     @staticmethod
     def _slot_to_times(slot: str) -> tuple[datetime.time, datetime.time]:
