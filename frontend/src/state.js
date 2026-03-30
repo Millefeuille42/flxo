@@ -1,4 +1,4 @@
-import { reactive, ref, computed, watch } from 'vue'
+import { reactive, ref, computed, watch, triggerRef } from 'vue'
 import { colorForUser } from './colors.js'
 import {
   getToken, setToken,
@@ -28,12 +28,28 @@ export const DESK_IDS = computed(() => Array.from({ length: deskCount.value }, (
 
 // ─── Persons & bookings ───────────────────────────────────────────────────────
 export const persons = reactive([])
-export const bookings = reactive([])   // each: { personId, weekKey, day, slot, state, backendId, seatId, officeId }
 export const selectedPersonId = ref(null)
 export const currentWeekOffset = ref(0)
 export const hoveredSlot = ref(null) // { weekKey, day, slot } or null
 
 export const isPastWeek = computed(() => currentWeekOffset.value < 0)
+
+// ─── Booking index (Map-based for O(1) lookups) ─────────────────────────────
+// Key: "personId|weekKey|day|slot" → booking object (unique per person+slot, cross-office)
+const _bookingMap = new Map()
+// Reactive version counter — triggers reactivity when bookings change
+const _bookingVersion = ref(0)
+function _notifyBookings() { _bookingVersion.value++ }
+
+function _bkey(personId, weekKey, day, slot) {
+  return `${personId}|${weekKey}|${day}|${slot}`
+}
+
+// Derived reactive array for consumers that need to iterate (WeekGrid)
+export const bookings = computed(() => {
+  _bookingVersion.value // track reactivity
+  return Array.from(_bookingMap.values())
+})
 
 // Per-office seat maps: { [officeId]: { 'desk1': seatId, ... } }
 const deskToSeatIdByOffice = reactive({})
@@ -64,9 +80,10 @@ function seatToOfficeId(seatId) {
 
 // Set of "weekKey-day-slot" keys where confirmed count exceeds seat capacity (active office only)
 export const overbookedSlots = computed(() => {
+  _bookingVersion.value // track
   const oid = activeOfficeId.value
   const counts = {}
-  for (const b of bookings) {
+  for (const b of _bookingMap.values()) {
     if (b.officeId !== oid || b.state !== 'confirmed') continue
     const key = `${b.weekKey}-${b.day}-${b.slot}`
     counts[key] = (counts[key] || 0) + 1
@@ -192,9 +209,10 @@ export function addPerson(userData, { select = true, isLoggedUser = false } = {}
 export function removePerson(id) {
   const idx = persons.findIndex(p => p.id === id)
   if (idx !== -1) persons.splice(idx, 1)
-  for (let i = bookings.length - 1; i >= 0; i--) {
-    if (bookings[i].personId === id) bookings.splice(i, 1)
+  for (const [key, b] of _bookingMap) {
+    if (b.personId === id) _bookingMap.delete(key)
   }
+  _notifyBookings()
   if (selectedPersonId.value === id) {
     selectedPersonId.value = persons.length ? persons[0].id : null
   }
@@ -220,33 +238,29 @@ export async function setDeskPreference(personId, deskId) {
 // ─── Booking local helpers ────────────────────────────────────────────────────
 
 function _applyBookingLocal(personId, weekKey, day, slot, state, backendId, seatId = null, officeId = null) {
-  const idx = bookings.findIndex(
-    b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot
-  )
-  if (idx !== -1) {
-    bookings[idx].state = state
-    bookings[idx].backendId = backendId
-    bookings[idx].seatId = seatId
-    bookings[idx].officeId = officeId
+  const key = _bkey(personId, weekKey, day, slot)
+  const existing = _bookingMap.get(key)
+  if (existing) {
+    existing.state = state
+    existing.backendId = backendId
+    existing.seatId = seatId
+    existing.officeId = officeId
   } else {
-    bookings.push({ personId, weekKey, day, slot, state, backendId, seatId, officeId })
+    _bookingMap.set(key, { personId, weekKey, day, slot, state, backendId, seatId, officeId })
   }
+  _notifyBookings()
 }
 
-function _removeBookingLocal(personId, weekKey, day, slot, officeId = null) {
-  const idx = bookings.findIndex(
-    b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot
-      && (officeId === null || b.officeId === officeId)
-  )
-  if (idx !== -1) bookings.splice(idx, 1)
+function _removeBookingLocal(personId, weekKey, day, slot) {
+  _bookingMap.delete(_bkey(personId, weekKey, day, slot))
+  _notifyBookings()
 }
 
 export function getBookingState(personId, weekKey, day, slot) {
-  const oid = activeOfficeId.value
-  const b = bookings.find(
-    b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot && b.officeId === oid
-  )
-  return b ? b.state : null
+  _bookingVersion.value // track
+  const b = _bookingMap.get(_bkey(personId, weekKey, day, slot))
+  if (!b) return null
+  return b.officeId === activeOfficeId.value ? b.state : null
 }
 
 export function getConflictingOfficeName(personId, weekKey, day, slot) {
@@ -255,38 +269,34 @@ export function getConflictingOfficeName(personId, weekKey, day, slot) {
 }
 
 export function hasBooking(personId, weekKey, day, slot) {
-  const oid = activeOfficeId.value
-  return bookings.some(
-    b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot && b.officeId === oid
-  )
+  _bookingVersion.value // track
+  const b = _bookingMap.get(_bkey(personId, weekKey, day, slot))
+  return b ? b.officeId === activeOfficeId.value : false
 }
 
 export const bookingError = ref(null) // { message: string } or null
 
 function _getConflictingOffice(personId, weekKey, day, slot) {
-  const oid = activeOfficeId.value
-  const conflict = bookings.find(
-    b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot && b.officeId !== oid
-  )
-  if (!conflict) return null
-  return offices.find(o => o.id === conflict.officeId) || null
+  _bookingVersion.value // track
+  const b = _bookingMap.get(_bkey(personId, weekKey, day, slot))
+  if (!b || b.officeId === activeOfficeId.value) return null
+  return offices.find(o => o.id === b.officeId) || null
 }
 
 // ─── Async booking operations ─────────────────────────────────────────────────
 
 export async function toggleBooking(personId, weekKey, day, slot) {
   const oid = activeOfficeId.value
-  const idx = bookings.findIndex(
-    b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot && b.officeId === oid
-  )
+  const key = _bkey(personId, weekKey, day, slot)
+  const booking = _bookingMap.get(key)
   const person = persons.find(p => p.id === personId)
 
-  if (idx !== -1) {
-    const current = bookings[idx].state
-    const booking = bookings[idx]
+  if (booking && booking.officeId === oid) {
+    const current = booking.state
     if (current === 'confirmed') {
       // confirmed → maybe
-      bookings[idx].state = 'maybe'
+      booking.state = 'maybe'
+      _notifyBookings()
       if (person?.isLoggedUser && booking.backendId) {
         try {
           const iso = weekKeyDayToISO(weekKey, day)
@@ -294,19 +304,22 @@ export async function toggleBooking(personId, weekKey, day, slot) {
           await apiUpdatePresence(booking.backendId, iso, slot, 'maybe', oid, backendSeatId)
         } catch (e) {
           console.error('Failed to update presence (confirmed→maybe):', e)
-          bookings[idx].state = 'confirmed' // rollback
+          booking.state = 'confirmed' // rollback
+          _notifyBookings()
         }
       }
     } else {
       // maybe → null
       const savedBooking = { ...booking }
-      bookings.splice(idx, 1)
+      _bookingMap.delete(key)
+      _notifyBookings()
       if (person?.isLoggedUser && savedBooking.backendId) {
         try {
           await apiDeletePresence(savedBooking.backendId)
         } catch (e) {
           console.error('Failed to delete presence:', e)
-          bookings.push(savedBooking) // rollback
+          _bookingMap.set(key, savedBooking) // rollback
+          _notifyBookings()
         }
       }
     }
@@ -320,18 +333,18 @@ export async function toggleBooking(personId, weekKey, day, slot) {
       bookingError.value = { message: `Vous êtes déjà réservé(e) à ${conflict.name} le ${d}/${m} (${slotLabel})` }
       return
     }
-    bookings.push({ personId, weekKey, day, slot, state: 'confirmed', backendId: null, seatId: null, officeId: oid })
+    const newBooking = { personId, weekKey, day, slot, state: 'confirmed', backendId: null, seatId: null, officeId: oid }
+    _bookingMap.set(key, newBooking)
+    _notifyBookings()
     if (person?.isLoggedUser) {
       try {
         const iso = weekKeyDayToISO(weekKey, day)
         const created = await apiCreatePresence(iso, slot, 'confirmed', oid)
-        const newIdx = bookings.findIndex(
-          b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot && b.officeId === oid
-        )
-        if (newIdx !== -1) bookings[newIdx].backendId = created.id
+        newBooking.backendId = created.id
       } catch (e) {
         console.error('Failed to create presence:', e)
-        _removeBookingLocal(personId, weekKey, day, slot, oid) // rollback
+        _bookingMap.delete(key) // rollback
+        _notifyBookings()
       }
     }
   }
@@ -339,11 +352,11 @@ export async function toggleBooking(personId, weekKey, day, slot) {
 
 export async function setBooking(personId, weekKey, day, slot) {
   const oid = activeOfficeId.value
-  const existing = bookings.find(
-    b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot && b.officeId === oid
-  )
-  if (existing) {
+  const key = _bkey(personId, weekKey, day, slot)
+  const existing = _bookingMap.get(key)
+  if (existing && existing.officeId === oid) {
     existing.state = 'confirmed'
+    _notifyBookings()
     return
   }
   const conflict = _getConflictingOffice(personId, weekKey, day, slot)
@@ -355,57 +368,55 @@ export async function setBooking(personId, weekKey, day, slot) {
     return
   }
   const person = persons.find(p => p.id === personId)
-  bookings.push({ personId, weekKey, day, slot, state: 'confirmed', backendId: null, seatId: null, officeId: oid })
+  const newBooking = { personId, weekKey, day, slot, state: 'confirmed', backendId: null, seatId: null, officeId: oid }
+  _bookingMap.set(key, newBooking)
+  _notifyBookings()
   if (person?.isLoggedUser) {
     try {
       const iso = weekKeyDayToISO(weekKey, day)
       const created = await apiCreatePresence(iso, slot, 'confirmed', oid)
-      const newIdx = bookings.findIndex(
-        b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot && b.officeId === oid
-      )
-      if (newIdx !== -1) bookings[newIdx].backendId = created.id
+      newBooking.backendId = created.id
     } catch (e) {
       console.error('Failed to create presence (setBooking):', e)
-      _removeBookingLocal(personId, weekKey, day, slot, oid) // rollback
+      _bookingMap.delete(key) // rollback
+      _notifyBookings()
     }
   }
 }
 
 export async function removeBooking(personId, weekKey, day, slot) {
-  const idx = bookings.findIndex(
-    b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot
-  )
-  if (idx === -1) return
+  const key = _bkey(personId, weekKey, day, slot)
+  const booking = _bookingMap.get(key)
+  if (!booking) return
   const person = persons.find(p => p.id === personId)
-  const savedBooking = { ...bookings[idx] }
-  bookings.splice(idx, 1)
+  const savedBooking = { ...booking }
+  _bookingMap.delete(key)
+  _notifyBookings()
   if (person?.isLoggedUser && savedBooking.backendId) {
     try {
       await apiDeletePresence(savedBooking.backendId)
     } catch (e) {
       console.error('Failed to delete presence (removeBooking):', e)
-      bookings.push(savedBooking) // rollback
+      _bookingMap.set(key, savedBooking) // rollback
+      _notifyBookings()
     }
   }
 }
 
 export function getSlotDesk(personId, weekKey, day, slot) {
-  const oid = activeOfficeId.value
-  const b = bookings.find(
-    b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot && b.officeId === oid
-  )
-  return b ? b.seatId : null
+  _bookingVersion.value // track
+  const b = _bookingMap.get(_bkey(personId, weekKey, day, slot))
+  return (b && b.officeId === activeOfficeId.value) ? b.seatId : null
 }
 
 export async function setSlotDesk(personId, weekKey, day, slot, seatId) {
   const oid = activeOfficeId.value
-  const idx = bookings.findIndex(
-    b => b.personId === personId && b.weekKey === weekKey && b.day === day && b.slot === slot && b.officeId === oid
-  )
-  if (idx === -1) return
-  const booking = bookings[idx]
+  const key = _bkey(personId, weekKey, day, slot)
+  const booking = _bookingMap.get(key)
+  if (!booking || booking.officeId !== oid) return
   const prevSeatId = booking.seatId
   booking.seatId = seatId
+  _notifyBookings()
   const person = persons.find(p => p.id === personId)
   if (person?.isLoggedUser && booking.backendId) {
     try {
@@ -415,6 +426,7 @@ export async function setSlotDesk(personId, weekKey, day, slot, seatId) {
     } catch (e) {
       console.error('Failed to update seat:', e)
       booking.seatId = prevSeatId
+      _notifyBookings()
     }
   }
 }
@@ -436,8 +448,19 @@ export async function loadPresenceRange(fromOffset, toOffset) {
     if (!person) continue
     const { weekKey, day } = isoToWeekKeyDay(p.date)
     const deskId = p.seat_id ? (seatToDeskIdGlobal(p.seat_id) ?? null) : null
-    _applyBookingLocal(person.id, weekKey, day, p.slot, p.state, p.id, deskId, p.office_id)
+    // Batch: don't notify per item
+    const key = _bkey(person.id, weekKey, day, p.slot)
+    const existing = _bookingMap.get(key)
+    if (existing) {
+      existing.state = p.state
+      existing.backendId = p.id
+      existing.seatId = deskId
+      existing.officeId = p.office_id
+    } else {
+      _bookingMap.set(key, { personId: person.id, weekKey, day, slot: p.slot, state: p.state, backendId: p.id, seatId: deskId, officeId: p.office_id })
+    }
   }
+  _notifyBookings() // single notification after batch
 }
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
@@ -517,7 +540,8 @@ export async function initApp() {
 
     // 3. Load all users
     persons.splice(0)
-    bookings.splice(0)
+    _bookingMap.clear()
+    _notifyBookings()
     loadedWeekKeys.clear()
     selectedPersonId.value = null
 
@@ -537,9 +561,10 @@ export async function initApp() {
 // ─── Slot desk assignments (for FloorPlan hover preview) ─────────────────────
 
 export function getSlotDeskAssignments(weekKey, day, slot) {
+  _bookingVersion.value // track
   const oid = activeOfficeId.value
   const result = []
-  for (const b of bookings) {
+  for (const b of _bookingMap.values()) {
     if (b.officeId !== oid || b.weekKey !== weekKey || b.day !== day || b.slot !== slot || !b.seatId) continue
     const person = persons.find(p => p.id === b.personId)
     if (!person) continue

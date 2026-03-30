@@ -16,7 +16,7 @@ const SLOTS = ['morning', 'afternoon']
 
 const officeBookings = computed(() => {
   const oid = activeOfficeId.value
-  return bookings.filter(b => b.officeId === oid)
+  return bookings.value.filter(b => b.officeId === oid)
 })
 
 const visiblePersons = computed(() => {
