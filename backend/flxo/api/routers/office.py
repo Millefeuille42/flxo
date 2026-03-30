@@ -36,7 +36,7 @@ def get_office_seats(
     office_id: int,
     session: SessionDep,
     offset: int = 0,
-    limit: Annotated[int, Query(le=100)] = 100,
+    limit: Annotated[int, Query(le=500)] = 200,
 ) -> Sequence[SeatPublic]:
     office = svc.get(session, office_id)
     if not office:

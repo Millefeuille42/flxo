@@ -87,6 +87,20 @@ export async function apiListSeats() {
   return res.json()
 }
 
+export async function apiListOfficeSeatsPaginated(officeId) {
+  const PAGE_SIZE = 200
+  let offset = 0
+  const all = []
+  while (true) {
+    const res = await apiFetch(`/office/${officeId}/seats?limit=${PAGE_SIZE}&offset=${offset}`)
+    const page = await res.json()
+    all.push(...page)
+    if (page.length < PAGE_SIZE) break
+    offset += PAGE_SIZE
+  }
+  return all
+}
+
 export async function apiCreateSeat(name, officeId) {
   const res = await apiFetch('/seat/', {
     method: 'POST',

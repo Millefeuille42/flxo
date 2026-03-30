@@ -3,7 +3,7 @@ import { colorForUser } from './colors.js'
 import {
   getToken, setToken,
   apiGetAuthConfig, apiGetMe, apiListUsers, apiUpdateMe,
-  apiListSeats, apiCreateSeat,
+  apiListSeats, apiListOfficeSeatsPaginated, apiCreateSeat,
   apiListPresences,
   apiCreatePresence, apiUpdatePresence, apiDeletePresence,
 } from './api.js'
@@ -497,24 +497,21 @@ export async function initApp() {
     const me = await apiGetMe()
     loggedUser.value = me
 
-    // 2. Load seats for all offices
-    if (offices.length > 0) {
+    // 2. Load seats for all offices (paginated, per office)
+    for (const office of offices) {
       try {
-        const allSeats = await apiListSeats()
-        for (const office of offices) {
-          const officeSeats = allSeats.filter(s => s.office_id === office.id)
-          deskToSeatIdByOffice[office.id] = {}
-          seatToDeskIdByOffice[office.id] = {}
-          const deskIds = Array.from({ length: office.desk_count }, (_, i) => 'desk' + (i + 1))
-          for (const deskId of deskIds) {
-            let seat = officeSeats.find(s => s.name === deskId)
-            if (!seat) seat = await apiCreateSeat(deskId, office.id)
-            deskToSeatIdByOffice[office.id][deskId] = seat.id
-            seatToDeskIdByOffice[office.id][seat.id] = deskId
-          }
+        const officeSeats = await apiListOfficeSeatsPaginated(office.id)
+        deskToSeatIdByOffice[office.id] = {}
+        seatToDeskIdByOffice[office.id] = {}
+        const deskIds = Array.from({ length: office.desk_count }, (_, i) => 'desk' + (i + 1))
+        for (const deskId of deskIds) {
+          let seat = officeSeats.find(s => s.name === deskId)
+          if (!seat) seat = await apiCreateSeat(deskId, office.id)
+          deskToSeatIdByOffice[office.id][deskId] = seat.id
+          seatToDeskIdByOffice[office.id][seat.id] = deskId
         }
       } catch (e) {
-        console.error('Failed to load/create seats:', e)
+        console.error(`Failed to load/create seats for office ${office.name}:`, e)
       }
     }
 
