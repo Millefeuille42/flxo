@@ -6,6 +6,7 @@ from flxo.api.dependencies.database import SessionDep
 from flxo.models.office import Office, OfficeDTO, OfficePublic
 from flxo.models.seat import SeatPublic
 from flxo.services.office import svc
+from flxo.services.seat import svc as seat_svc
 
 from typing import Annotated
 
@@ -31,11 +32,16 @@ def get_office(office_id: int, session: SessionDep) -> OfficePublic:
 
 
 @router.get("/{office_id}/seats", response_model=Sequence[SeatPublic])
-def get_office_seats(office_id: int, session: SessionDep) -> Sequence[SeatPublic]:
+def get_office_seats(
+    office_id: int,
+    session: SessionDep,
+    offset: int = 0,
+    limit: Annotated[int, Query(le=100)] = 100,
+) -> Sequence[SeatPublic]:
     office = svc.get(session, office_id)
     if not office:
         raise HTTPException(status_code=404, detail="Office not found")
-    return office.seats  # type: ignore
+    return seat_svc.get_by_office(session, office_id, offset, limit)  # type: ignore
 
 
 @router.post("/", response_model=OfficePublic)

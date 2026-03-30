@@ -26,7 +26,7 @@ router = APIRouter(prefix="/auth")
 
 @router.get("/config")
 async def get_auth_config(settings: SettingsDep, session: SessionDep) -> dict:
-    offices = office_svc.get_all_with_seats(session)
+    offices = office_svc.get_all_with_seat_count(session)
     return {
         "sso_enabled": bool(settings.oauth.client_id),
         "offices": [
@@ -36,9 +36,9 @@ async def get_auth_config(settings: SettingsDep, session: SessionDep) -> dict:
                 "address": o.address,
                 "logo_url": o.properties.get("logo_url", ""),
                 "floor_plan_url": o.properties.get("floor_plan_url", ""),
-                "desk_count": len(o.seats),
+                "desk_count": desk_count,
             }
-            for o in offices
+            for o, desk_count in offices
         ],
     }
 
