@@ -3,3 +3,6 @@
 
 # Secrets and env
 *.env*
+
+# Test databases
+backend/stress_test.db
