@@ -4,7 +4,7 @@ import { offices, activeOfficeId, switchOffice } from '../state.js'
 
 <template>
   <div v-if="offices.length > 1" class="office-picker">
-    <select :value="activeOfficeId" @change="switchOffice(Number($event.target.value))">
+    <select id="office-select" name="office" aria-label="Bureau" :value="activeOfficeId" @change="switchOffice(Number($event.target.value))">
       <option v-for="o in offices" :key="o.id" :value="o.id">{{ o.name }}</option>
     </select>
   </div>
