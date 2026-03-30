@@ -39,7 +39,7 @@ class User(UserPublic, table=True):
     favorite_seat: Optional["Seat"] = Relationship()
 
 
-class UserProfileUpdate(UserBase):
+class UserMeDTO(UserBase):
     favorite_seat_id: int | None = None
 
 

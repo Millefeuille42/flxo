@@ -7,7 +7,7 @@ from flxo.models.office import (
 )
 from flxo.models.presence import Presence, PresenceDTO, PresencePublic, PresenceWithUser
 from flxo.models.seat import Seat, SeatDTO, SeatPublic
-from flxo.models.user import User, UserDTO, UserProfileUpdate, UserPublic
+from flxo.models.user import User, UserDTO, UserMeDTO, UserPublic
 
 
 Seat.model_rebuild()
@@ -24,7 +24,7 @@ OfficeWithPresences.model_rebuild()
 OfficePublic.model_rebuild()
 User.model_rebuild()
 UserDTO.model_rebuild()
-UserProfileUpdate.model_rebuild()
+UserMeDTO.model_rebuild()
 UserPublic.model_rebuild()
 
 __all__ = [
@@ -40,6 +40,6 @@ __all__ = [
     "OfficePublic",
     "User",
     "UserDTO",
-    "UserProfileUpdate",
+    "UserMeDTO",
     "UserPublic",
 ]

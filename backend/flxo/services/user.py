@@ -2,7 +2,7 @@ from sqlmodel import select, Session
 
 from flxo.core.security import get_password_hash
 from flxo.models.presence import Presence
-from flxo.models.user import User, UserDTO, UserProfileUpdate
+from flxo.models.user import User, UserDTO, UserMeDTO
 from flxo.services.base import BaseService
 
 
@@ -17,7 +17,7 @@ class UserService(BaseService[User]):
         self,
         session: Session,
         user: User,
-        profile: UserProfileUpdate,
+        profile: UserMeDTO,
     ) -> User:
         user.username = profile.username
         user.favorite_seat_id = profile.favorite_seat_id
