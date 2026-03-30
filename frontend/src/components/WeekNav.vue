@@ -42,6 +42,7 @@ function goToday() { navigateWeek(-currentWeekOffset.value) }
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-left: auto;
 }
 .nav-btn {
   background: none;

@@ -2,17 +2,22 @@
 import { computed, ref } from 'vue'
 import PersonRow from './PersonRow.vue'
 import DeskPickerModal from './DeskPickerModal.vue'
-import { sortedPersons, bookings, currentWeekOffset, getWeekKey, getWeekDates, getTodayDayIndex, setSlotDesk, weekKeyDayToISO, deskCount, hoveredSlot, DESK_IDS } from '../state.js'
+import { sortedPersons, bookings, activeOfficeId, currentWeekOffset, getWeekKey, getWeekDates, getTodayDayIndex, setSlotDesk, weekKeyDayToISO, deskCount, hoveredSlot, DESK_IDS } from '../state.js'
 
 const DAY_NAMES = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven']
 const DAYS = [0, 1, 2, 3, 4]
 const SLOTS = ['morning', 'afternoon']
 
+const officeBookings = computed(() => {
+  const oid = activeOfficeId.value
+  return bookings.filter(b => b.officeId === oid)
+})
+
 const visiblePersons = computed(() => {
   const currentKey = getWeekKey(0)
   return sortedPersons.value.filter(person =>
     person.isLoggedUser ||
-    bookings.some(b => b.personId === person.id && b.weekKey >= currentKey)
+    officeBookings.value.some(b => b.personId === person.id && b.weekKey >= currentKey)
   )
 })
 
@@ -25,7 +30,7 @@ const openPickerSlot = ref(null) // { weekKey, day, slot, subtitle }
 
 function getLoggedBooking(weekKey, day, slot) {
   if (!loggedPerson.value) return null
-  return bookings.find(
+  return officeBookings.value.find(
     b => b.personId === loggedPerson.value.id && b.weekKey === weekKey && b.day === day && b.slot === slot
   ) || null
 }
@@ -59,7 +64,7 @@ function deskCellStyle(week, dayIndex, slot) {
 function openDeskPicker(week, dayIndex, slot) {
   const booking = getLoggedBooking(week.weekKey, dayIndex, slot)
   const slotLabel = slot === 'morning' ? 'AM' : 'PM'
-  const takenDesks = bookings
+  const takenDesks = officeBookings.value
     .filter(b => b.weekKey === week.weekKey && b.day === dayIndex && b.slot === slot && b.seatId && b.personId !== loggedPerson.value?.id)
     .map(b => {
       const person = sortedPersons.value.find(p => p.id === b.personId)
@@ -82,7 +87,7 @@ async function onSlotDeskConfirm(deskId, applyToAll) {
   if (applyToAll) {
     const todayISO = new Date().toISOString().slice(0, 10)
     const currentSlotISO = weekKeyDayToISO(weekKey, day)
-    const futurBookings = bookings.filter(b =>
+    const futurBookings = officeBookings.value.filter(b =>
       b.personId === loggedPerson.value.id &&
       b.state === 'confirmed' &&
       !(b.weekKey === weekKey && b.day === day && b.slot === slot) &&

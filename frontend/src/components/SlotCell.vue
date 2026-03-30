@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { getBookingState, overbookedSlots, hoveredSlot } from '../state.js'
+import { getBookingState, getConflictingOfficeName, overbookedSlots, hoveredSlot } from '../state.js'
 
 const props = defineProps({
   personId: String,
@@ -16,6 +16,10 @@ const props = defineProps({
 const emit = defineEmits(['toggle', 'dragenter'])
 
 const bookingState = computed(() => getBookingState(props.personId, props.weekKey, props.day, props.slot))
+
+const conflictOfficeName = computed(() =>
+  !bookingState.value ? getConflictingOfficeName(props.personId, props.weekKey, props.day, props.slot) : null
+)
 
 const isOverbooked = computed(() =>
   bookingState.value === 'confirmed' &&
@@ -76,7 +80,8 @@ function emitDragEnter() {
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >
-    <span v-if="bookingState === 'confirmed' && isOverbooked" class="overbooked">&#9888;</span>
+    <span v-if="conflictOfficeName" class="conflict" :style="{ background: personColor }" :title="`Réservé à ${conflictOfficeName}`"></span>
+    <span v-else-if="bookingState === 'confirmed' && isOverbooked" class="overbooked">&#9888;</span>
     <span v-else-if="bookingState === 'confirmed'" class="check">&#10003;</span>
     <span v-else-if="bookingState === 'maybe'" class="maybe" :style="{ color: personColor }">?</span>
     <span v-if="hasDeskIndicator" class="desk-dot" :style="{ borderBottomColor: `color-mix(in srgb, ${personColor} 60%, black)` }"></span>
@@ -120,6 +125,13 @@ function emitDragEnter() {
 .maybe {
   font-size: 15px;
   font-weight: 700;
+}
+.conflict {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  opacity: 0.45;
 }
 .desk-dot {
   position: absolute;

@@ -1,11 +1,12 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import WeekNav from './components/WeekNav.vue'
+import OfficePicker from './components/OfficePicker.vue'
 import PersonForm from './components/PersonForm.vue'
 import FloorPlan from './components/FloorPlan.vue'
 import WeekGrid from './components/WeekGrid.vue'
 import LoginView from './components/LoginView.vue'
-import { sortedPersons, selectedPersonId, removePerson, authToken, loggedUser, isLoading, ssoEnabled, logoUrl, initApp } from './state.js'
+import { sortedPersons, selectedPersonId, removePerson, authToken, loggedUser, isLoading, ssoEnabled, logoUrl, bookingError, initApp } from './state.js'
 import { setToken, apiDeleteUser } from './api.js'
 
 onMounted(async () => {
@@ -47,6 +48,10 @@ async function doDelete() {
   removePerson(person.id)
 }
 
+watch(bookingError, (val) => {
+  if (val) setTimeout(() => { bookingError.value = null }, 4000)
+})
+
 function logout() {
   setToken(null)
   authToken.value = null
@@ -67,6 +72,7 @@ function logout() {
         <span class="topbar-tagline">- Flex Office Planner</span>
       </div>
       <div class="topbar-right">
+        <OfficePicker />
         <span class="topbar-user">{{ loggedUser?.username }}</span>
         <button class="logout-btn" @click="logout">Se déconnecter</button>
       </div>
@@ -98,6 +104,12 @@ function logout() {
       </section>
     </main>
   </div>
+  </div>
+
+  <div v-if="bookingError" class="toast-overlay" @click="bookingError = null">
+    <div class="toast-error">
+      {{ bookingError.message }}
+    </div>
   </div>
 
   <div v-if="personToDelete" class="modal-overlay" @click.self="personToDelete = null">
@@ -320,5 +332,29 @@ body {
 }
 .modal-cancel:hover {
   background: #f5f5f5;
+}
+.toast-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 300;
+  padding-top: 60px;
+  cursor: pointer;
+}
+.toast-error {
+  background: #e74c3c;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+  animation: toast-in 0.25s ease-out;
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
