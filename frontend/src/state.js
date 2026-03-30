@@ -249,6 +249,11 @@ export function getBookingState(personId, weekKey, day, slot) {
   return b ? b.state : null
 }
 
+export function getConflictingOfficeName(personId, weekKey, day, slot) {
+  const office = _getConflictingOffice(personId, weekKey, day, slot)
+  return office ? office.name : null
+}
+
 export function hasBooking(personId, weekKey, day, slot) {
   const oid = activeOfficeId.value
   return bookings.some(
