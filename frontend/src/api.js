@@ -111,11 +111,20 @@ export async function apiCreateOffice(name, address) {
 }
 
 export async function apiListPresences(dateFrom, dateTo) {
-  const params = new URLSearchParams({ limit: '500' })
-  if (dateFrom) params.set('date_from', dateFrom)
-  if (dateTo) params.set('date_to', dateTo)
-  const res = await apiFetch(`/presence/?${params}`)
-  return res.json()
+  const PAGE_SIZE = 500
+  let offset = 0
+  const all = []
+  while (true) {
+    const params = new URLSearchParams({ limit: String(PAGE_SIZE), offset: String(offset) })
+    if (dateFrom) params.set('date_from', dateFrom)
+    if (dateTo) params.set('date_to', dateTo)
+    const res = await apiFetch(`/presence/?${params}`)
+    const page = await res.json()
+    all.push(...page)
+    if (page.length < PAGE_SIZE) break
+    offset += PAGE_SIZE
+  }
+  return all
 }
 
 export async function apiCreatePresence(date, slot, state, officeId) {
