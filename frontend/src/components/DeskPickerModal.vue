@@ -38,6 +38,15 @@ watch(svgContent, async () => {
 
 watch(pendingDesk, () => updateColors())
 
+watch(floorPlanUrl, async (url) => {
+  if (url) {
+    const resp = await fetch(url)
+    svgContent.value = await resp.text()
+  } else {
+    svgContent.value = ''
+  }
+})
+
 function isTaken(deskId) {
   return props.takenDesks.some(t => t.deskId === deskId)
 }

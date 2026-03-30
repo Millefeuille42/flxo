@@ -116,6 +116,15 @@ watch(
 watch(hoveredSlot, () => updateDeskColors())
 
 watch(svgContent, () => nextTickUpdate())
+
+watch(floorPlanUrl, async (url) => {
+  if (url) {
+    const resp = await fetch(url)
+    svgContent.value = await resp.text()
+  } else {
+    svgContent.value = ''
+  }
+})
 </script>
 
 <template>
