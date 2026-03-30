@@ -44,7 +44,7 @@ async def update_self(
     profile: UserProfileUpdate,
     session: SessionDep,
 ) -> UserPublic:
-    return svc.update_profile(
+    return svc.update_me(
         session,
         current_user,
         profile,

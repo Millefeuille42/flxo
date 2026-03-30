@@ -13,7 +13,7 @@ class UserService(BaseService[User]):
         user.username = user_dto.username
         return self.update(session, user)
 
-    def update_profile(
+    def update_me(
         self,
         session: Session,
         user: User,
