@@ -75,7 +75,7 @@ export async function apiCreateUser(username, password) {
 
 export async function apiUpdateMe(profile) {
   const res = await apiFetch('/user/me', {
-    method: 'PUT',
+    method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(profile),
   })
