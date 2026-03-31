@@ -178,7 +178,7 @@ export function addPerson(userData, { select = true, isLoggedUser = false } = {}
   const person = {
     id: `p${personIdCounter}`,
     backendId: userData.id,
-    name: userData.username,
+    name: userData.properties?.display_name || userData.username,
     color: colorForUser(userData.id),
     deskPreference: deskPref,
     favoriteSeatId: userData.favorite_seat_id ?? null,
