@@ -4,6 +4,12 @@ import PersonRow from './PersonRow.vue'
 import DeskPickerModal from './DeskPickerModal.vue'
 import { sortedPersons, bookings, activeOfficeId, currentWeekOffset, getWeekKey, getWeekDates, getTodayDayIndex, setSlotDesk, weekKeyDayToISO, deskCount, hoveredSlot, DESK_IDS } from '../state.js'
 
+const showCounts = ref(localStorage.getItem('flxo_show_counts') !== 'false')
+function toggleCounts() {
+  showCounts.value = !showCounts.value
+  localStorage.setItem('flxo_show_counts', String(showCounts.value))
+}
+
 const DAY_NAMES = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven']
 const DAYS = [0, 1, 2, 3, 4]
 const SLOTS = ['morning', 'afternoon']
@@ -33,6 +39,12 @@ function getLoggedBooking(weekKey, day, slot) {
   return officeBookings.value.find(
     b => b.personId === loggedPerson.value.id && b.weekKey === weekKey && b.day === day && b.slot === slot
   ) || null
+}
+
+function slotCount(weekKey, dayIndex, slot) {
+  return officeBookings.value.filter(
+    b => b.weekKey === weekKey && b.day === dayIndex && b.slot === slot && b.state === 'confirmed'
+  ).length
 }
 
 function canPickDesk(week, dayIndex, slot) {
@@ -165,7 +177,14 @@ const weeks = computed(() => {
           </template>
         </tr>
         <tr class="week-label-row">
-          <th></th>
+          <th>
+            <button class="count-toggle" :class="{ active: showCounts }" :title="showCounts ? 'Masquer les compteurs' : 'Afficher les compteurs'" @click="toggleCounts">
+              <svg viewBox="0 0 64 40" width="20" height="13" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 4v32h4V4h-4zM6 0a2 2 0 00-2 2v4l6-6H6zm6 36V4L6 36h6zm0 0l-6 4h8a2 2 0 002-2v-4l-4 2z" opacity="0"/>
+                <text x="2" y="32" font-family="Arial,sans-serif" font-weight="700" font-size="32">123</text>
+              </svg>
+            </button>
+          </th>
           <template v-for="week in weeks" :key="'lbl-' + week.weekKey">
             <th colspan="10" :class="['week-label', { 'past-week-label': week.isPast }]">
               Sem. {{ week.weekNum }}
@@ -174,6 +193,18 @@ const weeks = computed(() => {
         </tr>
       </thead>
       <tbody>
+        <tr v-if="showCounts" class="count-row">
+          <td class="corner count-row-label">Présents</td>
+          <template v-for="(week, wi) in weeks" :key="'cnt-' + week.weekKey">
+            <template v-for="(day, di) in DAYS" :key="di">
+              <td
+                v-for="slot in SLOTS"
+                :key="slot"
+                :class="['count-cell', { 'day-start': slot === 'morning', 'week2-start': wi > 0 && di === 0 && slot === 'morning' }]"
+              >{{ slotCount(week.weekKey, di, slot) || '' }}</td>
+            </template>
+          </template>
+        </tr>
         <tr v-if="loggedPerson" class="desk-row">
           <td class="corner desk-row-label">Mon poste</td>
           <template v-for="(week, wi) in weeks" :key="'dr-' + week.weekKey">
@@ -357,6 +388,53 @@ const weeks = computed(() => {
 }
 .empty-info {
   min-width: 180px;
+}
+.week-label-row th:first-child {
+  text-align: left;
+}
+.count-toggle {
+  background: none;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  color: #bbb;
+  cursor: pointer;
+  padding: 2px 4px;
+  display: inline-flex;
+  align-items: center;
+}
+.count-toggle:hover {
+  color: #666;
+  border-color: #ccc;
+}
+.count-toggle.active {
+  color: #888;
+}
+.count-row {
+  border-bottom: 1px solid #ddd;
+}
+.count-row-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0 8px;
+}
+.count-cell {
+  width: 44px;
+  height: 24px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+  border: 1px solid #e0e0e0;
+}
+.count-cell.day-start {
+  border-left: 2px solid #999;
+}
+.count-cell.week2-start {
+  border-left: 4px solid #333;
 }
 .empty-slot {
   width: 44px;
