@@ -78,14 +78,17 @@ function updateColors() {
     if (isPending) {
       el.style.fill = props.person.color
       el.style.fillOpacity = '0.9'
+      el.style.filter = ''
       el.style.cursor = 'pointer'
     } else if (taken) {
       el.style.fill = taken.color
-      el.style.fillOpacity = '0.7'
+      el.style.fillOpacity = '0.5'
+      el.style.filter = 'saturate(0.5)'
       el.style.cursor = 'not-allowed'
     } else {
       el.style.fill = '#d8d8d8'
       el.style.fillOpacity = '1'
+      el.style.filter = ''
       el.style.cursor = 'pointer'
     }
   }
