@@ -135,6 +135,10 @@ const weeks = computed(() => {
         <span class="legend-swatch maybe">?</span>
         Peut-être
       </span>
+      <span class="legend-item">
+        <span class="legend-swatch conflict"><span class="legend-conflict-dot"></span></span>
+        Présent ailleurs
+      </span>
     </div>
     <table class="week-grid" v-if="visiblePersons.length || deskCount">
       <thead>
@@ -333,6 +337,20 @@ const weeks = computed(() => {
   outline: 2px solid #888;
   outline-offset: -2px;
   color: #888;
+}
+.legend-swatch.conflict {
+  background: #f5f5f5;
+  outline: 2px solid #aaa;
+  outline-offset: -2px;
+  position: relative;
+}
+.legend-conflict-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #888;
+  opacity: 0.45;
 }
 .empty-row {
   border-bottom: 1px solid #eee;
