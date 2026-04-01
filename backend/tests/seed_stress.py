@@ -57,13 +57,7 @@ STATES = ["confirmed", "maybe"]
 
 
 def generate_usernames(count: int) -> list[str]:
-    names = set()
-    for first in FIRST_NAMES:
-        for last in LAST_NAMES:
-            names.add(f"{first}.{last}")
-            if len(names) >= count:
-                return sorted(names)
-    return sorted(names)
+    return [f"user{i}" for i in range(1, count + 1)]
 
 
 def get_mondays(weeks: int) -> list[date]:
@@ -105,9 +99,19 @@ def seed() -> None:
 
         # --- Users ---
         usernames = generate_usernames(NUM_USERS)
+        all_names = [
+            f"{first} {last[0]}."
+            for first in FIRST_NAMES
+            for last in LAST_NAMES
+        ]
+        random.shuffle(all_names)
         users = []
-        for username in usernames:
-            user = User(username=username, hashed_password=PASSWORD)
+        for i, username in enumerate(usernames):
+            user = User(
+                username=username,
+                hashed_password=PASSWORD,
+                properties={"display_name": all_names[i]},
+            )
             session.add(user)
             users.append(user)
         session.flush()
