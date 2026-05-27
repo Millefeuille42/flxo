@@ -61,7 +61,7 @@ function logout() {
 
 <template>
   <LoginView v-if="!authToken" @logged-in="onLoggedIn" />
-  <div v-else-if="isLoading" class="app-loading">Chargement...</div>
+  <div v-else-if="isLoading" class="app-loading">Loading...</div>
   <div v-else class="app-root">
     <div class="topbar">
       <div class="topbar-left">
@@ -74,7 +74,7 @@ function logout() {
       <div class="topbar-right">
         <OfficePicker />
         <span class="topbar-user">{{ loggedUser?.username }}</span>
-        <button class="logout-btn" @click="logout">Se déconnecter</button>
+        <button class="logout-btn" @click="logout">Log out</button>
       </div>
     </div>
     <div class="app">
@@ -94,8 +94,8 @@ function logout() {
             @click="selectedPersonId = p.id"
           >
             <span class="chip-dot" :style="{ background: p.color }"></span>
-            <span class="chip-name">{{ p.name }}{{ p.isLoggedUser ? ' (moi)' : '' }}</span>
-            <button v-if="!ssoEnabled" class="chip-remove" @click.stop="confirmDelete(p)" title="Supprimer">&times;</button>
+            <span class="chip-name">{{ p.name }}{{ p.isLoggedUser ? ' (me)' : '' }}</span>
+            <button v-if="!ssoEnabled" class="chip-remove" @click.stop="confirmDelete(p)" title="Remove">&times;</button>
           </div>
         </div>
       </aside>
@@ -114,10 +114,10 @@ function logout() {
 
   <div v-if="personToDelete" class="modal-overlay" @click.self="personToDelete = null">
     <div class="modal">
-      <p>Supprimer <strong>{{ personToDelete.name }}</strong> ?</p>
+      <p>Remove <strong>{{ personToDelete.name }}</strong>?</p>
       <div class="modal-actions">
-        <button class="modal-confirm" @click="doDelete">Supprimer</button>
-        <button class="modal-cancel" @click="personToDelete = null">Annuler</button>
+        <button class="modal-confirm" @click="doDelete">Delete</button>
+        <button class="modal-cancel" @click="personToDelete = null">Cancel</button>
       </div>
     </div>
   </div>

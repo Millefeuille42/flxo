@@ -10,7 +10,7 @@ function toggleCounts() {
   localStorage.setItem('flxo_show_counts', String(showCounts.value))
 }
 
-const DAY_NAMES = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven']
+const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 const DAYS = [0, 1, 2, 3, 4]
 const SLOTS = ['morning', 'afternoon']
 
@@ -58,9 +58,9 @@ function deskCellTitle(week, dayIndex, slot) {
   if (!booking) return ''
   if (booking.seatId) {
     const num = (booking.seatId || '').replace('desk', '')
-    return `Bureau ${num}`
+    return `Desk ${num}`
   }
-  if (booking.state === 'confirmed') return 'Cliquez pour choisir un bureau'
+  if (booking.state === 'confirmed') return 'Click to pick a desk'
   return ''
 }
 
@@ -141,15 +141,15 @@ const weeks = computed(() => {
     <div class="legend">
       <span class="legend-item">
         <span class="legend-swatch confirmed">&#10003;</span>
-        Présent
+        Present
       </span>
       <span class="legend-item">
         <span class="legend-swatch maybe">?</span>
-        Peut-être
+        Maybe
       </span>
       <span class="legend-item">
         <span class="legend-swatch conflict"><span class="legend-conflict-dot"></span></span>
-        Présent ailleurs
+        Present elsewhere
       </span>
     </div>
     <table class="week-grid" v-if="visiblePersons.length || deskCount">
@@ -178,7 +178,7 @@ const weeks = computed(() => {
         </tr>
         <tr class="week-label-row">
           <th>
-            <button class="count-toggle" :class="{ active: showCounts }" :title="showCounts ? 'Masquer les compteurs' : 'Afficher les compteurs'" @click="toggleCounts">
+            <button class="count-toggle" :class="{ active: showCounts }" :title="showCounts ? 'Hide counts' : 'Show counts'" @click="toggleCounts">
               <svg viewBox="0 0 64 40" width="20" height="13" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path d="M8 4v32h4V4h-4zM6 0a2 2 0 00-2 2v4l6-6H6zm6 36V4L6 36h6zm0 0l-6 4h8a2 2 0 002-2v-4l-4 2z" opacity="0"/>
                 <text x="2" y="32" font-family="Arial,sans-serif" font-weight="700" font-size="32">123</text>
@@ -187,14 +187,14 @@ const weeks = computed(() => {
           </th>
           <template v-for="week in weeks" :key="'lbl-' + week.weekKey">
             <th colspan="10" :class="['week-label', { 'past-week-label': week.isPast }]">
-              Sem. {{ week.weekNum }}
+              Week {{ week.weekNum }}
             </th>
           </template>
         </tr>
       </thead>
       <tbody>
         <tr v-if="showCounts" class="count-row">
-          <td class="corner count-row-label">Présents</td>
+          <td class="corner count-row-label">Present</td>
           <template v-for="(week, wi) in weeks" :key="'cnt-' + week.weekKey">
             <template v-for="(day, di) in DAYS" :key="di">
               <td
@@ -206,7 +206,7 @@ const weeks = computed(() => {
           </template>
         </tr>
         <tr v-if="loggedPerson" class="desk-row">
-          <td class="corner desk-row-label">Mon poste</td>
+          <td class="corner desk-row-label">My desk</td>
           <template v-for="(week, wi) in weeks" :key="'dr-' + week.weekKey">
             <template v-for="(day, di) in DAYS" :key="di">
               <td
@@ -255,7 +255,7 @@ const weeks = computed(() => {
       </tbody>
     </table>
     <div v-else class="empty-msg">
-      Ajoutez des personnes pour commencer
+      Add people to get started
     </div>
   </div>
 

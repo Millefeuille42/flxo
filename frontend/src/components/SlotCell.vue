@@ -80,7 +80,7 @@ function emitDragEnter() {
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >
-    <span v-if="conflictOfficeName" class="conflict" :style="{ background: personColor }" :title="`Réservé à ${conflictOfficeName}`"></span>
+    <span v-if="conflictOfficeName" class="conflict" :style="{ background: personColor }" :title="`Booked at ${conflictOfficeName}`"></span>
     <span v-else-if="bookingState === 'confirmed' && isOverbooked" class="overbooked">&#9888;</span>
     <span v-else-if="bookingState === 'confirmed'" class="check">&#10003;</span>
     <span v-else-if="bookingState === 'maybe'" class="maybe" :style="{ color: personColor }">?</span>

@@ -1,14 +1,14 @@
 const PALETTE = [
-  '#4A90D9', // bleu
-  '#E85D75', // rose
-  '#2ECC71', // vert
+  '#4A90D9', // blue
+  '#E85D75', // pink
+  '#2ECC71', // green
   '#F39C12', // orange
-  '#9B59B6', // violet
+  '#9B59B6', // purple
   '#1ABC9C', // turquoise
-  '#E74C3C', // rouge
-  '#3498DB', // bleu clair
-  '#E67E22', // orange foncé
-  '#16A085', // vert foncé
+  '#E74C3C', // red
+  '#3498DB', // light blue
+  '#E67E22', // dark orange
+  '#16A085', // dark green
 ]
 
 let index = 0

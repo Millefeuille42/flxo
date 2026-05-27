@@ -327,10 +327,10 @@ export async function toggleBooking(personId, weekKey, day, slot) {
     // null → confirmed — check cross-office conflict
     const conflict = _getConflictingOffice(personId, weekKey, day, slot)
     if (conflict) {
-      const slotLabel = slot === 'morning' ? 'matin' : 'après-midi'
+      const slotLabel = slot === 'morning' ? 'morning' : 'afternoon'
       const iso = weekKeyDayToISO(weekKey, day)
       const [, m, d] = iso.split('-')
-      bookingError.value = { message: `Vous êtes déjà réservé(e) à ${conflict.name} le ${d}/${m} (${slotLabel})` }
+      bookingError.value = { message: `Already booked at ${conflict.name} on ${m}/${d} (${slotLabel})` }
       return
     }
     const newBooking = { personId, weekKey, day, slot, state: 'confirmed', backendId: null, seatId: null, officeId: oid }
@@ -361,10 +361,10 @@ export async function setBooking(personId, weekKey, day, slot) {
   }
   const conflict = _getConflictingOffice(personId, weekKey, day, slot)
   if (conflict) {
-    const slotLabel = slot === 'morning' ? 'matin' : 'après-midi'
+    const slotLabel = slot === 'morning' ? 'morning' : 'afternoon'
     const iso = weekKeyDayToISO(weekKey, day)
     const [, m, d] = iso.split('-')
-    bookingError.value = { message: `Vous êtes déjà réservé(e) à ${conflict.name} le ${d}/${m} (${slotLabel})` }
+    bookingError.value = { message: `Already booked at ${conflict.name} on ${m}/${d} (${slotLabel})` }
     return
   }
   const person = persons.find(p => p.id === personId)

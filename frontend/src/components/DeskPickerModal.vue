@@ -53,7 +53,7 @@ function isTaken(deskId) {
 
 function deskLabel(deskId) {
   const num = deskId.replace('desk', '')
-  return `Bureau ${num}`
+  return `Desk ${num}`
 }
 
 function bindDesks() {
@@ -129,7 +129,7 @@ function confirm() {
   <div class="desk-modal-overlay" @click.self="$emit('close')">
     <div class="desk-modal">
       <div class="desk-modal-header">
-        <span>Bureau de <strong>{{ person.name }}</strong><span v-if="subtitle" class="header-subtitle"> — {{ subtitle }}</span></span>
+        <span>Desk for <strong>{{ person.name }}</strong><span v-if="subtitle" class="header-subtitle"> — {{ subtitle }}</span></span>
         <button class="close-btn" @click="$emit('close')">&times;</button>
       </div>
       <div class="desk-modal-body" ref="svgContainer">
@@ -144,15 +144,15 @@ function confirm() {
       </div>
       <div class="desk-modal-footer">
         <span class="desk-hint">
-          {{ pendingDesk ? `${deskLabel(pendingDesk)} sélectionné` : 'Aucun bureau sélectionné' }}
+          {{ pendingDesk ? `${deskLabel(pendingDesk)} selected` : 'No desk selected' }}
         </span>
         <label class="apply-all-label">
           <input type="checkbox" v-model="applyToAll" />
-          Appliquer à toutes mes réservations futures
+          Apply to all my future bookings
         </label>
         <div class="desk-actions">
-          <button class="btn-cancel" @click="$emit('close')">Annuler</button>
-          <button class="btn-confirm" @click="confirm" :disabled="!canConfirm">Valider</button>
+          <button class="btn-cancel" @click="$emit('close')">Cancel</button>
+          <button class="btn-confirm" @click="confirm" :disabled="!canConfirm">Confirm</button>
         </div>
       </div>
     </div>

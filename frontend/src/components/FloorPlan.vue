@@ -18,8 +18,8 @@ const hoveredSlotLabel = computed(() => {
   const { weekKey, day, slot } = hoveredSlot.value
   const iso = weekKeyDayToISO(weekKey, day)
   const [y, m, d] = iso.split('-')
-  const dayNames = ['Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.']
-  const slotLabel = slot === 'morning' ? 'Matin' : 'Après-midi'
+  const dayNames = ['Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.']
+  const slotLabel = slot === 'morning' ? 'Morning' : 'Afternoon'
   return `${dayNames[day]} ${d}/${m} — ${slotLabel}`
 })
 
@@ -55,7 +55,7 @@ function onDeskClick(deskId) {
 
 function deskLabel(deskId) {
   const num = deskId.replace('desk', '')
-  return `Bureau ${num}`
+  return `Desk ${num}`
 }
 
 function onDeskHover(deskId, event) {
@@ -130,7 +130,7 @@ watch(floorPlanUrl, async (url) => {
 <template>
   <div v-if="floorPlanUrl" class="floor-plan" ref="svgContainer">
     <div v-html="svgContent" :class="['svg-wrapper', { 'hide-screens': !showScreens }]"></div>
-    <button class="toggle-screens" :class="{ active: showScreens }" @click="showScreens = !showScreens" title="Afficher/masquer les écrans">
+    <button class="toggle-screens" :class="{ active: showScreens }" @click="showScreens = !showScreens" title="Show/hide screens">
       <svg viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
         <rect x="0.5" y="0.5" width="15" height="10" rx="1.5" stroke="currentColor"/>
         <path d="M5 13.5h6M8 10.5v3" stroke="currentColor" stroke-linecap="round"/>
@@ -147,10 +147,10 @@ watch(floorPlanUrl, async (url) => {
       {{ hoveredSlotLabel }}
     </div>
     <div v-else-if="!selectedPersonId" class="hint">
-      Sélectionnez une personne pour attribuer un bureau
+      Select a person to assign a desk
     </div>
     <div v-else class="hint">
-      Cliquez un bureau pour l'attribuer à <strong>{{ selectedPerson?.name }}</strong>
+      Click a desk to assign it to <strong>{{ selectedPerson?.name }}</strong>
     </div>
   </div>
 </template>
