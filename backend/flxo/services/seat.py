@@ -15,10 +15,7 @@ class SeatService(BaseService[Seat]):
         session: SessionDep, office_id: int, offset: int = 0, limit: int = 100
     ) -> Sequence[Seat]:
         return session.exec(
-            select(Seat)
-            .where(Seat.office_id == office_id)
-            .offset(offset)
-            .limit(limit)
+            select(Seat).where(Seat.office_id == office_id).offset(offset).limit(limit)
         ).all()
 
     def update_seat(

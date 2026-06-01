@@ -124,8 +124,12 @@ def update_presence(
         raise HTTPException(status_code=404, detail="Presence not found")
 
     conflict = svc.find_conflict(
-        session, current_user.id, presence_dto.date, presence_dto.slot,
-        presence_dto.seat_id, presence.id,
+        session,
+        current_user.id,
+        presence_dto.date,
+        presence_dto.slot,
+        presence_dto.seat_id,
+        presence.id,
     )
     if conflict:
         _raise_conflict(conflict, current_user.id)
