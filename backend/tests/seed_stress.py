@@ -5,17 +5,18 @@ Usage:
     uv run python -m tests.seed_stress
 """
 
+from datetime import date, timedelta
 import logging
 import random
-from datetime import date, timedelta
 
-from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel import create_engine, Session, SQLModel
 
 from flxo.core.security import get_password_hash
 from flxo.models.office import Office
 from flxo.models.presence import Presence
 from flxo.models.seat import Seat
 from flxo.models.user import User
+
 
 logger = logging.getLogger(__name__)
 
@@ -32,24 +33,94 @@ OFFICES = [
         "desk_count": 100,
         "properties": {"floor_plan_url": "/open-space-100.svg"},
     },
-    {"name": "Grenoble Inovallée", "address": "Grenoble", "desk_count": 20, "properties": {}},
-    {"name": "Bordeaux Euratlantique", "address": "Bordeaux", "desk_count": 120, "properties": {}},
+    {
+        "name": "Grenoble Inovallée",
+        "address": "Grenoble",
+        "desk_count": 20,
+        "properties": {},
+    },
+    {
+        "name": "Bordeaux Euratlantique",
+        "address": "Bordeaux",
+        "desk_count": 120,
+        "properties": {},
+    },
 ]
 
 FIRST_NAMES = [
-    "Alice", "Bob", "Charlie", "David", "Eva", "Fiona", "Gilles", "Hugo",
-    "Inès", "Jules", "Karine", "Léo", "Marie", "Nathan", "Olivia", "Paul",
-    "Quentin", "Rose", "Sophie", "Thomas", "Ugo", "Valérie", "William",
-    "Xavier", "Yanis", "Zoé", "Adrien", "Béatrice", "Cédric", "Diane",
-    "Émile", "Françoise", "Gaël", "Hélène", "Igor", "Jade", "Kevin",
-    "Lucie", "Marc", "Noémie", "Oscar", "Pauline", "Raphaël", "Sabine",
-    "Tristan", "Ursule", "Victor", "Wendy", "Yves", "Zara",
+    "Alice",
+    "Bob",
+    "Charlie",
+    "David",
+    "Eva",
+    "Fiona",
+    "Gilles",
+    "Hugo",
+    "Inès",
+    "Jules",
+    "Karine",
+    "Léo",
+    "Marie",
+    "Nathan",
+    "Olivia",
+    "Paul",
+    "Quentin",
+    "Rose",
+    "Sophie",
+    "Thomas",
+    "Ugo",
+    "Valérie",
+    "William",
+    "Xavier",
+    "Yanis",
+    "Zoé",
+    "Adrien",
+    "Béatrice",
+    "Cédric",
+    "Diane",
+    "Émile",
+    "Françoise",
+    "Gaël",
+    "Hélène",
+    "Igor",
+    "Jade",
+    "Kevin",
+    "Lucie",
+    "Marc",
+    "Noémie",
+    "Oscar",
+    "Pauline",
+    "Raphaël",
+    "Sabine",
+    "Tristan",
+    "Ursule",
+    "Victor",
+    "Wendy",
+    "Yves",
+    "Zara",
 ]
 
 LAST_NAMES = [
-    "Martin", "Bernard", "Dubois", "Thomas", "Robert", "Petit", "Richard",
-    "Durand", "Leroy", "Moreau", "Simon", "Laurent", "Lefèvre", "Michel",
-    "Garcia", "Fournier", "Lambert", "Bonnet", "François", "Martinez",
+    "Martin",
+    "Bernard",
+    "Dubois",
+    "Thomas",
+    "Robert",
+    "Petit",
+    "Richard",
+    "Durand",
+    "Leroy",
+    "Moreau",
+    "Simon",
+    "Laurent",
+    "Lefèvre",
+    "Michel",
+    "Garcia",
+    "Fournier",
+    "Lambert",
+    "Bonnet",
+    "François",
+    "Martinez",
 ]
 
 SLOTS = ["morning", "afternoon"]
@@ -100,9 +171,7 @@ def seed() -> None:
         # --- Users ---
         usernames = generate_usernames(NUM_USERS)
         all_names = [
-            f"{first} {last[0]}."
-            for first in FIRST_NAMES
-            for last in LAST_NAMES
+            f"{first} {last[0]}." for first in FIRST_NAMES for last in LAST_NAMES
         ]
         random.shuffle(all_names)
         users = []
@@ -174,7 +243,9 @@ def seed() -> None:
                         total_presences += 1
 
         session.commit()
-        logger.info("Created %d presences for %d users", total_presences, NUM_BOOKING_USERS)
+        logger.info(
+            "Created %d presences for %d users", total_presences, NUM_BOOKING_USERS
+        )
         logger.info("Database written to: %s", DB_PATH)
 
 

@@ -41,7 +41,7 @@ dev = [
 include = ["flxo"]
 
 [tool.ty.src]
-exclude = ["alembic"]
+exclude = ["alembic", "**/seed_*.py"]
 
 [tool.ruff]
 preview = true
@@ -107,6 +107,10 @@ ignore = [
 
 # restrict to the PEP 257 rules
 pydocstyle.convention = "pep257"
+
+[tool.ruff.lint.per-file-ignores]
+# Seed/stress scripts: non-crypto randomness, local dates and complexity are fine
+"tests/seed_*.py" = ["S311", "DTZ011", "C901"]
 
 [tool.ruff.lint.isort.sections]
 typing = ["typing"]
