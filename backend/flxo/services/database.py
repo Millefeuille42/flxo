@@ -29,7 +29,7 @@ def get_engine_args(driver: str) -> dict:
         # PostgreSQL uses default connection pooling
         # Check if psycopg2 is available
         try:
-            import psycopg2  # noqa: F401
+            import psycopg2  # noqa: F401  # ty: ignore[unresolved-import]
         except ImportError as e:
             msg = (
                 "PostgreSQL driver (psycopg2-binary) is not installed. "
