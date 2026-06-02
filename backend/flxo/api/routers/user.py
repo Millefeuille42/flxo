@@ -44,11 +44,7 @@ async def update_self(
     profile: UserMeDTO,
     session: SessionDep,
 ) -> UserPublic:
-    return svc.update_me(
-        session,
-        current_user,
-        profile,
-    )
+    return svc.update_me(session, current_user, profile)
 
 
 @router.post("/", response_model=UserPublic, dependencies=[Depends(require_no_sso)])
