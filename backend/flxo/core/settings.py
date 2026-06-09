@@ -100,6 +100,8 @@ class TimeSettings(BaseModel):
 
 
 class Settings(BaseSettings):
+    model_config = {"extra": "ignore"}
+
     db: DBSettings = Field(default=DBSettings())
     oauth: OAuthSettings = Field(default=OAuthSettings())
     app: AppSettings = Field(default=AppSettings())

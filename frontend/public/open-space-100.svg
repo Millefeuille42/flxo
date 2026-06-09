@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="216mm" height="654mm" viewBox="0 0 216 654">
+  <rect width="216" height="654" fill="#fafafa" />
+  <rect x="8" y="8" width="200" height="638" fill="none" stroke="#333" stroke-width="0.75" rx="2" />
+  <rect id="desk1" x="20" y="20" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="27.0" cy="32.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="27.0" y="33.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">1</text>
+  <rect id="desk2" x="38" y="20" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="45.0" cy="32.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="45.0" y="33.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">2</text>
+  <rect id="desk3" x="56" y="20" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="63.0" cy="32.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="63.0" y="33.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">3</text>
+  <rect id="desk4" x="74" y="20" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="81.0" cy="32.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="81.0" y="33.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">4</text>
+  <rect id="desk5" x="92" y="20" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="99.0" cy="32.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="99.0" y="33.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">5</text>
+  <rect id="desk6" x="110" y="20" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="117.0" cy="32.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="117.0" y="33.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">6</text>
+  <rect id="desk7" x="128" y="20" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="135.0" cy="32.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="135.0" y="33.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">7</text>
+  <rect id="desk8" x="146" y="20" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="153.0" cy="32.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="153.0" y="33.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">8</text>
+  <rect id="desk9" x="164" y="20" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="171.0" cy="32.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="171.0" y="33.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">9</text>
+  <rect id="desk10" x="182" y="20" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="189.0" cy="32.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="189.0" y="33.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">10</text>
+  <rect id="desk11" x="20" y="48" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="27.0" cy="63.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="27.0" y="64.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">11</text>
+  <rect id="desk12" x="38" y="48" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="45.0" cy="63.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="45.0" y="64.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">12</text>
+  <rect id="desk13" x="56" y="48" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="63.0" cy="63.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="63.0" y="64.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">13</text>
+  <rect id="desk14" x="74" y="48" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="81.0" cy="63.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="81.0" y="64.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">14</text>
+  <rect id="desk15" x="92" y="48" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="99.0" cy="63.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="99.0" y="64.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">15</text>
+  <rect id="desk16" x="110" y="48" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="117.0" cy="63.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="117.0" y="64.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">16</text>
+  <rect id="desk17" x="128" y="48" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="135.0" cy="63.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="135.0" y="64.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">17</text>
+  <rect id="desk18" x="146" y="48" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="153.0" cy="63.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="153.0" y="64.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">18</text>
+  <rect id="desk19" x="164" y="48" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="171.0" cy="63.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="171.0" y="64.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">19</text>
+  <rect id="desk20" x="182" y="48" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="189.0" cy="63.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="189.0" y="64.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">20</text>
+  <rect id="desk21" x="20" y="82" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="27.0" cy="94.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="27.0" y="95.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">21</text>
+  <rect id="desk22" x="38" y="82" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="45.0" cy="94.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="45.0" y="95.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">22</text>
+  <rect id="desk23" x="56" y="82" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="63.0" cy="94.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="63.0" y="95.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">23</text>
+  <rect id="desk24" x="74" y="82" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="81.0" cy="94.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="81.0" y="95.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">24</text>
+  <rect id="desk25" x="92" y="82" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="99.0" cy="94.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="99.0" y="95.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">25</text>
+  <rect id="desk26" x="110" y="82" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="117.0" cy="94.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="117.0" y="95.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">26</text>
+  <rect id="desk27" x="128" y="82" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="135.0" cy="94.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="135.0" y="95.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">27</text>
+  <rect id="desk28" x="146" y="82" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="153.0" cy="94.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="153.0" y="95.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">28</text>
+  <rect id="desk29" x="164" y="82" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="171.0" cy="94.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="171.0" y="95.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">29</text>
+  <rect id="desk30" x="182" y="82" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="189.0" cy="94.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="189.0" y="95.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">30</text>
+  <rect id="desk31" x="20" y="110" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="27.0" cy="125.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="27.0" y="126.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">31</text>
+  <rect id="desk32" x="38" y="110" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="45.0" cy="125.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="45.0" y="126.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">32</text>
+  <rect id="desk33" x="56" y="110" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="63.0" cy="125.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="63.0" y="126.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">33</text>
+  <rect id="desk34" x="74" y="110" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="81.0" cy="125.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="81.0" y="126.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">34</text>
+  <rect id="desk35" x="92" y="110" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="99.0" cy="125.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="99.0" y="126.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">35</text>
+  <rect id="desk36" x="110" y="110" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="117.0" cy="125.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="117.0" y="126.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">36</text>
+  <rect id="desk37" x="128" y="110" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="135.0" cy="125.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="135.0" y="126.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">37</text>
+  <rect id="desk38" x="146" y="110" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="153.0" cy="125.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="153.0" y="126.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">38</text>
+  <rect id="desk39" x="164" y="110" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="171.0" cy="125.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="171.0" y="126.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">39</text>
+  <rect id="desk40" x="182" y="110" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="189.0" cy="125.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="189.0" y="126.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">40</text>
+  <rect id="desk41" x="20" y="144" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="27.0" cy="156.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="27.0" y="157.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">41</text>
+  <rect id="desk42" x="38" y="144" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="45.0" cy="156.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="45.0" y="157.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">42</text>
+  <rect id="desk43" x="56" y="144" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="63.0" cy="156.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="63.0" y="157.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">43</text>
+  <rect id="desk44" x="74" y="144" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="81.0" cy="156.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="81.0" y="157.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">44</text>
+  <rect id="desk45" x="92" y="144" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="99.0" cy="156.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="99.0" y="157.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">45</text>
+  <rect id="desk46" x="110" y="144" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="117.0" cy="156.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="117.0" y="157.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">46</text>
+  <rect id="desk47" x="128" y="144" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="135.0" cy="156.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="135.0" y="157.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">47</text>
+  <rect id="desk48" x="146" y="144" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="153.0" cy="156.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="153.0" y="157.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">48</text>
+  <rect id="desk49" x="164" y="144" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="171.0" cy="156.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="171.0" y="157.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">49</text>
+  <rect id="desk50" x="182" y="144" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="189.0" cy="156.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="189.0" y="157.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">50</text>
+  <rect id="desk51" x="20" y="172" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="27.0" cy="187.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="27.0" y="188.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">51</text>
+  <rect id="desk52" x="38" y="172" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="45.0" cy="187.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="45.0" y="188.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">52</text>
+  <rect id="desk53" x="56" y="172" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="63.0" cy="187.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="63.0" y="188.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">53</text>
+  <rect id="desk54" x="74" y="172" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="81.0" cy="187.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="81.0" y="188.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">54</text>
+  <rect id="desk55" x="92" y="172" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="99.0" cy="187.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="99.0" y="188.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">55</text>
+  <rect id="desk56" x="110" y="172" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="117.0" cy="187.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="117.0" y="188.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">56</text>
+  <rect id="desk57" x="128" y="172" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="135.0" cy="187.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="135.0" y="188.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">57</text>
+  <rect id="desk58" x="146" y="172" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="153.0" cy="187.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="153.0" y="188.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">58</text>
+  <rect id="desk59" x="164" y="172" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="171.0" cy="187.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="171.0" y="188.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">59</text>
+  <rect id="desk60" x="182" y="172" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="189.0" cy="187.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="189.0" y="188.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">60</text>
+  <rect id="desk61" x="20" y="206" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="27.0" cy="218.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="27.0" y="219.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">61</text>
+  <rect id="desk62" x="38" y="206" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="45.0" cy="218.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="45.0" y="219.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">62</text>
+  <rect id="desk63" x="56" y="206" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="63.0" cy="218.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="63.0" y="219.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">63</text>
+  <rect id="desk64" x="74" y="206" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="81.0" cy="218.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="81.0" y="219.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">64</text>
+  <rect id="desk65" x="92" y="206" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="99.0" cy="218.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="99.0" y="219.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">65</text>
+  <rect id="desk66" x="110" y="206" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="117.0" cy="218.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="117.0" y="219.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">66</text>
+  <rect id="desk67" x="128" y="206" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="135.0" cy="218.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="135.0" y="219.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">67</text>
+  <rect id="desk68" x="146" y="206" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="153.0" cy="218.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="153.0" y="219.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">68</text>
+  <rect id="desk69" x="164" y="206" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="171.0" cy="218.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="171.0" y="219.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">69</text>
+  <rect id="desk70" x="182" y="206" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="189.0" cy="218.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="189.0" y="219.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">70</text>
+  <rect id="desk71" x="20" y="234" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="27.0" cy="249.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="27.0" y="250.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">71</text>
+  <rect id="desk72" x="38" y="234" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="45.0" cy="249.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="45.0" y="250.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">72</text>
+  <rect id="desk73" x="56" y="234" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="63.0" cy="249.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="63.0" y="250.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">73</text>
+  <rect id="desk74" x="74" y="234" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="81.0" cy="249.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="81.0" y="250.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">74</text>
+  <rect id="desk75" x="92" y="234" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="99.0" cy="249.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="99.0" y="250.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">75</text>
+  <rect id="desk76" x="110" y="234" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="117.0" cy="249.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="117.0" y="250.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">76</text>
+  <rect id="desk77" x="128" y="234" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="135.0" cy="249.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="135.0" y="250.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">77</text>
+  <rect id="desk78" x="146" y="234" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="153.0" cy="249.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="153.0" y="250.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">78</text>
+  <rect id="desk79" x="164" y="234" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="171.0" cy="249.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="171.0" y="250.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">79</text>
+  <rect id="desk80" x="182" y="234" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="189.0" cy="249.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="189.0" y="250.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">80</text>
+  <rect id="desk81" x="20" y="268" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="27.0" cy="280.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="27.0" y="281.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">81</text>
+  <rect id="desk82" x="38" y="268" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="45.0" cy="280.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="45.0" y="281.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">82</text>
+  <rect id="desk83" x="56" y="268" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="63.0" cy="280.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="63.0" y="281.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">83</text>
+  <rect id="desk84" x="74" y="268" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="81.0" cy="280.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="81.0" y="281.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">84</text>
+  <rect id="desk85" x="92" y="268" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="99.0" cy="280.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="99.0" y="281.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">85</text>
+  <rect id="desk86" x="110" y="268" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="117.0" cy="280.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="117.0" y="281.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">86</text>
+  <rect id="desk87" x="128" y="268" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="135.0" cy="280.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="135.0" y="281.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">87</text>
+  <rect id="desk88" x="146" y="268" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="153.0" cy="280.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="153.0" y="281.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">88</text>
+  <rect id="desk89" x="164" y="268" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="171.0" cy="280.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="171.0" y="281.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">89</text>
+  <rect id="desk90" x="182" y="268" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="189.0" cy="280.6" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="189.0" y="281.8" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">90</text>
+  <rect id="desk91" x="20" y="296" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="27.0" cy="311.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="27.0" y="312.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">91</text>
+  <rect id="desk92" x="38" y="296" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="45.0" cy="311.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="45.0" y="312.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">92</text>
+  <rect id="desk93" x="56" y="296" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="63.0" cy="311.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="63.0" y="312.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">93</text>
+  <rect id="desk94" x="74" y="296" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="81.0" cy="311.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="81.0" y="312.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">94</text>
+  <rect id="desk95" x="92" y="296" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="99.0" cy="311.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="99.0" y="312.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">95</text>
+  <rect id="desk96" x="110" y="296" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="117.0" cy="311.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="117.0" y="312.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">96</text>
+  <rect id="desk97" x="128" y="296" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="135.0" cy="311.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="135.0" y="312.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">97</text>
+  <rect id="desk98" x="146" y="296" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="153.0" cy="311.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="153.0" y="312.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">98</text>
+  <rect id="desk99" x="164" y="296" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="171.0" cy="311.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="171.0" y="312.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">99</text>
+  <rect id="desk100" x="182" y="296" width="14" height="28" rx="2.9" style="fill:#95bdd1;fill-opacity:1;stroke:#000;stroke-width:0.75" />
+  <circle cx="189.0" cy="311.4" r="3.5" style="fill:#e3c4f3;stroke:#000;stroke-width:0.55;opacity:0.8" />
+  <text x="189.0" y="312.6" text-anchor="middle" style="font-size:3px;font-family:sans-serif;fill:#555">100</text>
+</svg>

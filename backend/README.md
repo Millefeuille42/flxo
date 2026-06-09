@@ -244,6 +244,31 @@ uv run alembic upgrade head
 
 ---
 
+## Tests
+
+### Stress test (seed_stress.py)
+
+Seeding script to test scalability with a realistic data volume:
+
+- **200 users** (password: `flxo`)
+- **4 offices**: Paris (80 seats), Lyon (100), Grenoble (20), Bordeaux (120)
+- **~12,000 random presences** over 13 weeks for 150 users
+
+```bash
+cd backend/
+
+# Generate the test database
+uv run python -m tests.seed_stress
+# → creates stress_test.db in the current directory
+
+# Run the backend against the test database
+FLXO__DB__HOST=stress_test.db uv run uvicorn flxo.api.main:app --reload
+```
+
+The script honors uniqueness constraints (one slot per user/date/slot, one seat per date/slot). Desk bookings are assigned randomly (~60% of confirmed slots).
+
+---
+
 ## Formatting and static analysis
 
 ```bash

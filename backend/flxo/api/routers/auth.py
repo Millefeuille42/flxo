@@ -15,12 +15,21 @@ from flxo.services.auth import (
     authenticate_user,
     create_access_token,
 )
+from flxo.services.office import svc as office_svc
 from flxo.services.user import svc
 
 from typing import Annotated
 
 
 router = APIRouter(prefix="/auth")
+
+
+@router.get("/config")
+async def get_auth_config(settings: SettingsDep, session: SessionDep) -> dict:
+    return {
+        "sso_enabled": bool(settings.oauth.client_id),
+        "offices": office_svc.get_config_list(session),
+    }
 
 
 @router.get("/oauth2")

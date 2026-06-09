@@ -6,7 +6,7 @@ from flxo.api.dependencies.auth import TokenDep
 from flxo.api.dependencies.database import SessionDep
 from flxo.core.exceptions import InvalidCredentialsException
 from flxo.models.token import TokenData
-from flxo.models.user import User, UserPublic
+from flxo.models.user import User
 from flxo.services.auth import ALGORITHM, SECRET_KEY
 from flxo.services.user import svc
 
@@ -20,7 +20,7 @@ def get_current_user(session: SessionDep, token: TokenDep) -> User:
         if username is None:
             raise InvalidCredentialsException
         token_data = TokenData(username=username)
-    except InvalidTokenError as e:
+    except (InvalidTokenError, jwt.exceptions.PyJWTError) as e:
         raise InvalidCredentialsException from e
     user = svc.get_user_by_username(session, username=token_data.username)
     if user is None:
@@ -28,4 +28,4 @@ def get_current_user(session: SessionDep, token: TokenDep) -> User:
     return user
 
 
-UserDep = Annotated[UserPublic, Depends(get_current_user)]
+UserDep = Annotated[User, Depends(get_current_user)]

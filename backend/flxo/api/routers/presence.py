@@ -15,6 +15,17 @@ from typing import Annotated
 router = APIRouter(prefix="/presence")
 
 
+def _raise_conflict(conflict: Presence, user_id: int) -> None:
+    if conflict.user_id == user_id and conflict.seat_id:
+        msg = "You already have a desk booked for this slot"
+        raise HTTPException(status_code=409, detail=msg)
+    if conflict.user_id == user_id:
+        msg = f"Presence overlaps with an existing one (office: {conflict.office.name})"
+        raise HTTPException(status_code=400, detail=msg)
+    msg = "This desk is already booked for this slot"
+    raise HTTPException(status_code=409, detail=msg)
+
+
 @router.get("/me", response_model=Sequence[PresenceWithUser])
 def list_self_presences(
     current_user: UserDep,
@@ -93,12 +104,11 @@ def create_presence(
     presence: PresenceDTO,
     session: SessionDep,
 ) -> Presence:
-    if svc.does_presence_overlap(
-        session, current_user.id, presence.seat_id, presence.date, presence.slot
-    ):
-        raise HTTPException(
-            status_code=400, detail="Presence overlaps with an existing one"
-        )
+    conflict = svc.find_conflict(
+        session, current_user.id, presence.date, presence.slot, presence.seat_id
+    )
+    if conflict:
+        _raise_conflict(conflict, current_user.id)
     return svc.create_presence(session, presence, current_user.id)
 
 
@@ -113,17 +123,16 @@ def update_presence(
     if not presence:
         raise HTTPException(status_code=404, detail="Presence not found")
 
-    if svc.does_presence_overlap(
+    conflict = svc.find_conflict(
         session,
         current_user.id,
-        presence_dto.seat_id,
         presence_dto.date,
         presence_dto.slot,
+        presence_dto.seat_id,
         presence.id,
-    ):
-        raise HTTPException(
-            status_code=400, detail="Updated presence overlaps with an existing one"
-        )
+    )
+    if conflict:
+        _raise_conflict(conflict, current_user.id)
 
     return svc.update_presence(session, presence_dto, presence)
 
