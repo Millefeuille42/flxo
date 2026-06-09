@@ -3,7 +3,9 @@ services:
     build:
       context: ./backend
     ports:
-      - "8081:80"
+      - "8080:80"
+      - "8080:80"
+    restart: unless-stopped
     depends_on:
       - db
     environment:
@@ -45,9 +47,11 @@ services:
       - "8080:80"
     depends_on:
       - backend
-
+    restart: unless-stopped
+    
   db:
     image: postgres:15
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${FLXO__DB__USER:-flxo}
       POSTGRES_PASSWORD: ${FLXO__DB__PASSWORD:-flxo}
@@ -56,4 +60,10 @@ services:
       - db_data:/var/lib/postgresql/data
 
 volumes:
+<<<<<<< HEAD
   db_data:
+||||||| parent of 73d94e3 (Add restart policy to services in docker-compose (#6))
+  db_data:  # PostgreSQL data volume
+=======
+  db_data:  # PostgreSQL data volume
+>>>>>>> 73d94e3 (Add restart policy to services in docker-compose (#6))
