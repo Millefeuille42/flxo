@@ -6,6 +6,7 @@ services:
         DATABASE_DRIVER: ${DATABASE_DRIVER:-sqlite}
     ports:
       - "8080:80"
+    restart: unless-stopped
     depends_on:
       - db
     volumes:
@@ -50,9 +51,11 @@ services:
       - "8081:80"
     depends_on:
       - backend
-
+    restart: unless-stopped
+    
   db:
     image: postgres:15
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${FLXO__DB__USER:-flxo}
       POSTGRES_PASSWORD: ${FLXO__DB__PASSWORD:-flxo}
